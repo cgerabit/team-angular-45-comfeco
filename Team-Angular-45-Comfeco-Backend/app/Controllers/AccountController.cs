@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 
-using TeamAngular45Backend.DTOs.Auth;
-using TeamAngular45Backend.DTOs.Email;
-using TeamAngular45Backend.Helpers;
-using TeamAngular45Backend.Models;
+using BackendComfeco.DTOs.Auth;
+using BackendComfeco.DTOs.Email;
+using BackendComfeco.Helpers;
+using BackendComfeco.Models;
 
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -23,7 +23,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace TeamAngular45Backend.Controllers
+namespace BackendComfeco.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

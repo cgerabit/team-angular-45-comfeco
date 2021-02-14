@@ -1,4 +1,4 @@
-﻿namespace TeamAngular45Backend.DTOs.Email
+﻿namespace BackendComfeco.DTOs.Email
 {
     public class MailRequest
     {

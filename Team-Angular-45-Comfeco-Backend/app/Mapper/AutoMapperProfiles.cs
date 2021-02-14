@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 
-using TeamAngular45Backend.DTOs.Auth;
-using TeamAngular45Backend.Models;
+using BackendComfeco.DTOs.Auth;
+using BackendComfeco.Models;
 
 using Microsoft.AspNetCore.Authentication;
 
-namespace TeamAngular45Backend.Mapper
+namespace BackendComfeco.Mapper
 {
     public class AutoMapperProfiles : Profile
     {

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Team-Angular-45-Comfeco-Backend", "app\Team-Angular-45-Comfeco-Backend.csproj", "{A592F11B-8CA0-42A9-BCBE-5CCB9CE55385}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackendComfeco", "app\BackendComfeco.csproj", "{A592F11B-8CA0-42A9-BCBE-5CCB9CE55385}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

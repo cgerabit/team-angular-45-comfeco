@@ -1,5 +1,5 @@
-﻿using TeamAngular45Backend.DTOs.Email;
-using TeamAngular45Backend.Shared.Settings;
+﻿using BackendComfeco.DTOs.Email;
+using BackendComfeco.Shared.Settings;
 
 using MailKit.Net.Smtp;
 using MailKit.Security;
@@ -14,7 +14,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace TeamAngular45Backend.Helpers
+namespace BackendComfeco.Helpers
 {
     public class EmailService : IEmailService, IDisposable
     {

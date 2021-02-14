@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace TeamAngular45Backend.Migrations
+namespace BackendComfeco.Migrations
 {
     public partial class initial : Migration
     {

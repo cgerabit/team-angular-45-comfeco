@@ -1,4 +1,4 @@
-﻿namespace TeamAngular45Backend.DTOs.Auth
+﻿namespace BackendComfeco.DTOs.Auth
 {
     public class UserInfo
     {

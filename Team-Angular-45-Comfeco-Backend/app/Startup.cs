@@ -1,6 +1,7 @@
-using TeamAngular45Backend.Helpers;
-using TeamAngular45Backend.Models;
-using TeamAngular45Backend.Shared.Settings;
+using BackendComfeco.Helpers;
+using BackendComfeco.Models;
+using BackendComfeco.Settings;
+using BackendComfeco.Shared.Settings;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -17,7 +18,7 @@ using Microsoft.OpenApi.Models;
 using System;
 using System.Text;
 
-namespace TeamAngular45Backend
+namespace BackendComfeco
 {
     public class Startup
     {
@@ -79,14 +80,16 @@ namespace TeamAngular45Backend
             services.AddCors(
                 options =>
             {
-                options.AddPolicy("defaultPolicy", 
+                options.AddPolicy(ApplicationConstants.DEVELOPMENTCORSPOLICYNAME,
                     new CorsPolicyBuilder()
-                    .WithOrigins("*localhost*")
+                    .AllowAnyOrigin()
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .Build());
 
-                options.DefaultPolicyName = "defaultPolicy";
+
+
+                options.DefaultPolicyName = ApplicationConstants.DEVELOPMENTCORSPOLICYNAME;
             });
             services.AddSingleton<IEmailService, EmailService>();
             services.AddTransient<ThreadSafeRandom>();
@@ -108,7 +111,8 @@ namespace TeamAngular45Backend
             app.UseHttpsRedirection();
             
             app.UseRouting();
-            app.UseCors("deaultPolicy");
+            app.UseCors(ApplicationConstants.DEVELOPMENTCORSPOLICYNAME);
+
             app.UseStaticFiles();
             app.UseAuthentication();
             

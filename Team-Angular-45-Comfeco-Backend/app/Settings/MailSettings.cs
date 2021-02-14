@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TeamAngular45Backend.Shared.Settings
+namespace BackendComfeco.Shared.Settings
 {
     public class MailSettings
     {
