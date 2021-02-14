@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace TeamAngular45Backend.Models
+namespace BackendComfeco.Models
 {
     public class ApplicationUser : IdentityUser
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace TeamAngular45Backend.DTOs.Auth
+namespace BackendComfeco.DTOs.Auth
 {
     public class ExternalLoginDTO
     {

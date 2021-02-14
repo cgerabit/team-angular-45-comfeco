@@ -1,8 +1,8 @@
-﻿using TeamAngular45Backend.DTOs.Email;
+﻿using BackendComfeco.DTOs.Email;
 
 using System.Threading.Tasks;
 
-namespace TeamAngular45Backend.Helpers
+namespace BackendComfeco.Helpers
 {
     public interface IEmailService
     {

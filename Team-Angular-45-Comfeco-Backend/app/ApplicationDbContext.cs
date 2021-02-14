@@ -1,9 +1,9 @@
-﻿using TeamAngular45Backend.Models;
+﻿using BackendComfeco.Models;
 
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace TeamAngular45Backend
+namespace BackendComfeco
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {

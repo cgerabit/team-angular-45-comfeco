@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TeamAngular45Backend.Helpers
+namespace BackendComfeco.Helpers
 {
     public class ThreadSafeRandom
     {
