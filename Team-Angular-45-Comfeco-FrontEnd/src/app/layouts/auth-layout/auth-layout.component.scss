@@ -1,0 +1,33 @@
+@import "../../../utils/theme";
+
+.auth-layout {
+  background: url("../../../assets/images/bg-green.svg") no-repeat center center
+    fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+.btn-bottom {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 100%;
+  outline: none;
+  border: none;
+  color: white;
+  background-color: $dark-gray;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  &:hover {
+    background-color: $gray;
+    bottom: 25px;
+    transform: scale(1.2);
+  }
+}
