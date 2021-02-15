@@ -31,7 +31,7 @@ export class RecoverComponent implements OnInit {
 
     //this.authService.validarToken().subscribe(resp=> console.log(resp));
 
-   const {email} = this.miFormulario.value;
+   /*const {email} = this.miFormulario.value;
     this.authService.recover( email )
       .subscribe(resp=>{
         console.log(resp);
@@ -41,7 +41,7 @@ export class RecoverComponent implements OnInit {
           //TODO mensaje de error
           Swal.fire('Error', resp, 'error');
         }
-      })
+      })*/
 
   }
 
