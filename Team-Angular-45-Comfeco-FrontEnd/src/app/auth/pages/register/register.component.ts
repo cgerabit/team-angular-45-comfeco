@@ -30,6 +30,23 @@ export class RegisterComponent implements OnInit {
 
   ngOnInit(): void {}
 
+  //validaciones
+  get nombreNoValido(){
+    return this.miFormulario.get('name').invalid && this.miFormulario.get('name').touched
+  }
+  get correoNoValido(){
+    return this.miFormulario.get('email').invalid && this.miFormulario.get('email').touched
+  }
+  get passwordNoValido(){
+    return this.miFormulario.get('password').invalid && this.miFormulario.get('password').touched
+  }
+  get password2NoValido(){
+    const password1 = this.miFormulario.get('password').value;
+    const password2 = this.miFormulario.get('password2').value;
+
+    return (password1 == password2) ? false: true;
+  }
+
   checkPasswords(group: FormGroup) {
     // here we have the 'passwords' group
     const password = group.get('password').value;

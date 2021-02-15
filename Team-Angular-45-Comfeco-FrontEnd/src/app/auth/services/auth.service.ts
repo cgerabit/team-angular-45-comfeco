@@ -78,6 +78,6 @@ export class AuthService {
   }
 
   logout() {
-    localStorage.clear();
+    localStorage.removeItem("access_token");
   }
 }
