@@ -60,6 +60,25 @@ export class AuthService {
       );
   }
 
+  recover ( email: string ){
+
+    const url = `${this.baseUrl}/api/account/login`;
+    const body = { email: email };
+
+    return  this.http.post<AuthResponse>(url, body)
+      .pipe(
+        tap( resp =>{
+          if(resp.ok){
+
+            localStorage.setItem('access_token', resp.token);
+          }
+
+        }),
+        map(resp => resp.ok ),
+        catchError(err => of(err.error.msg) )
+      );
+  }
+
   validarToken():Observable<boolean>{
     const url = `${this.baseUrl}/api/account/renew`;
     const headers = new HttpHeaders()

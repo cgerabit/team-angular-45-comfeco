@@ -6,11 +6,19 @@ import { AuthRoutingModule } from './auth-routing.module';
 import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { MainComponent } from './pages/main/main.component';
+import { RecoverComponent } from './pages/recover/recover.component';
+import { TermsComponent } from './pages/terms/terms.component';
 
 
 
 @NgModule({
-  declarations: [LoginComponent, RegisterComponent, MainComponent],
+  declarations: [
+    LoginComponent,
+    RegisterComponent,
+    MainComponent,
+    RecoverComponent,
+    TermsComponent
+  ],
   imports: [
     CommonModule,
     AuthRoutingModule,
