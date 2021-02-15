@@ -1,6 +1,5 @@
 <div class="form shadow">
   <div class="form-tabs">
-    <button class="btn-form selected">Iniciar sesión</button>
     <a class="btn-form" routerLink="/auth/registro">Registrarse</a>
   </div>
   <div class="form-panel">
@@ -38,7 +37,7 @@
             formControlName="remember"
           />Recuérdame
         </label>
-        <a href="#" class="simple-link">¿Olvido su contraseña?</a>
+        <a routerLink="/auth/recover" class="simple-link">¿Olvido su contraseña?</a>
       </div>
       <div class="form-group">
         <button
