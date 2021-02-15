@@ -11,12 +11,13 @@ import Swal from 'sweetalert2';
   styleUrls: ['./register.component.scss'],
 })
 export class RegisterComponent implements OnInit {
+  isLoading: boolean = false;
   miFormulario: FormGroup = this.fb.group(
     {
-      name: ['test1', [Validators.required]],
-      email: ['test1@test1.com', [Validators.required, Validators.email]],
-      password: ['123456', [Validators.required, Validators.minLength(6)]],
-      password2: ['123456', [Validators.required, Validators.minLength(6)]],
+      name: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      password2: ['', [Validators.required, Validators.minLength(6)]],
     },
     { validators: this.checkPasswords }
   );
@@ -28,6 +29,23 @@ export class RegisterComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {}
+
+  //validaciones
+  get nombreNoValido(){
+    return this.miFormulario.get('name').invalid && this.miFormulario.get('name').touched
+  }
+  get correoNoValido(){
+    return this.miFormulario.get('email').invalid && this.miFormulario.get('email').touched
+  }
+  get passwordNoValido(){
+    return this.miFormulario.get('password').invalid && this.miFormulario.get('password').touched
+  }
+  get password2NoValido(){
+    const password1 = this.miFormulario.get('password').value;
+    const password2 = this.miFormulario.get('password2').value;
+
+    return (password1 == password2) ? false: true;
+  }
 
   checkPasswords(group: FormGroup) {
     // here we have the 'passwords' group
@@ -41,15 +59,18 @@ export class RegisterComponent implements OnInit {
     //console.log(this.miFormulario.value);
     //console.log(this.miFormulario.valid);
     const { name, email, password } = this.miFormulario.value;
-
+    this.isLoading = true;
     this.authService.register(name, email, password).subscribe((resp) => {
-      console.log(resp);
-      if (resp === true) {
-        this.router.navigateByUrl('/protected');
+      if (resp === null) {
+        Swal.fire(
+          'Todo correcto',
+          'Revisa tu email para confirmar tu cuenta',
+          'success'
+        );
       } else {
-        //TODO mensaje de error
-        Swal.fire('Error', resp, 'error');
+        Swal.fire('Error', resp[0], 'error');
       }
+      this.isLoading = false;
     });
   }
 }

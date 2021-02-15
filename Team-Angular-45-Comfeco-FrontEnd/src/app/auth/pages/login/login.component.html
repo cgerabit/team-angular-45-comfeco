@@ -11,7 +11,11 @@
           type="email"
           formControlName="email"
           placeholder="Ingrese su email"
+          [class.is-invalid]="correoNoValido"
         />
+        <small *ngIf="correoNoValido" class="text-danger">
+          Ingrese un correo valido
+        </small>
       </div>
       <div class="form-group">
         <label for="password">Contraseña</label>
@@ -19,18 +23,37 @@
           type="password"
           formControlName="password"
           placeholder="Ingrese su contraseña"
+          [class.is-invalid]="passwordNoValido"
         />
+        <small *ngIf="passwordNoValido" class="text-danger">
+          Debe contener almenos 6 caracteres
+        </small>
       </div>
       <div class="form-group">
         <label for="remember" class="form-remember">
-          <input type="checkbox" id="remember" />Recuérdame
+          <input
+            type="checkbox"
+            id="remember"
+            formControlName="remember"
+          />Recuérdame
         </label>
         <a routerLink="/auth/recover" class="simple-link">¿Olvido su contraseña?</a>
       </div>
       <div class="form-group">
-        <button type="submit" [disabled]="miFormulario.invalid">
+        <button
+          type="submit"
+          *ngIf="!isLoading"
+          [disabled]="miFormulario.invalid"
+        >
           Iniciar Sesión
         </button>
+        <div
+          class="spinner-grow text-success mx-auto"
+          *ngIf="isLoading"
+          role="status"
+        >
+          <span class="sr-only">Loading...</span>
+        </div>
       </div>
     </form>
     <div class="divider"></div>

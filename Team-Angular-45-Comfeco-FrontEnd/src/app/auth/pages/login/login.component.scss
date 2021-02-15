@@ -103,6 +103,10 @@
       }
     }
 
+    .is-invalid{
+      border-color:  red;
+    }
+
     button {
       outline: none;
       background: $accent;
