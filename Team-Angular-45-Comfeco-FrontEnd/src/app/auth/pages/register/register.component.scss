@@ -51,6 +51,7 @@
   }
 
   &-group {
+    position: relative;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
@@ -99,6 +100,42 @@
 
         &:focus {
           color: $white;
+        }
+      }
+    }
+
+    .info-data {
+      position: absolute;
+      top: 25px;
+      right: 0;
+      .icon {
+        display: inline-block;
+        width: 1.5em;
+        height: 1.5em;
+        stroke-width: 0;
+        stroke: currentColor;
+        fill: $accent;
+      }
+      span {
+        background-color: rgba($color: $accent, $alpha: 0.9);
+        color: $white;
+        padding: 8px;
+        border-radius: 8px;
+        position: absolute;
+        visibility: hidden;
+        opacity: 0;
+        left: -125px;
+        top: 0;
+        z-index: 1;
+        font-weight: 300;
+        font-size: 12px;
+        width: 150px;
+        transition: all 350ms ease;
+      }
+      &:hover {
+        span {
+          opacity: 1;
+          visibility: visible;
         }
       }
     }
