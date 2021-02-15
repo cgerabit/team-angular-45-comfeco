@@ -5,19 +5,21 @@ import { AuthService } from '../auth/services/auth.service';
 import { tap } from 'rxjs/operators';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ValidarTokenGuard implements CanActivate, CanLoad {
+  constructor(private authService: AuthService, private router: Router) {}
 
-
-  constructor( private authService:AuthService,
-                private router: Router){
-
-  }
-
-  canActivate(): Observable<boolean>  | boolean {
+  canActivate(): Observable<boolean> | boolean {
     //console.log('canActivate');
 
+    const user = localStorage.getItem('access_token');
+    if (user != null) {
+      return true;
+    }
+    this.router.navigate(['/auth/login']);
+    return false;
+    /*
     return this.authService.validarToken()
       .pipe(
         tap( valid => {
@@ -25,17 +27,24 @@ export class ValidarTokenGuard implements CanActivate, CanLoad {
             this.router.navigateByUrl('/auth/login')
           }
         })
-      );
+      );*/
   }
-  canLoad(): Observable<boolean> |boolean {
+  canLoad(): Observable<boolean> | boolean {
     //console.log('canLoad');
-    return this.authService.validarToken()
-      .pipe(
-        tap( valid => {
-          if(!valid){
-            this.router.navigateByUrl('/auth/login')
-          }
-        })
-      );
+    const user = localStorage.getItem('access_token');
+    if (user != null) {
+      return true;
+    }
+    this.router.navigate(['/auth/login']);
+    return false;
+    /*
+    return this.authService.validarToken().pipe(
+      tap((valid) => {
+        if (!valid) {
+          this.router.navigateByUrl('/auth/login');
+        }
+      })
+    );*/
   }
 }
+

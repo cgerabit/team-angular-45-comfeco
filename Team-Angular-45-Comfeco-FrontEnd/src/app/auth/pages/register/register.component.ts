@@ -11,12 +11,13 @@ import Swal from 'sweetalert2';
   styleUrls: ['./register.component.scss'],
 })
 export class RegisterComponent implements OnInit {
+  isLoading: boolean = false;
   miFormulario: FormGroup = this.fb.group(
     {
-      name: ['test1', [Validators.required]],
-      email: ['test1@test1.com', [Validators.required, Validators.email]],
-      password: ['123456', [Validators.required, Validators.minLength(6)]],
-      password2: ['123456', [Validators.required, Validators.minLength(6)]],
+      name: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      password2: ['', [Validators.required, Validators.minLength(6)]],
     },
     { validators: this.checkPasswords }
   );
@@ -41,15 +42,18 @@ export class RegisterComponent implements OnInit {
     //console.log(this.miFormulario.value);
     //console.log(this.miFormulario.valid);
     const { name, email, password } = this.miFormulario.value;
-
+    this.isLoading = true;
     this.authService.register(name, email, password).subscribe((resp) => {
-      console.log(resp);
-      if (resp === true) {
-        this.router.navigateByUrl('/protected');
+      if (resp === null) {
+        Swal.fire(
+          'Todo correcto',
+          'Revisa tu email para confirmar tu cuenta',
+          'success'
+        );
       } else {
-        //TODO mensaje de error
-        Swal.fire('Error', resp, 'error');
+        Swal.fire('Error', resp[0], 'error');
       }
+      this.isLoading = false;
     });
   }
 }

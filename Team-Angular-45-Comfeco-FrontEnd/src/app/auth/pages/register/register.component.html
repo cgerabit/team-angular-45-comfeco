@@ -40,9 +40,20 @@
         />
       </div>
       <div class="form-group">
-        <button type="submit" [disabled]="miFormulario.invalid">
+        <button
+          type="submit"
+          *ngIf="!isLoading"
+          [disabled]="miFormulario.invalid"
+        >
           Registrarse
         </button>
+        <div
+          class="spinner-grow text-success mx-auto"
+          *ngIf="isLoading"
+          role="status"
+        >
+          <span class="sr-only">Loading...</span>
+        </div>
       </div>
     </form>
     <div class="divider"></div>
@@ -56,3 +67,4 @@
     </div>
   </div>
 </div>
+
