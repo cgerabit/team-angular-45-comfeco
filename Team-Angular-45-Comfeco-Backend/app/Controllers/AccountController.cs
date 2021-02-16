@@ -6,6 +6,8 @@ using BackendComfeco.Helpers;
 using BackendComfeco.Models;
 using BackendComfeco.Settings;
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -64,6 +66,14 @@ namespace BackendComfeco.Controllers
         }
 
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet("refreshToken")]
+        public async Task<ActionResult<TokenResponse>> RefreshToken()
+        {
+            var user =await GetUserFromContext();
+
+            return await BuildLoginToken(user.Email,false);
+        }
         [HttpPost("register")]
         public async Task<ActionResult> Register(ApplicationUserCreationDTO aplicationUserCreationDTO)
         {
@@ -525,6 +535,27 @@ namespace BackendComfeco.Controllers
                 Token = new JwtSecurityTokenHandler().WriteToken(token),
                 Expiration = expiration
             };
+        }
+
+        private async Task<ApplicationUser> GetUserFromContext()
+        {
+            if (!HttpContext.User.Identity.IsAuthenticated)
+            {
+                return null;
+
+            }
+
+            string email = HttpContext.User.Identity.Name;
+
+            if (string.IsNullOrEmpty(email))
+            {
+                return null;
+            }
+
+            var user = await userManager.FindByEmailAsync(email);
+
+            return user;
+
         }
 
 

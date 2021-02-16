@@ -162,4 +162,29 @@ export class AuthService {
     localStorage.removeItem(environment.tokenFieldName);
     localStorage.removeItem(environment.tokenExpirationFieldName);
   }
+
+  tryRenewToken():Promise<boolean>{
+    return new Promise<boolean>((resolve)=>{
+      if(!this.isLoggedIn){
+        resolve(false);
+        return;
+      }
+    let renovationTime=new Date();
+    //Si el token le quedan menos de 35 minutos de vida
+    renovationTime.setMinutes(renovationTime.getMinutes() + 35 );
+    if(renovationTime < this.tokenExpiration){
+      //No necesitamos renovar todavia
+      resolve(false);
+      return;
+    }
+      this.http.get<TokenResponse>(`${this.baseUrl}/account/refreshtoken`)
+      .subscribe(resp => {
+        this.authenticateUser(resp);
+        resolve(true);
+      },()=>{
+        this.logout();
+        resolve(false);
+      })
+    });
+}
 }
