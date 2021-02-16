@@ -53,15 +53,13 @@ export class AuthService {
     //TODO:
     //chequear token con el servidor
 
-    let result =  this.token && !this.isTokenExpired;
-debugger
-    return result;
+    return  this.token && !this.isTokenExpired;
 
   }
   get isTokenExpired():boolean {
 
-    let result = (this.tokenExpiration &&  new Date() >= this.tokenExpiration) || !this.tokenExpiration
-    return result;
+    return (this.tokenExpiration &&  new Date() >= this.tokenExpiration) || !this.tokenExpiration
+
   }
   //---------------------------------------- END GETTERS ----------------------------
 
