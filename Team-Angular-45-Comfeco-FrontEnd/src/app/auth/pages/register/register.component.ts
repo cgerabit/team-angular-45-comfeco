@@ -73,4 +73,9 @@ export class RegisterComponent implements OnInit {
       this.isLoading = false;
     });
   }
+  registerWithExternalProvider(providerName:string){
+
+    this.authService.initLoginWithExternalProvider(providerName);
+
+  }
 }

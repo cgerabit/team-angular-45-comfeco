@@ -11,5 +11,9 @@
         public const string AuthCodeTokenProviderName = "AuthCode";
 
         public const string ExternalLoginTokenPurposeName = "External-Auth-Code";
+
+        public const string KeyHashCookieName = "SecurityKeyHash";
+
+        public const string LoginFrontendDefaultEndpoint = "http://localhost:4200/auth/login";
     }
 }

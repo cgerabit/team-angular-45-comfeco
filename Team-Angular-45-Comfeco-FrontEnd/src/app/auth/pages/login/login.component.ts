@@ -79,4 +79,11 @@ export class LoginComponent implements OnInit {
         this.isLoading = false;
       });
   }
+
+  loginWithExternalProvider(providerName:string){
+
+    this.authService.initLoginWithExternalProvider(providerName);
+    
+  }
+
 }
