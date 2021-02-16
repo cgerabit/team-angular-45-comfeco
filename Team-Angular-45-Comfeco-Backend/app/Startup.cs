@@ -1,5 +1,6 @@
 using BackendComfeco.Helpers;
 using BackendComfeco.Models;
+using BackendComfeco.Security;
 using BackendComfeco.Settings;
 using BackendComfeco.Shared.Settings;
 
@@ -12,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -67,20 +69,29 @@ namespace BackendComfeco
                 options.SignIn.RequireConfirmedEmail = false;
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
                 options.User.RequireUniqueEmail = true;
+                
+
             })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
+                .AddDefaultTokenProviders()
+                .AddTokenProvider<AuthCodeTokenProvider<ApplicationUser>>(ApplicationConstants.AuthCodeTokenProviderName);
 
             services.Configure<DataProtectionTokenProviderOptions>(options =>
             {
                 options.TokenLifespan = TimeSpan.FromHours(1);
 
             });
+            services.Configure<AuthCodeTokenProviderOptions>(options =>
+            {
+
+                options.TokenLifespan = TimeSpan.FromMinutes(5);
+            });
+
             services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));
             services.AddCors(
                 options =>
             {
-                options.AddPolicy(ApplicationConstants.DEVELOPMENTCORSPOLICYNAME,
+                options.AddPolicy(ApplicationConstants.DevelopmentPolicyName,
                     new CorsPolicyBuilder()
                     .AllowAnyOrigin()
                     .AllowAnyHeader()
@@ -89,7 +100,7 @@ namespace BackendComfeco
 
 
 
-                options.DefaultPolicyName = ApplicationConstants.DEVELOPMENTCORSPOLICYNAME;
+                options.DefaultPolicyName = ApplicationConstants.DevelopmentPolicyName;
             });
             services.AddSingleton<IEmailService, EmailService>();
             services.AddTransient<ThreadSafeRandom>();
@@ -111,7 +122,7 @@ namespace BackendComfeco
             app.UseHttpsRedirection();
             
             app.UseRouting();
-            app.UseCors(ApplicationConstants.DEVELOPMENTCORSPOLICYNAME);
+            app.UseCors(ApplicationConstants.DevelopmentPolicyName);
 
             app.UseStaticFiles();
             app.UseAuthentication();

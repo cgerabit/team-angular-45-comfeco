@@ -4,14 +4,16 @@ using BackendComfeco;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BackendComfeco.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210215232334_authcode")]
+    partial class authcode
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -102,12 +104,12 @@ namespace BackendComfeco.Migrations
                         new
                         {
                             Id = 1,
-                            Url = "http://localhost:4200/auth/external-signin-callback"
+                            Url = "http://localhost:4200/external-signin-callback"
                         },
                         new
                         {
                             Id = 2,
-                            Url = "https://localhost:4200/auth/external-signin-callback"
+                            Url = "https://localhost:4200/external-signin-callback"
                         });
                 });
 
