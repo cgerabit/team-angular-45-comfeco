@@ -4,11 +4,13 @@ using BackendComfeco.DTOs.Auth;
 using BackendComfeco.DTOs.Email;
 using BackendComfeco.Helpers;
 using BackendComfeco.Models;
+using BackendComfeco.Settings;
 
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -37,6 +39,7 @@ namespace BackendComfeco.Controllers
         private readonly IWebHostEnvironment env;
         private readonly IConfiguration configuration;
         private readonly ThreadSafeRandom threadSafeRandom;
+        private readonly ApplicationDbContext applicationDbContext;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
@@ -45,7 +48,8 @@ namespace BackendComfeco.Controllers
             IEmailService mailService,
             IWebHostEnvironment env,
             IConfiguration configuration,
-            ThreadSafeRandom threadSafeRandom
+            ThreadSafeRandom threadSafeRandom,
+            ApplicationDbContext applicationDbContext
             )
         {
 
@@ -56,6 +60,7 @@ namespace BackendComfeco.Controllers
             this.env = env;
             this.configuration = configuration;
             this.threadSafeRandom = threadSafeRandom;
+            this.applicationDbContext = applicationDbContext;
         }
 
 
@@ -126,7 +131,7 @@ namespace BackendComfeco.Controllers
         [HttpGet("confirmaccount")]
         public async Task<ActionResult> ConfirmAccount([FromQuery] ConfirmEmailDTO confirmEmailDTO)
         {
-            
+
             //confirmEmailDTO.Token = HttpUtility.UrlDecode(confirmEmailDTO.Token);
             //confirmEmailDTO.UserId = HttpUtility.UrlDecode(confirmEmailDTO.UserId);
 
@@ -231,6 +236,7 @@ namespace BackendComfeco.Controllers
             var user = await userManager.FindByIdAsync(confirmPasswordRecoveryDTO.UserId);
             if (user == null)
             {
+
                 return BadRequest();
             }
 
@@ -247,7 +253,7 @@ namespace BackendComfeco.Controllers
 
         }
 
-        [HttpGet("externalproviders")] 
+        [HttpGet("externalproviders")]
         public async Task<ActionResult<List<ExternalProvidersDTO>>> GetExternalProviders()
         {
             var externalProviders = await signInManager.GetExternalAuthenticationSchemesAsync();
@@ -256,13 +262,86 @@ namespace BackendComfeco.Controllers
 
         }
         [HttpGet("externallogin")]
-        public ActionResult ExternalLogin([FromQuery] ExternalLoginDTO externalLoginDTO)
+        public async Task<ActionResult> ExternalLogin([FromQuery] ExternalLoginDTO externalLoginDTO)
         {
+            
+            externalLoginDTO.SecurityKeyHash = CryptographyUtils.Base64Decode(HttpUtility.UrlDecode(externalLoginDTO.SecurityKeyHash));
+
+
+            if (!(await ReturnUrlExist(externalLoginDTO.returnUrl)))
+            {
+                return BadRequest("returnUrl no es un valor valido");
+            }
+
+
             var redirectUrl = Url.Action(nameof(ExternalLoginCallback), "Account", new { externalLoginDTO.returnUrl });
 
-            var properties = signInManager.ConfigureExternalAuthenticationProperties(externalLoginDTO.Provider, redirectUrl);
+            HttpContext.Response.Cookies.Append("security_keyhash", externalLoginDTO.SecurityKeyHash,
 
-            return Challenge(properties,externalLoginDTO.Provider);
+                     new Microsoft.AspNetCore.Http.CookieOptions()
+                     {
+                         HttpOnly = true,
+                         MaxAge = TimeSpan.FromMinutes(10),
+                         Secure = true,
+                         SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Strict
+                     });
+
+
+
+            var properties = signInManager.ConfigureExternalAuthenticationProperties(externalLoginDTO.Provider, redirectUrl, externalLoginDTO.SecurityKeyHash);
+
+
+            return Challenge(properties, externalLoginDTO.Provider);
+        }
+
+        private async Task<bool> ReturnUrlExist(string returnUrl)
+        {
+
+
+
+            return await applicationDbContext.ExternalLoginValidsRedirectUrl.AnyAsync(url => url.Url == returnUrl);
+
+        }
+
+
+
+        [HttpPost("claimexternal")]
+        public async Task<ActionResult<TokenResponse>> ClaimExternalAuthCode(AuthCodeClaimDTO authCodeClaimDTO)
+        {
+            authCodeClaimDTO.SecurityKey = CryptographyUtils.Base64Decode(authCodeClaimDTO.SecurityKey);
+
+            authCodeClaimDTO.Token = HttpUtility.UrlDecode(authCodeClaimDTO.Token);
+
+            var dbAuthCode = await applicationDbContext.UserAuthenticationCodes.FirstOrDefaultAsync(code => code.Token == authCodeClaimDTO.Token);
+
+            if(dbAuthCode == null)
+            {
+                return BadRequest();
+            }
+      
+            string md5Key = CryptographyUtils.ComputeSHA256Hash(authCodeClaimDTO.SecurityKey);
+
+            if (dbAuthCode.SecurityKey != md5Key)
+            {
+                return BadRequest();
+            }
+
+
+            var user = await applicationDbContext.Users.Where(x => x.Id == dbAuthCode.UserId).FirstOrDefaultAsync();
+
+
+
+            bool  result = await  userManager.VerifyUserTokenAsync(user, ApplicationConstants.AuthCodeTokenProviderName, ApplicationConstants.ExternalLoginTokenPurposeName,
+                authCodeClaimDTO.Token);
+
+            if (!result)
+            {
+                return BadRequest();
+            }
+
+
+            return await BuildLoginToken(user.Email, false);
+
         }
 
         [HttpGet("externallogincallback")]
@@ -270,27 +349,61 @@ namespace BackendComfeco.Controllers
         {
             var info = await signInManager.GetExternalLoginInfoAsync();
 
-            if (info == null)
+            if (info == null || (!HttpContext.Request.Cookies.ContainsKey("security_keyhash")))
             {
-                return BadRequest();
+                return BadRequest("La session ha expirado");
             }
 
-            var result = await signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, false);
+       
+            string keyHash = HttpContext.Request.Cookies["security_keyhash"];
 
+            var result = await signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, false);
+            
             if (result.Succeeded)
             {
+                
                 var userIdentifier = info.Principal.FindFirst(ClaimTypes.NameIdentifier);
                 if (userIdentifier == null)
                 {
                     return BadRequest("An unexpected error has been ocurred");
                 }
 
+
                 var user = await userManager.FindByLoginAsync(info.LoginProvider, userIdentifier.Value);
 
-                return await BuildLoginToken(user.Email, false);
+
+                var token = await userManager.GenerateUserTokenAsync(user, ApplicationConstants.AuthCodeTokenProviderName, ApplicationConstants.ExternalLoginTokenPurposeName);
+
+
+                var authenticationCode = new UserAuthenticationCode
+                {
+                    Expiration = DateTime.UtcNow.AddMinutes(5),
+                    SecurityKey=keyHash,
+                    Token=token,
+                    UserId = user.Id
+                };
+
+                applicationDbContext.Add(authenticationCode);
+                await applicationDbContext.SaveChangesAsync();
+
+                string url = $"{returnUrl}?authcode={HttpUtility.UrlEncode(token)}";
+
+                return Redirect(url);
+                
+
+            }
+            else if (result.IsNotAllowed)
+            {
+                return BadRequest("Tu cuenta no esta activada por favor verifica tu email");
+            }
+            else if (result.IsLockedOut)
+            {
+                
+                return BadRequest("Tu cuenta se encuentra bloqueada temporalmente intentalo de nuevo mas tarde");
             }
             else
             {
+                //Register
                 var email = info.Principal.FindFirst(ClaimTypes.Email);
                 if (email == null)
                 {
@@ -345,8 +458,6 @@ namespace BackendComfeco.Controllers
                     };
 
                 }
-               
-
             }
 
             return BadRequest();
