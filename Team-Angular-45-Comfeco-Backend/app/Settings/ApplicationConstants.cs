@@ -15,5 +15,10 @@
         public const string KeyHashCookieName = "SecurityKeyHash";
 
         public const string LoginFrontendDefaultEndpoint = "http://localhost:4200/auth/login";
+
+        public const string ConfirmEmailFrontendDefaultEndpoint = "http://localhost:4200/auth/confirm";
+
+        public const string PasswordRecoveryFrontendDefaultEndpoint = "http://localhost:4200/auth/recover";
+
     }
 }
