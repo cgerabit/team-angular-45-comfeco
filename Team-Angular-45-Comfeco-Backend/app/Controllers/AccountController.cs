@@ -193,8 +193,7 @@ namespace BackendComfeco.Controllers
 
                     var currentUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}";
 
-                    // En un futuro esto apuntara al front y sera el front el encargado de enviar el request
-                    string url = $"{currentUrl}/api/account/confirmaccount?UserId={HttpUtility.UrlEncode(user.Id)}&Token={HttpUtility.UrlEncode(token)}";
+                    string url = $"{ApplicationConstants.ConfirmEmailFrontendDefaultEndpoint}?UserId={HttpUtility.UrlEncode(user.Id)}&Token={HttpUtility.UrlEncode(token)}";
 
 
                     string body = System.IO.File.ReadAllText(Path.Combine(env.WebRootPath, "templates", "index.htm"));
@@ -467,12 +466,11 @@ namespace BackendComfeco.Controllers
             if (user != null)
             {
                 var token = await userManager.GeneratePasswordResetTokenAsync(user);
-                // TODO : ENLACE DE LA APP DE ANGULAR PARA RECUPERAR PASSWORD
+
                 var currentUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}";
 
-                // TODO:
-                // En un futuro esto debe apuntar al front
-                string url = $"ourcurrentfronturl/api/account/confirmrecoverypwd?UserId={HttpUtility.UrlEncode(user.Id)}&Token={HttpUtility.UrlEncode(token)}";
+
+                string url = $"{ApplicationConstants.PasswordRecoveryFrontendDefaultEndpoint}?UserId={HttpUtility.UrlEncode(user.Id)}&Token={HttpUtility.UrlEncode(token)}";
 
 
 
