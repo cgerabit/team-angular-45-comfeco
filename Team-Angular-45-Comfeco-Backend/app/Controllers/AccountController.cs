@@ -276,14 +276,14 @@ namespace BackendComfeco.Controllers
 
             var redirectUrl = Url.Action(nameof(ExternalLoginCallback), "Account", new { externalLoginDTO.returnUrl });
 
-            HttpContext.Response.Cookies.Append("security_keyhash", externalLoginDTO.SecurityKeyHash,
+            HttpContext.Response.Cookies.Append(ApplicationConstants.KeyHashCookieName, externalLoginDTO.SecurityKeyHash,
 
                      new Microsoft.AspNetCore.Http.CookieOptions()
                      {
                          HttpOnly = true,
                          MaxAge = TimeSpan.FromMinutes(10),
                          Secure = true,
-                         SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Strict
+                         SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax
                      });
 
 
@@ -310,7 +310,7 @@ namespace BackendComfeco.Controllers
         {
             authCodeClaimDTO.SecurityKey = CryptographyUtils.Base64Decode(authCodeClaimDTO.SecurityKey);
 
-            authCodeClaimDTO.Token = HttpUtility.UrlDecode(authCodeClaimDTO.Token);
+            authCodeClaimDTO.Token =authCodeClaimDTO.Token;
 
             var dbAuthCode = await applicationDbContext.UserAuthenticationCodes.FirstOrDefaultAsync(code => code.Token == authCodeClaimDTO.Token);
 
@@ -321,7 +321,7 @@ namespace BackendComfeco.Controllers
       
             string md5Key = CryptographyUtils.ComputeSHA256Hash(authCodeClaimDTO.SecurityKey);
 
-            if (dbAuthCode.SecurityKey != md5Key)
+            if (dbAuthCode.SecurityKey.ToLower() != md5Key.ToLower())
             {
                 return BadRequest();
             }
@@ -345,17 +345,18 @@ namespace BackendComfeco.Controllers
         }
 
         [HttpGet("externallogincallback")]
-        public async Task<ActionResult<TokenResponse>> ExternalLoginCallback([FromQuery]string returnUrl)
+        public async Task<ActionResult> ExternalLoginCallback([FromQuery]string returnUrl)
         {
             var info = await signInManager.GetExternalLoginInfoAsync();
 
-            if (info == null || (!HttpContext.Request.Cookies.ContainsKey("security_keyhash")))
+ 
+            if (info == null || !HttpContext.Request.Cookies.ContainsKey(ApplicationConstants.KeyHashCookieName))
             {
-                return BadRequest("La session ha expirado");
+                return Redirect($"{ApplicationConstants.LoginFrontendDefaultEndpoint}?msg=La session ha expirado por favor intentalo de nuevo");
             }
 
        
-            string keyHash = HttpContext.Request.Cookies["security_keyhash"];
+            string keyHash = HttpContext.Request.Cookies[ApplicationConstants.KeyHashCookieName];
 
             var result = await signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, false);
             
@@ -365,7 +366,7 @@ namespace BackendComfeco.Controllers
                 var userIdentifier = info.Principal.FindFirst(ClaimTypes.NameIdentifier);
                 if (userIdentifier == null)
                 {
-                    return BadRequest("An unexpected error has been ocurred");
+                    return Redirect($"{ApplicationConstants.LoginFrontendDefaultEndpoint}?msg=Ha ocurrido un error inesperado");
                 }
 
 
@@ -394,32 +395,32 @@ namespace BackendComfeco.Controllers
             }
             else if (result.IsNotAllowed)
             {
-                return BadRequest("Tu cuenta no esta activada por favor verifica tu email");
+                return Redirect($"{ApplicationConstants.LoginFrontendDefaultEndpoint}?msg=Tu cuenta no se encuentra activa aun, por favor verifica tu email");
             }
             else if (result.IsLockedOut)
             {
-                
-                return BadRequest("Tu cuenta se encuentra bloqueada temporalmente intentalo de nuevo mas tarde");
+                return Redirect($"{ApplicationConstants.LoginFrontendDefaultEndpoint}?msg=Tu cuenta se encuentra bloqueada temporalmente intentalo de nuevo mas tarde");
             }
             else
             {
+
                 //Register
                 var email = info.Principal.FindFirst(ClaimTypes.Email);
                 if (email == null)
                 {
-                    return BadRequest("An unexpected error has been ocurred");
+                    return Redirect($"{ApplicationConstants.LoginFrontendDefaultEndpoint}?msg=El proveedor de identidad no envio la informacion necesaria intentalo de nuevo");
 
                 }
                 var user = await userManager.FindByEmailAsync(email.Value);
                 if (user != null)
                 {
-                    return BadRequest("Un usuario con ese email ya esta registrado por favor inicia session y enlaza este metodo de autenticacion");
+                    return Redirect($"{ApplicationConstants.LoginFrontendDefaultEndpoint}?msg=Un usuario con ese email ya esta registrado por favor inicia session y enlaza este metodo de autenticacion");
                 }
                 string name;
                 var username = info.Principal.FindFirst(ClaimTypes.Name);
                 if (username == null)
                 {
-                    return BadRequest("An unexpected error has been ocurred");
+                    return Redirect($"{ApplicationConstants.LoginFrontendDefaultEndpoint}?msg=El proveedor de identidad no envio la informacion necesaria intentalo de nuevo");
                 }
 
                 name = username.Value.Replace(" ", "_");
@@ -447,20 +448,17 @@ namespace BackendComfeco.Controllers
                     var extLoginAdditionResult= await userManager.AddLoginAsync(nUser, info);
                     if (!extLoginAdditionResult.Succeeded)
                     {
-                        return BadRequest();
+                        return Redirect($"{ApplicationConstants.LoginFrontendDefaultEndpoint}?msg=Ha ocurrido un error inesperado");
                     }
 
                    await  SendEmailConfirmation(nUser);
 
-                    return new TokenResponse
-                    {
-                        ResponseType = "Register"
-                    };
+                   return await ExternalLoginCallback(returnUrl);
 
                 }
             }
 
-            return BadRequest();
+            return Redirect($"{ApplicationConstants.LoginFrontendDefaultEndpoint}?msg=Ha ocurrido un error inesperado");
         }
 
         private async Task SendRecoverPasswordEmail(string Email)

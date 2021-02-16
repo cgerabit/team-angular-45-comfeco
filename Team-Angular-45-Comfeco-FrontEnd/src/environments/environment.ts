@@ -4,7 +4,12 @@
 
 export const environment = {
   production: false,
-  baseUrl: "https://comfeco.cristiangerani.com/api"
+  baseUrl: "https://localhost:44389/api",
+  tokenFieldName :"access_token",
+  tokenExpirationFieldName:"token_expiration",
+  bearertokenResponseTypeName : "Bearer",
+  externalLoginEndpoint:"http://localhost:4200/auth/external-signin-callback",
+  externalLoginSecurityKeyFieldName:"securitykey"
 };
 
 /*
