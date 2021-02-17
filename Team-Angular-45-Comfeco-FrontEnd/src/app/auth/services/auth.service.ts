@@ -3,9 +3,11 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 
 import { catchError, map, tap } from 'rxjs/operators';
 import { of, Observable } from 'rxjs';
-
+import * as shajs from 'sha.js'
 import { environment } from '../../../environments/environment';
-import { AuthResponse, TokenResponse, Usuario } from '../interfaces/interfaces';
+import {  TokenResponse, Usuario } from '../interfaces/interfaces';
+import { claimAuthCodeDTO } from '../DTOs/claimAuthCodeDTO';
+import { generateRandomString } from '../../../utils/Utilities';
 
 @Injectable({
   providedIn: 'root',
@@ -14,11 +16,56 @@ export class AuthService {
   private baseUrl: String = environment.baseUrl;
   private _usuario: Usuario;
 
+ // =========================================================
+ //                          GETTERS
+// =========================================================
   get usuario() {
     return { ...this._usuario };
   }
+//TOKEN
+  private _token:string="";
+
+  get token():string{
+    if(!this._token){
+      this._token = localStorage.getItem(environment.tokenFieldName);
+    }
+    return this._token;
+  }
+
+  set token(value:string){
+    localStorage.setItem(environment.tokenFieldName,value);
+    this._token = value;
+  }
+  //TOKEN EXPIRATION
+  private _tokenExpiration:Date;
+  get tokenExpiration():Date{
+    if(!this._tokenExpiration){
+      const tokenExpirationFromStorage = localStorage.getItem(environment.tokenExpirationFieldName);
+      this._tokenExpiration= new Date(tokenExpirationFromStorage);
+    }
+    return this._tokenExpiration;
+  }
+  set tokenExpiration(value:Date){
+    localStorage.setItem(environment.tokenExpirationFieldName,value.toString());
+    this._tokenExpiration=value;
+  }
+  get isLoggedIn():boolean{
+    //TODO:
+    //chequear token con el servidor
+
+    return  this.token && !this.isTokenExpired;
+
+  }
+  get isTokenExpired():boolean {
+
+    return (this.tokenExpiration &&  new Date() >= this.tokenExpiration) || !this.tokenExpiration
+
+  }
+  //---------------------------------------- END GETTERS ----------------------------
 
   constructor(private http: HttpClient) {}
+
+
 
   register(name: string, email: string, password: string) {
     const url = `${this.baseUrl}/Account/register`;
@@ -42,42 +89,102 @@ export class AuthService {
 
     return this.http.post<TokenResponse>(url, body).pipe(
       tap((resp) => {
-        if (resp != null) {
-          if (resp.token != '')
-            localStorage.setItem('access_token', JSON.stringify(resp));
-        }
+        this.authenticateUser(resp);
+
       }),
       catchError((err: HttpErrorResponse) => of(err.error))
     );
   }
 
+  private authenticateUser ( tokenResp : TokenResponse){
 
-  validarToken(): Observable<boolean> {
-    const url = `${this.baseUrl}/auth/renew`;
-    const headers = new HttpHeaders().set(
-      'x-token',
-      localStorage.getItem('token') || ''
-    );
-    return this.http
-      .get<AuthResponse>(url, { headers })
-      .pipe(
-        map((resp) => {
-          //Establecer informacion del usuario
-          localStorage.setItem('token', resp.token);
+    debugger
+    if(!tokenResp || !tokenResp.responseType){
+      return;
+    }
 
-          this._usuario = {
-            name: resp.name,
-            uid: resp.uid,
-            email: resp.email,
-          };
+    if(tokenResp.responseType==environment.bearertokenResponseTypeName)
+    {
+      this.token= tokenResp.token;
+      this.tokenExpiration = tokenResp.expiration;
+    }
 
-          return resp.ok;
-        }),
-        catchError((err) => of(false))
-      );
   }
+
+  initLoginWithExternalProvider(providerName:string,
+    returnUrl:string=environment.externalLoginEndpoint)
+  {
+    let securityKey = generateRandomString(15);
+    // save original key
+  localStorage.setItem(environment.externalLoginSecurityKeyFieldName,securityKey);
+    // generate sha256
+    let securityKeyHash = shajs('sha256').update(securityKey).digest('hex')
+    debugger
+    let url =
+    `${this.baseUrl}/account/externallogin?SecurityKeyHash=${encodeURIComponent(btoa(securityKeyHash))}&Provider=${providerName}&returnUrl=${encodeURIComponent(returnUrl)}`
+
+
+    location.href=url;
+
+  }
+
+  claimAuthCode(authCode:string):Promise<boolean>
+  {
+      return new Promise((resolve)=>{
+
+        let securityKey = localStorage.getItem(environment.externalLoginSecurityKeyFieldName);
+        if(!securityKey || !authCode){
+           resolve(false);
+          return;
+        }
+
+        const body:claimAuthCodeDTO =
+        {
+          token:authCode,
+          securityKey:btoa(securityKey)
+        }
+        debugger
+        this.http.post<TokenResponse>(`${this.baseUrl}/account/claimexternal`,body).subscribe(resp => {
+          debugger
+          this.authenticateUser(resp);
+
+          resolve(true)
+        },() =>resolve(false))
+
+      });
+  }
+
+
 
   logout() {
-    localStorage.removeItem("access_token");
+    //TODO:
+    //ENVIAR LOGOUT AL SERVIDOR
+    localStorage.removeItem(environment.tokenFieldName);
+    localStorage.removeItem(environment.tokenExpirationFieldName);
   }
+
+  tryRenewToken():Promise<boolean>{
+    return new Promise<boolean>((resolve)=>{
+      if(!this.isLoggedIn){
+        resolve(false);
+        return;
+      }
+    let renovationTime=new Date();
+    //Si el token le quedan menos de 35 minutos de vida
+    renovationTime.setMinutes(renovationTime.getMinutes() + 35 );
+    if(renovationTime < this.tokenExpiration){
+      //No necesitamos renovar todavia
+      resolve(false);
+      return;
+    }
+      this.http.get<TokenResponse>(`${this.baseUrl}/account/refreshtoken`)
+      .subscribe(resp => {
+        this.authenticateUser(resp);
+        resolve(true);
+      },()=>{
+        this.logout();
+        resolve(false);
+      })
+    });
+}
 }

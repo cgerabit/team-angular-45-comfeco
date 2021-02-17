@@ -4,11 +4,15 @@ using BackendComfeco.DTOs.Auth;
 using BackendComfeco.DTOs.Email;
 using BackendComfeco.Helpers;
 using BackendComfeco.Models;
+using BackendComfeco.Settings;
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -37,6 +41,7 @@ namespace BackendComfeco.Controllers
         private readonly IWebHostEnvironment env;
         private readonly IConfiguration configuration;
         private readonly ThreadSafeRandom threadSafeRandom;
+        private readonly ApplicationDbContext applicationDbContext;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
@@ -45,7 +50,8 @@ namespace BackendComfeco.Controllers
             IEmailService mailService,
             IWebHostEnvironment env,
             IConfiguration configuration,
-            ThreadSafeRandom threadSafeRandom
+            ThreadSafeRandom threadSafeRandom,
+            ApplicationDbContext applicationDbContext
             )
         {
 
@@ -56,9 +62,18 @@ namespace BackendComfeco.Controllers
             this.env = env;
             this.configuration = configuration;
             this.threadSafeRandom = threadSafeRandom;
+            this.applicationDbContext = applicationDbContext;
         }
 
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet("refreshToken")]
+        public async Task<ActionResult<TokenResponse>> RefreshToken()
+        {
+            var user =await GetUserFromContext();
+
+            return await BuildLoginToken(user.Email,false);
+        }
         [HttpPost("register")]
         public async Task<ActionResult> Register(ApplicationUserCreationDTO aplicationUserCreationDTO)
         {
@@ -126,7 +141,7 @@ namespace BackendComfeco.Controllers
         [HttpGet("confirmaccount")]
         public async Task<ActionResult> ConfirmAccount([FromQuery] ConfirmEmailDTO confirmEmailDTO)
         {
-            
+
             //confirmEmailDTO.Token = HttpUtility.UrlDecode(confirmEmailDTO.Token);
             //confirmEmailDTO.UserId = HttpUtility.UrlDecode(confirmEmailDTO.UserId);
 
@@ -188,8 +203,7 @@ namespace BackendComfeco.Controllers
 
                     var currentUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}";
 
-                    // En un futuro esto apuntara al front y sera el front el encargado de enviar el request
-                    string url = $"{currentUrl}/api/account/confirmaccount?UserId={HttpUtility.UrlEncode(user.Id)}&Token={HttpUtility.UrlEncode(token)}";
+                    string url = $"{ApplicationConstants.ConfirmEmailFrontendDefaultEndpoint}?UserId={HttpUtility.UrlEncode(user.Id)}&Token={HttpUtility.UrlEncode(token)}";
 
 
                     string body = System.IO.File.ReadAllText(Path.Combine(env.WebRootPath, "templates", "index.htm"));
@@ -231,6 +245,7 @@ namespace BackendComfeco.Controllers
             var user = await userManager.FindByIdAsync(confirmPasswordRecoveryDTO.UserId);
             if (user == null)
             {
+
                 return BadRequest();
             }
 
@@ -247,7 +262,7 @@ namespace BackendComfeco.Controllers
 
         }
 
-        [HttpGet("externalproviders")] 
+        [HttpGet("externalproviders")]
         public async Task<ActionResult<List<ExternalProvidersDTO>>> GetExternalProviders()
         {
             var externalProviders = await signInManager.GetExternalAuthenticationSchemesAsync();
@@ -256,57 +271,165 @@ namespace BackendComfeco.Controllers
 
         }
         [HttpGet("externallogin")]
-        public ActionResult ExternalLogin([FromQuery] ExternalLoginDTO externalLoginDTO)
+        public async Task<ActionResult> ExternalLogin([FromQuery] ExternalLoginDTO externalLoginDTO)
         {
+            
+            externalLoginDTO.SecurityKeyHash = CryptographyUtils.Base64Decode(HttpUtility.UrlDecode(externalLoginDTO.SecurityKeyHash));
+
+
+            if (!(await ReturnUrlExist(externalLoginDTO.returnUrl)))
+            {
+                return BadRequest("returnUrl no es un valor valido");
+            }
+
+
             var redirectUrl = Url.Action(nameof(ExternalLoginCallback), "Account", new { externalLoginDTO.returnUrl });
 
-            var properties = signInManager.ConfigureExternalAuthenticationProperties(externalLoginDTO.Provider, redirectUrl);
+            HttpContext.Response.Cookies.Append(ApplicationConstants.KeyHashCookieName, externalLoginDTO.SecurityKeyHash,
 
-            return Challenge(properties,externalLoginDTO.Provider);
+                     new Microsoft.AspNetCore.Http.CookieOptions()
+                     {
+                         HttpOnly = true,
+                         MaxAge = TimeSpan.FromMinutes(10),
+                         Secure = true,
+                         SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax
+                     });
+
+
+
+            var properties = signInManager.ConfigureExternalAuthenticationProperties(externalLoginDTO.Provider, redirectUrl, externalLoginDTO.SecurityKeyHash);
+
+
+            return Challenge(properties, externalLoginDTO.Provider);
         }
 
-        [HttpGet("externallogincallback")]
-        public async Task<ActionResult<TokenResponse>> ExternalLoginCallback([FromQuery]string returnUrl)
+        private async Task<bool> ReturnUrlExist(string returnUrl)
         {
-            var info = await signInManager.GetExternalLoginInfoAsync();
 
-            if (info == null)
+
+
+            return await applicationDbContext.ExternalLoginValidsRedirectUrl.AnyAsync(url => url.Url == returnUrl);
+
+        }
+
+
+
+        [HttpPost("claimexternal")]
+        public async Task<ActionResult<TokenResponse>> ClaimExternalAuthCode(AuthCodeClaimDTO authCodeClaimDTO)
+        {
+            authCodeClaimDTO.SecurityKey = CryptographyUtils.Base64Decode(authCodeClaimDTO.SecurityKey);
+
+            authCodeClaimDTO.Token =authCodeClaimDTO.Token;
+
+            var dbAuthCode = await applicationDbContext.UserAuthenticationCodes.FirstOrDefaultAsync(code => code.Token == authCodeClaimDTO.Token);
+
+            if(dbAuthCode == null)
+            {
+                return BadRequest();
+            }
+      
+            string md5Key = CryptographyUtils.ComputeSHA256Hash(authCodeClaimDTO.SecurityKey);
+
+            if (dbAuthCode.SecurityKey.ToLower() != md5Key.ToLower())
             {
                 return BadRequest();
             }
 
-            var result = await signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, false);
 
+            var user = await applicationDbContext.Users.Where(x => x.Id == dbAuthCode.UserId).FirstOrDefaultAsync();
+
+
+
+            bool  result = await  userManager.VerifyUserTokenAsync(user, ApplicationConstants.AuthCodeTokenProviderName, ApplicationConstants.ExternalLoginTokenPurposeName,
+                authCodeClaimDTO.Token);
+
+            if (!result)
+            {
+                return BadRequest();
+            }
+
+
+            return await BuildLoginToken(user.Email, false);
+
+        }
+
+        [HttpGet("externallogincallback")]
+        public async Task<ActionResult> ExternalLoginCallback([FromQuery]string returnUrl)
+        {
+            var info = await signInManager.GetExternalLoginInfoAsync();
+
+ 
+            if (info == null || !HttpContext.Request.Cookies.ContainsKey(ApplicationConstants.KeyHashCookieName))
+            {
+                return Redirect($"{ApplicationConstants.LoginFrontendDefaultEndpoint}?msg=La session ha expirado por favor intentalo de nuevo");
+            }
+
+       
+            string keyHash = HttpContext.Request.Cookies[ApplicationConstants.KeyHashCookieName];
+
+            var result = await signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, false);
+            
             if (result.Succeeded)
             {
+                
                 var userIdentifier = info.Principal.FindFirst(ClaimTypes.NameIdentifier);
                 if (userIdentifier == null)
                 {
-                    return BadRequest("An unexpected error has been ocurred");
+                    return Redirect($"{ApplicationConstants.LoginFrontendDefaultEndpoint}?msg=Ha ocurrido un error inesperado");
                 }
+
 
                 var user = await userManager.FindByLoginAsync(info.LoginProvider, userIdentifier.Value);
 
-                return await BuildLoginToken(user.Email, false);
+
+                var token = await userManager.GenerateUserTokenAsync(user, ApplicationConstants.AuthCodeTokenProviderName, ApplicationConstants.ExternalLoginTokenPurposeName);
+
+
+                var authenticationCode = new UserAuthenticationCode
+                {
+                    Expiration = DateTime.UtcNow.AddMinutes(5),
+                    SecurityKey=keyHash,
+                    Token=token,
+                    UserId = user.Id
+                };
+
+                applicationDbContext.Add(authenticationCode);
+                await applicationDbContext.SaveChangesAsync();
+
+                string url = $"{returnUrl}?authcode={HttpUtility.UrlEncode(token)}";
+
+                return Redirect(url);
+                
+
+            }
+            else if (result.IsNotAllowed)
+            {
+                return Redirect($"{ApplicationConstants.LoginFrontendDefaultEndpoint}?msg=Tu cuenta no se encuentra activa aun, por favor verifica tu email");
+            }
+            else if (result.IsLockedOut)
+            {
+                return Redirect($"{ApplicationConstants.LoginFrontendDefaultEndpoint}?msg=Tu cuenta se encuentra bloqueada temporalmente intentalo de nuevo mas tarde");
             }
             else
             {
+
+                //Register
                 var email = info.Principal.FindFirst(ClaimTypes.Email);
                 if (email == null)
                 {
-                    return BadRequest("An unexpected error has been ocurred");
+                    return Redirect($"{ApplicationConstants.LoginFrontendDefaultEndpoint}?msg=El proveedor de identidad no envio la informacion necesaria intentalo de nuevo");
 
                 }
                 var user = await userManager.FindByEmailAsync(email.Value);
                 if (user != null)
                 {
-                    return BadRequest("Un usuario con ese email ya esta registrado por favor inicia session y enlaza este metodo de autenticacion");
+                    return Redirect($"{ApplicationConstants.LoginFrontendDefaultEndpoint}?msg=Un usuario con ese email ya esta registrado por favor inicia session y enlaza este metodo de autenticacion");
                 }
                 string name;
                 var username = info.Principal.FindFirst(ClaimTypes.Name);
                 if (username == null)
                 {
-                    return BadRequest("An unexpected error has been ocurred");
+                    return Redirect($"{ApplicationConstants.LoginFrontendDefaultEndpoint}?msg=El proveedor de identidad no envio la informacion necesaria intentalo de nuevo");
                 }
 
                 name = username.Value.Replace(" ", "_");
@@ -334,22 +457,17 @@ namespace BackendComfeco.Controllers
                     var extLoginAdditionResult= await userManager.AddLoginAsync(nUser, info);
                     if (!extLoginAdditionResult.Succeeded)
                     {
-                        return BadRequest();
+                        return Redirect($"{ApplicationConstants.LoginFrontendDefaultEndpoint}?msg=Ha ocurrido un error inesperado");
                     }
 
                    await  SendEmailConfirmation(nUser);
 
-                    return new TokenResponse
-                    {
-                        ResponseType = "Register"
-                    };
+                   return await ExternalLoginCallback(returnUrl);
 
                 }
-               
-
             }
 
-            return BadRequest();
+            return Redirect($"{ApplicationConstants.LoginFrontendDefaultEndpoint}?msg=Ha ocurrido un error inesperado");
         }
 
         private async Task SendRecoverPasswordEmail(string Email)
@@ -358,12 +476,11 @@ namespace BackendComfeco.Controllers
             if (user != null)
             {
                 var token = await userManager.GeneratePasswordResetTokenAsync(user);
-                // TODO : ENLACE DE LA APP DE ANGULAR PARA RECUPERAR PASSWORD
+
                 var currentUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}";
 
-                // TODO:
-                // En un futuro esto debe apuntar al front
-                string url = $"ourcurrentfronturl/api/account/confirmrecoverypwd?UserId={HttpUtility.UrlEncode(user.Id)}&Token={HttpUtility.UrlEncode(token)}";
+
+                string url = $"{ApplicationConstants.PasswordRecoveryFrontendDefaultEndpoint}?UserId={HttpUtility.UrlEncode(user.Id)}&Token={HttpUtility.UrlEncode(token)}";
 
 
 
@@ -418,6 +535,27 @@ namespace BackendComfeco.Controllers
                 Token = new JwtSecurityTokenHandler().WriteToken(token),
                 Expiration = expiration
             };
+        }
+
+        private async Task<ApplicationUser> GetUserFromContext()
+        {
+            if (!HttpContext.User.Identity.IsAuthenticated)
+            {
+                return null;
+
+            }
+
+            string email = HttpContext.User.Identity.Name;
+
+            if (string.IsNullOrEmpty(email))
+            {
+                return null;
+            }
+
+            var user = await userManager.FindByEmailAsync(email);
+
+            return user;
+
         }
 
 

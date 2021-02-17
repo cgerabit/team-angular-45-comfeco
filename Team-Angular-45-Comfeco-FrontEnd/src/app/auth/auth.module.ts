@@ -8,6 +8,7 @@ import { RegisterComponent } from './pages/register/register.component';
 import { MainComponent } from './pages/main/main.component';
 import { RecoverComponent } from './pages/recover/recover.component';
 import { TermsComponent } from './pages/terms/terms.component';
+import { ExternalSigninCallbackComponent } from './external-signin-callback/external-signin-callback.component';
 
 
 
@@ -17,7 +18,8 @@ import { TermsComponent } from './pages/terms/terms.component';
     RegisterComponent,
     MainComponent,
     RecoverComponent,
-    TermsComponent
+    TermsComponent,
+    ExternalSigninCallbackComponent
   ],
   imports: [
     CommonModule,
