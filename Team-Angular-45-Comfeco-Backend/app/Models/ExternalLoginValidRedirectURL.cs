@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace BackendComfeco.Models
+﻿namespace BackendComfeco.Models
 {
-    public class ExternalLoginValidRedirectURL
+    public class ExternalLoginValidRedirectUrl : ValidRedirectUrl
     {
-        public int Id { get; set; }
-        public string Url { get; set; }
+
     }
 }

@@ -17,7 +17,7 @@ export class LoginComponent implements OnInit {
   miFormulario: FormGroup = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
-    remember: [],
+    remember: [false],
   });
 
   constructor(
@@ -83,7 +83,7 @@ export class LoginComponent implements OnInit {
   loginWithExternalProvider(providerName:string){
 
     this.authService.initLoginWithExternalProvider(providerName);
-    
+
   }
 
 }

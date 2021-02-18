@@ -2,13 +2,9 @@
 
 namespace BackendComfeco.DTOs.Auth
 {
-    public class ExternalLoginDTO
+    public class ExternalLoginDTO :BaseRedirectLoginDTO
     {
         [Required]
         public string Provider { get; set; }
-        [Required]
-        public string returnUrl { get; set; }
-        [Required]
-        public string SecurityKeyHash { get; set; }
     }
 }

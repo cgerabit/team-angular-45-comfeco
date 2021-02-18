@@ -5,7 +5,8 @@ import { RegisterComponent } from './pages/register/register.component';
 import { AuthLayoutComponent } from '../layouts/auth-layout/auth-layout.component';
 import { RecoverComponent } from './pages/recover/recover.component';
 import { TermsComponent } from './pages/terms/terms.component';
-import { ExternalSigninCallbackComponent } from './external-signin-callback/external-signin-callback.component';
+import { ExternalSigninCallbackComponent } from './pages/external-signin-callback/external-signin-callback.component';
+import { PersistentSigninCallbackComponent } from './pages/persistent-signin-callback/persistent-signin-callback.component';
 
 const routes: Routes = [
 
@@ -18,6 +19,7 @@ const routes: Routes = [
       { path: 'recover', component: RecoverComponent},
       { path: 'terms', component: TermsComponent},
       {path:'external-signin-callback',component:ExternalSigninCallbackComponent},
+      {path:'persistent-signin-callback',component:PersistentSigninCallbackComponent},
       { path: '**', redirectTo: 'login'}
     ]
   }

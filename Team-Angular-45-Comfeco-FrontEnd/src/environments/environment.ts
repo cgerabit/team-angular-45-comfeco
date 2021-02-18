@@ -4,12 +4,17 @@
 
 export const environment = {
   production: false,
-  baseUrl: "https://comfeco.cristiangerani.com/api",
+  baseUrl: "https://localhost:44389/api",
   tokenFieldName :"access_token",
   tokenExpirationFieldName:"token_expiration",
   bearertokenResponseTypeName : "Bearer",
   externalLoginEndpoint:"http://localhost:4200/auth/external-signin-callback",
-  externalLoginSecurityKeyFieldName:"securitykey"
+  persistLoginEndpoint:"http://localhost:4200/auth/persistent-signin-callback",
+  redirectionLoginSecurityKeyFieldName:"securitykey",
+  isPersistentKeyFieldName:"isPersistent",
+  externalLoginTokenPurposeName:"External-Auth-Code",
+  persistentLoginTokenPurposeName:"Persistent-Auth-Code",
+
 };
 
 /*
