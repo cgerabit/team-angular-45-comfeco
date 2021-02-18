@@ -54,6 +54,10 @@ namespace BackendComfeco.Helpers
             {
                 recollectionSemaphore.Release();
             }
+            if (processingRequest==null || processingRequest.Count == 0)
+            {
+                return;
+            }
 
             using var smtp = new SmtpClient();
             try

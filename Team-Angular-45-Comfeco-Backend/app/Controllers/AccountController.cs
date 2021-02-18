@@ -6,12 +6,17 @@ using BackendComfeco.Helpers;
 using BackendComfeco.Models;
 using BackendComfeco.Settings;
 
+<<<<<<< Updated upstream
+=======
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+>>>>>>> Stashed changes
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
@@ -64,6 +69,80 @@ namespace BackendComfeco.Controllers
         }
 
 
+<<<<<<< Updated upstream
+=======
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet("refreshToken")]
+        public async Task<ActionResult<TokenResponse>> RefreshToken()
+        {
+            var user = await GetUserFromContext();
+
+            if (user == null) { return Unauthorized(); }
+
+            return await BuildLoginToken(user.Email, false);
+        }
+
+
+        [Authorize(AuthenticationSchemes = ApplicationConstants.PersistLoginSchemeName)]
+        [HttpGet("havepersistlogin")]
+        public ActionResult IsPersistent()
+        {
+            return Ok();
+        }
+
+        [HttpGet("logout")]
+        public async Task Logout()
+        {
+            await HttpContext.SignOutAsync(ApplicationConstants.PersistLoginSchemeName);
+        }
+
+        [Authorize(AuthenticationSchemes = ApplicationConstants.PersistLoginSchemeName)]
+        [HttpGet("persistLogin")]
+        public async Task<ActionResult> PersistLogin([FromQuery] LoginWithPersistDTO loginWithPersistDTO)
+        {
+            var user = await GetUserFromContext();
+            if (user == null) { return RedirectToAction(nameof(RedirectToLogin)); }
+
+            loginWithPersistDTO.SecurityKeyHash = CryptographyUtils.Base64Decode(HttpUtility.UrlDecode(loginWithPersistDTO.SecurityKeyHash));
+
+            if (!(await PersistentRedirectUrlExist(loginWithPersistDTO.returnUrl)))
+            {
+                return BadRequest("returnUrl no es un valor valido");
+            }
+            var token = await userManager.GenerateUserTokenAsync(user, ApplicationConstants.AuthCodeTokenProviderName, ApplicationConstants.PersistentLoginTokenPurposeName);
+
+            var authenticationCode = new UserAuthenticationCode
+            {
+                Expiration = DateTime.UtcNow.AddMinutes(5),
+                SecurityKey = loginWithPersistDTO.SecurityKeyHash,
+                Token = token,
+                UserId = user.Id
+            };
+
+            applicationDbContext.Add(authenticationCode);
+
+            await applicationDbContext.SaveChangesAsync();
+
+
+            string url = $"{loginWithPersistDTO.returnUrl}?authcode={HttpUtility.UrlEncode(token)}";
+
+            if (!string.IsNullOrEmpty(loginWithPersistDTO.InternalUrl))
+            {
+                url += $"&internalUrl={HttpUtility.UrlEncode(loginWithPersistDTO.InternalUrl)}";
+            }
+
+            return Redirect(url);
+
+
+        }
+
+        [HttpGet("redirectToLogin")]
+        public ActionResult RedirectToLogin()
+        {
+            return Redirect(ApplicationConstants.LoginFrontendDefaultEndpoint);
+        }
+
+>>>>>>> Stashed changes
         [HttpPost("register")]
         public async Task<ActionResult> Register(ApplicationUserCreationDTO aplicationUserCreationDTO)
         {
@@ -93,7 +172,7 @@ namespace BackendComfeco.Controllers
         public async Task<ActionResult<TokenResponse>> Login(LoginDTO loginDTO)
         {
             ApplicationUser user = await (loginDTO.IsEmail ? userManager.FindByEmailAsync(loginDTO.UserName) : userManager.FindByNameAsync(loginDTO.UserName));
-
+               
             if (user == null)
             {
 
@@ -101,7 +180,7 @@ namespace BackendComfeco.Controllers
             }
 
 
-            var result = await signInManager.PasswordSignInAsync(user, loginDTO.Password, false, true);
+            var result = await signInManager.PasswordSignInAsync(user, loginDTO.Password, loginDTO.PersistLogin, true);
             if (result.IsLockedOut)
             {
                 return BadRequest("Your account is locked");
@@ -113,7 +192,22 @@ namespace BackendComfeco.Controllers
             }
             else if (result.Succeeded)
             {
+                if (loginDTO.PersistLogin)
+                {
+                    var principal = await signInManager.CreateUserPrincipalAsync(user);
+
+
+                    var properties = new AuthenticationProperties
+                    {
+                        IsPersistent = true
+                    };
+                    await HttpContext.SignInAsync(ApplicationConstants.PersistLoginSchemeName, principal, properties);
+
+                }
+
                 return await BuildLoginToken(user.Email, loginDTO.PersistLogin);
+
+
             }
 
             if (!user.EmailConfirmed)
@@ -176,6 +270,7 @@ namespace BackendComfeco.Controllers
             }
 
             var roles = await userManager.GetRolesAsync(user);
+
 
             var userInfo = mapper.Map<UserInfo>(user);
 
@@ -263,16 +358,12 @@ namespace BackendComfeco.Controllers
         [HttpGet("externallogin")]
         public async Task<ActionResult> ExternalLogin([FromQuery] ExternalLoginDTO externalLoginDTO)
         {
-            
+
             externalLoginDTO.SecurityKeyHash = CryptographyUtils.Base64Decode(HttpUtility.UrlDecode(externalLoginDTO.SecurityKeyHash));
-
-
-            if (!(await ReturnUrlExist(externalLoginDTO.returnUrl)))
+            if (!(await ExternalRedirectUrlExist(externalLoginDTO.returnUrl)))
             {
                 return BadRequest("returnUrl no es un valor valido");
             }
-
-
             var redirectUrl = Url.Action(nameof(ExternalLoginCallback), "Account", new { externalLoginDTO.returnUrl });
 
             HttpContext.Response.Cookies.Append(ApplicationConstants.KeyHashCookieName, externalLoginDTO.SecurityKeyHash,
@@ -293,31 +384,28 @@ namespace BackendComfeco.Controllers
             return Challenge(properties, externalLoginDTO.Provider);
         }
 
-        private async Task<bool> ReturnUrlExist(string returnUrl)
-        {
+        private async Task<bool> ExternalRedirectUrlExist(string returnUrl) =>
+            await applicationDbContext.ExternalLoginValidRedirectUrls.AnyAsync(url => url.Url == returnUrl);
+
+        private async Task<bool> PersistentRedirectUrlExist(string returnUrl) =>
+            await applicationDbContext.PersistentLoginValidRedirectUrls.AnyAsync(url => url.Url == returnUrl);
 
 
 
-            return await applicationDbContext.ExternalLoginValidsRedirectUrl.AnyAsync(url => url.Url == returnUrl);
-
-        }
 
 
-
-        [HttpPost("claimexternal")]
-        public async Task<ActionResult<TokenResponse>> ClaimExternalAuthCode(AuthCodeClaimDTO authCodeClaimDTO)
+        [HttpPost("claimauthcode")]
+        public async Task<ActionResult<TokenResponse>> ClaimAuthCode(AuthCodeClaimDTO authCodeClaimDTO)
         {
             authCodeClaimDTO.SecurityKey = CryptographyUtils.Base64Decode(authCodeClaimDTO.SecurityKey);
 
-            authCodeClaimDTO.Token =authCodeClaimDTO.Token;
-
             var dbAuthCode = await applicationDbContext.UserAuthenticationCodes.FirstOrDefaultAsync(code => code.Token == authCodeClaimDTO.Token);
 
-            if(dbAuthCode == null)
+            if (dbAuthCode == null)
             {
                 return BadRequest();
             }
-      
+
             string md5Key = CryptographyUtils.ComputeSHA256Hash(authCodeClaimDTO.SecurityKey);
 
             if (dbAuthCode.SecurityKey.ToLower() != md5Key.ToLower())
@@ -328,9 +416,18 @@ namespace BackendComfeco.Controllers
 
             var user = await applicationDbContext.Users.Where(x => x.Id == dbAuthCode.UserId).FirstOrDefaultAsync();
 
+            string purpose = authCodeClaimDTO.Purpose == ApplicationConstants.ExternalLoginTokenPurposeName ?
+                ApplicationConstants.ExternalLoginTokenPurposeName : authCodeClaimDTO.Purpose == ApplicationConstants.PersistentLoginTokenPurposeName ?
+                ApplicationConstants.PersistentLoginTokenPurposeName : string.Empty;
+
+            if (string.IsNullOrEmpty(purpose))
+            {
+                return BadRequest("Proposito incorrecto");
+            }
 
 
-            bool  result = await  userManager.VerifyUserTokenAsync(user, ApplicationConstants.AuthCodeTokenProviderName, ApplicationConstants.ExternalLoginTokenPurposeName,
+
+            bool result = await userManager.VerifyUserTokenAsync(user, ApplicationConstants.AuthCodeTokenProviderName, purpose,
                 authCodeClaimDTO.Token);
 
             if (!result)
@@ -339,29 +436,29 @@ namespace BackendComfeco.Controllers
             }
 
 
-            return await BuildLoginToken(user.Email, false);
+            return await BuildLoginToken(user.Email, authCodeClaimDTO.Purpose == ApplicationConstants.PersistentLoginTokenPurposeName);
 
         }
 
         [HttpGet("externallogincallback")]
-        public async Task<ActionResult> ExternalLoginCallback([FromQuery]string returnUrl)
+        public async Task<ActionResult> ExternalLoginCallback([FromQuery] string returnUrl)
         {
             var info = await signInManager.GetExternalLoginInfoAsync();
 
- 
+
             if (info == null || !HttpContext.Request.Cookies.ContainsKey(ApplicationConstants.KeyHashCookieName))
             {
                 return Redirect($"{ApplicationConstants.LoginFrontendDefaultEndpoint}?msg=La session ha expirado por favor intentalo de nuevo");
             }
 
-       
+
             string keyHash = HttpContext.Request.Cookies[ApplicationConstants.KeyHashCookieName];
 
             var result = await signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, false);
-            
+
             if (result.Succeeded)
             {
-                
+
                 var userIdentifier = info.Principal.FindFirst(ClaimTypes.NameIdentifier);
                 if (userIdentifier == null)
                 {
@@ -378,8 +475,8 @@ namespace BackendComfeco.Controllers
                 var authenticationCode = new UserAuthenticationCode
                 {
                     Expiration = DateTime.UtcNow.AddMinutes(5),
-                    SecurityKey=keyHash,
-                    Token=token,
+                    SecurityKey = keyHash,
+                    Token = token,
                     UserId = user.Id
                 };
 
@@ -389,7 +486,7 @@ namespace BackendComfeco.Controllers
                 string url = $"{returnUrl}?authcode={HttpUtility.UrlEncode(token)}";
 
                 return Redirect(url);
-                
+
 
             }
             else if (result.IsNotAllowed)
@@ -444,15 +541,15 @@ namespace BackendComfeco.Controllers
                 if (creationResult.Succeeded)
                 {
 
-                    var extLoginAdditionResult= await userManager.AddLoginAsync(nUser, info);
+                    var extLoginAdditionResult = await userManager.AddLoginAsync(nUser, info);
                     if (!extLoginAdditionResult.Succeeded)
                     {
                         return Redirect($"{ApplicationConstants.LoginFrontendDefaultEndpoint}?msg=Ha ocurrido un error inesperado");
                     }
 
-                   await  SendEmailConfirmation(nUser);
+                    await SendEmailConfirmation(nUser);
 
-                   return await ExternalLoginCallback(returnUrl);
+                    return await ExternalLoginCallback(returnUrl);
 
                 }
             }
@@ -494,12 +591,13 @@ namespace BackendComfeco.Controllers
 
         private TokenResponse BuildToken(UserInfo userInfo, IList<string> roles, bool persistLogin)
         {
+            //Basic claims
             var claims = new List<Claim>()
             {
-               new Claim(JwtRegisteredClaimNames.UniqueName, userInfo.Email),
-               new Claim(ClaimTypes.Name, userInfo.Email),
-               new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-               new Claim(JwtRegisteredClaimNames.Sub,userInfo.UserId)
+               new Claim(JwtRegisteredClaimNames.UniqueName, userInfo.UserName),
+               new Claim(ClaimTypes.Name, userInfo.UserName),
+               new Claim(ClaimTypes.Email,userInfo.Email),
+               new Claim(ClaimTypes.NameIdentifier,userInfo.UserId)
             };
 
             foreach (var rol in roles)
@@ -511,7 +609,7 @@ namespace BackendComfeco.Controllers
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             // Si necesitamos mantener al usuario logueado generamos un token con 3 dias de antiguedad, 
-            var expiration = persistLogin ? DateTime.UtcNow.AddDays(3) : DateTime.UtcNow.AddMinutes(60);
+            var expiration = DateTime.UtcNow.AddMinutes(60);
 
             JwtSecurityToken token = new JwtSecurityToken(
                issuer: null,
@@ -523,10 +621,35 @@ namespace BackendComfeco.Controllers
             return new TokenResponse()
             {
                 Token = new JwtSecurityTokenHandler().WriteToken(token),
-                Expiration = expiration
+                Expiration = expiration,
+                IsPersistent = persistLogin
             };
         }
 
+<<<<<<< Updated upstream
+=======
+        private async Task<ApplicationUser> GetUserFromContext()
+        {
+            if (!HttpContext.User.Identity.IsAuthenticated)
+            {
+                return null;
+
+            }
+
+            string email = HttpContext.User.Identity.Name;
+
+            if (string.IsNullOrEmpty(email))
+            {
+                return null;
+            }
+
+            var user = await userManager.FindByNameAsync(email);
+
+            return user;
+
+        }
+
+>>>>>>> Stashed changes
 
 
     }

@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute} from '@angular/router';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../../services/auth.service';
+import { environment } from '../../../../environments/environment';
 @Component({
   selector: 'app-external-signin-callback',
-  templateUrl: './external-signin-callback.component.html',
-  styleUrls: ['./external-signin-callback.component.css']
+  template:''
 })
 export class ExternalSigninCallbackComponent implements OnInit {
 
@@ -21,15 +21,13 @@ export class ExternalSigninCallbackComponent implements OnInit {
           return;
 
         }
-        this.authService.claimAuthCode(params.authcode).then(result=> {
+        this.authService.claimAuthCode(params.authcode,environment.externalLoginTokenPurposeName).then(result=> {
 
           if(!result){
             this.router.navigate(['/auth','login']);
             return;
           }
-          debugger
           this.router.navigate(['/protected']);
-
         });
 
     })

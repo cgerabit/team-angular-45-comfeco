@@ -8,7 +8,8 @@ import { RegisterComponent } from './pages/register/register.component';
 import { MainComponent } from './pages/main/main.component';
 import { RecoverComponent } from './pages/recover/recover.component';
 import { TermsComponent } from './pages/terms/terms.component';
-import { ExternalSigninCallbackComponent } from './external-signin-callback/external-signin-callback.component';
+import { ExternalSigninCallbackComponent } from './pages/external-signin-callback/external-signin-callback.component';
+import { PersistentSigninCallbackComponent } from './pages/persistent-signin-callback/persistent-signin-callback.component';
 
 
 
@@ -19,7 +20,8 @@ import { ExternalSigninCallbackComponent } from './external-signin-callback/exte
     MainComponent,
     RecoverComponent,
     TermsComponent,
-    ExternalSigninCallbackComponent
+    ExternalSigninCallbackComponent,
+    PersistentSigninCallbackComponent
   ],
   imports: [
     CommonModule,

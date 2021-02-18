@@ -8,5 +8,7 @@ namespace BackendComfeco.DTOs.Auth
         public string Token { get; set; }
 
         public string ResponseType { get; set; } = "Bearer";
+
+        public bool IsPersistent { get; set; } = false;
     }
 }

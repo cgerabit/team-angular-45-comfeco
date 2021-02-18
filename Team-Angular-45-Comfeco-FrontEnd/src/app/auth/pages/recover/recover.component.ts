@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 import Swal from 'sweetalert2';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-recover',
@@ -20,7 +21,9 @@ export class RecoverComponent implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private authService: AuthService
-  ) { }
+  ) {
+
+  }
 
   ngOnInit(): void {
   }

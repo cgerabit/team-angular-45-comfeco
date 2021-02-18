@@ -9,4 +9,5 @@ export interface TokenResponse {
   expiration?: Date;
   token?: string;
   responseType?: string;
+  isPersistent:boolean;
 }

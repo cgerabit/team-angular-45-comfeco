@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -62,6 +63,12 @@ namespace BackendComfeco
                 {
                     config.ClientId = Configuration["googleauth:clientid"];
                     config.ClientSecret = Configuration["googleauth:clientsecret"];
+                }).AddCookie(ApplicationConstants.PersistLoginSchemeName,options=>
+                {
+                    options.Cookie.Name = ApplicationConstants.PersistLoginCookieName;
+                    options.LoginPath = "/api/account/redirecttologin";
+                    options.AccessDeniedPath = "/api/account/redirecttologin";
+                    
                 });
 
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
@@ -69,6 +76,7 @@ namespace BackendComfeco
                 options.SignIn.RequireConfirmedEmail = false;
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
                 options.User.RequireUniqueEmail = true;
+                
                 
 
             })
@@ -93,9 +101,10 @@ namespace BackendComfeco
             {
                 options.AddPolicy(ApplicationConstants.DevelopmentPolicyName,
                     new CorsPolicyBuilder()
-                    .AllowAnyOrigin()
+                    .WithOrigins("http://localhost:4200","https://localhost:4200")
                     .AllowAnyHeader()
                     .AllowAnyMethod()
+                    .AllowCredentials()
                     .Build());
 
 
