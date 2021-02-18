@@ -226,8 +226,7 @@ export class AuthService {
     //eliminar persistent login
     this.http.get(`${this.baseUrl}/account/logout`,{withCredentials:true}).subscribe(()=>{},()=>{});
   }
-<<<<<<< Updated upstream
-=======
+
 
   tryRenewToken(): Promise<boolean> {
     return new Promise<boolean>((resolve) => {
@@ -257,5 +256,6 @@ export class AuthService {
         );
     });
   }
->>>>>>> Stashed changes
+
+
 }

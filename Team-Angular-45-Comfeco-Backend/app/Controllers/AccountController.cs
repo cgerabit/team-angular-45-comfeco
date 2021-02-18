@@ -6,12 +6,11 @@ using BackendComfeco.Helpers;
 using BackendComfeco.Models;
 using BackendComfeco.Settings;
 
-<<<<<<< Updated upstream
-=======
+
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
->>>>>>> Stashed changes
+
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -69,12 +68,12 @@ namespace BackendComfeco.Controllers
         }
 
 
-<<<<<<< Updated upstream
-=======
+
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("refreshToken")]
         public async Task<ActionResult<TokenResponse>> RefreshToken()
         {
+
             var user = await GetUserFromContext();
 
             if (user == null) { return Unauthorized(); }
@@ -142,7 +141,7 @@ namespace BackendComfeco.Controllers
             return Redirect(ApplicationConstants.LoginFrontendDefaultEndpoint);
         }
 
->>>>>>> Stashed changes
+
         [HttpPost("register")]
         public async Task<ActionResult> Register(ApplicationUserCreationDTO aplicationUserCreationDTO)
         {
@@ -626,8 +625,7 @@ namespace BackendComfeco.Controllers
             };
         }
 
-<<<<<<< Updated upstream
-=======
+
         private async Task<ApplicationUser> GetUserFromContext()
         {
             if (!HttpContext.User.Identity.IsAuthenticated)
@@ -643,13 +641,15 @@ namespace BackendComfeco.Controllers
                 return null;
             }
 
+
             var user = await userManager.FindByNameAsync(email);
+
 
             return user;
 
         }
 
->>>>>>> Stashed changes
+
 
 
     }
