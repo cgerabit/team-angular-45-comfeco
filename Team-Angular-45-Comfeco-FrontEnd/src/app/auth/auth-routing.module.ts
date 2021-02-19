@@ -17,6 +17,7 @@ const routes: Routes = [
       { path: 'login', component: LoginComponent},
       { path: 'registro', component: RegisterComponent},
       { path: 'recover', component: RecoverComponent},
+//      { path: 'recover/:userid/:token', component: RecoverComponent},
       { path: 'terms', component: TermsComponent},
       {path:'external-signin-callback',component:ExternalSigninCallbackComponent},
       {path:'persistent-signin-callback',component:PersistentSigninCallbackComponent},
