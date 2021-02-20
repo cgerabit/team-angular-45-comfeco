@@ -227,22 +227,23 @@ namespace BackendComfeco.Controllers
 
             //confirmEmailDTO.Token = HttpUtility.UrlDecode(confirmEmailDTO.Token);
             //confirmEmailDTO.UserId = HttpUtility.UrlDecode(confirmEmailDTO.UserId);
+            var badResult = Redirect($"{ApplicationConstants.LoginFrontendDefaultEndpoint}?msg=El enlace es incorrecto o ha expirado");
 
             var user = await userManager.FindByIdAsync(confirmEmailDTO.UserId);
             if (user == null)
             {
-                return BadRequest("El enlace es incorrecto");
+                return badResult;
             }
 
             var result = await userManager.ConfirmEmailAsync(user, confirmEmailDTO.Token);
 
             if (result.Succeeded)
             {
-                return Ok("Account confirmed");
+                return Redirect($"{ApplicationConstants.LoginFrontendDefaultEndpoint}?msg=Tu cuenta ha sido confirmada exitosamente, ya puedes iniciar sesion");
             }
             else
             {
-                return BadRequest();
+                return badResult;
             }
 
         }
@@ -287,7 +288,7 @@ namespace BackendComfeco.Controllers
 
                     var currentUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}";
 
-                    string url = $"{ApplicationConstants.ConfirmEmailFrontendDefaultEndpoint}?UserId={HttpUtility.UrlEncode(user.Id)}&Token={HttpUtility.UrlEncode(token)}";
+                      string url = $"{currentUrl}/api/account/confirmaccount?UserId={HttpUtility.UrlEncode(user.Id)}&Token={HttpUtility.UrlEncode(token)}";
 
 
                     string body = System.IO.File.ReadAllText(Path.Combine(env.WebRootPath, "templates", "index.htm"));
