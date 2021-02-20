@@ -11,12 +11,16 @@ import * as shajs from 'sha.js';
 import { environment } from '../../../environments/environment';
 import { TokenResponse, Usuario } from '../interfaces/interfaces';
 import { claimAuthCodeDTO } from '../DTOs/claimAuthCodeDTO';
+
 import {
   generateRandomString,
   setOrDeleteFromStorage,
 } from '../../../utils/Utilities';
 import { userInfo } from '../interfaces/userInfo';
 import { Router } from '@angular/router';
+
+import { identifierModuleUrl } from '@angular/compiler';
+
 
 @Injectable({
   providedIn: 'root',
@@ -157,6 +161,38 @@ export class AuthService {
       }),
       catchError((err) => of(err.error))
     );
+  }
+
+  recover(email: string){
+    const url = `${this.baseUrl}/Account/sendrecoverpwd`;
+    const body = {
+      email: email
+    }
+    return this.http.post<any>(url, body).pipe(
+      tap( (resp) => { 
+        console.log("FROM SERVICE", resp)
+      }),
+      catchError((err: HttpErrorResponse) => of(err.error))
+    );
+
+  }
+  
+  cambiarClave(user_id: string, token: string, nueva_clave: string){
+    const url = `${this.baseUrl}/Account/confirmrecoverpwd`;
+    const body = {
+      userId: user_id,
+      token: `${encodeURIComponent(token)}`,
+      password: nueva_clave
+    }
+
+    return this.http.post<any>(url, body).pipe(
+      tap( (resp) => { 
+        console.log("FROM SERVICE", resp)
+      }),
+      catchError((err: HttpErrorResponse) => of(err.error))
+    );
+
+
   }
 
   login(email: string, password: string, persistLogin: boolean) {
