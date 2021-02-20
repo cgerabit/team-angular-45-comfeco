@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 import Swal from 'sweetalert2';
@@ -24,7 +24,8 @@ export class LoginComponent implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private authService: AuthService,
-    private localService: LocalService
+    private localService: LocalService,
+    private activatedRoute:ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -33,7 +34,15 @@ export class LoginComponent implements OnInit {
     if( userdata){
       this.miFormulario.reset({remember: true, email: userdata.email ,password: userdata.password })
     }
+    this.activatedRoute.queryParams.subscribe(params => {
+      if(params.msg){
+        Swal.fire(params.msg, "" ,"info")
+      }
+
+    });
   }
+
+
 
   //validaciones
   get correoNoValido(){
