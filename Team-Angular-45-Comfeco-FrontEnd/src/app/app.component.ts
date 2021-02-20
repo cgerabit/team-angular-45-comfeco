@@ -1,13 +1,14 @@
-import { AfterViewInit, Component, OnDestroy } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { textChangeRangeIsUnchanged } from 'typescript';
 import { AuthService } from './auth/services/auth.service';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnDestroy, AfterViewInit  {
+export class AppComponent implements OnDestroy,  AfterViewInit  {
 
 
   private renovationTokenInterval;
@@ -17,18 +18,22 @@ export class AppComponent implements OnDestroy, AfterViewInit  {
 constructor(private authService:AuthService) {
 
 }
-  ngAfterViewInit(): void {
 
+  ngOnDestroy(): void {
+   if(this.renovationTokenInterval){
+     clearInterval(this.renovationTokenInterval);
+   }
+  }
+
+  ngAfterViewInit():void{
+
+    this.authService.checkSessionRecover(location.pathname);
     this.renovationTokenInterval = setInterval(()=>{
 
       this.authService.tryRenewToken().then(result => console.log(result));
 
     },300000)
   }
-  ngOnDestroy(): void {
-   if(this.renovationTokenInterval){
-     clearInterval(this.renovationTokenInterval);
-   }
-  }
+
   title = 'authApp';
 }

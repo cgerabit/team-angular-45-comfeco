@@ -49,3 +49,18 @@ export function generateRandomInteger(min:number, max:number)
 {
   return Math.floor(Math.random() * (max - min) ) + min;
 }
+
+
+export function setOrDeleteFromStorage(key:string,value:string)
+{
+
+  if(!key){
+    return;
+  }
+  if(value){
+    localStorage.setItem(key,value);
+  }
+  else{
+    localStorage.removeItem(key);
+  }
+}

@@ -15,6 +15,12 @@ export const environment = {
   externalLoginTokenPurposeName:"External-Auth-Code",
   persistentLoginTokenPurposeName:"Persistent-Auth-Code",
 
+  claimTypes:
+  {
+    username:"http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name",
+    userId:"http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier",
+    email:"http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"
+  }
 };
 
 /*
