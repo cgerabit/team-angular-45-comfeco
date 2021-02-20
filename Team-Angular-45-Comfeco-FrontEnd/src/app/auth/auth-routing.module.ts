@@ -22,7 +22,8 @@ const routes: Routes = [
       {path:'external-signin-callback',component:ExternalSigninCallbackComponent},
       {path:'persistent-signin-callback',component:PersistentSigninCallbackComponent},
       { path: '**', redirectTo: 'login'}
-    ]
+    ],
+    
   }
 
 ];

@@ -68,6 +68,7 @@ namespace BackendComfeco
                     options.Cookie.Name = ApplicationConstants.PersistLoginCookieName;
                     options.LoginPath = "/api/account/redirecttologin";
                     options.AccessDeniedPath = "/api/account/redirecttologin";
+                    options.Cookie.SameSite = SameSiteMode.None;
                     
                 });
 

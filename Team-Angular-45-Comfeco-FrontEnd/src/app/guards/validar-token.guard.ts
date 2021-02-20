@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, CanLoad, Router } from '@angular/router';
+import { CanActivate, CanActivateChild, CanLoad, Router } from '@angular/router';
 import { AuthService } from '../auth/services/auth.service';
-import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
-export class ValidarTokenGuard implements CanActivate, CanLoad {
+export class ValidarTokenGuard implements CanActivate, CanActivateChild {
   constructor(private authService: AuthService, private router: Router) {}
 
   canActivate(): Promise<boolean> | boolean {
@@ -14,36 +13,30 @@ export class ValidarTokenGuard implements CanActivate, CanLoad {
     return this.userHasTokenOrPersistentLogin();
 
   }
-  canLoad(): Promise<boolean> | boolean {
+  canActivateChild():Promise<boolean> | boolean{
 
     return this.userHasTokenOrPersistentLogin();
+    
   }
 
-  userHasTokenOrPersistentLogin():Promise<boolean>{
-    return new Promise((resolve)=>{
 
+  async userHasTokenOrPersistentLogin():Promise<boolean>{
+    if(this.authService.isLoggedIn){
+      return true;
+    }
 
-      if(this.authService.isLoggedIn){
-        resolve(true);
-        return;
-       }
+    const result = await this.authService.userHavePersistLogin;
 
-      this.authService.userHavePersistLogin.then(resp => {
-        if(resp){
-          this.authService.initPersistentLogin(environment.persistLoginEndpoint,location.pathname)
-        }
-        else{
-          resolve(false);
-          this.router.navigate(['/auth/login'])
-        }
-      }).catch(()=>{
-        resolve(false);
-        this.router.navigate(['/auth/login'])
-      })
+    if(result){
+      this.authService.checkSessionRecover(location.pathname);
+      return true;
+    }
 
-    })
-  }
+    this.router.navigate(['/auth','login']);
 
+    return false;
+
+}
 
 }
 
