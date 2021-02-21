@@ -118,6 +118,9 @@ namespace BackendComfeco
             services.AddTransient<ThreadSafeRandom>();
             services.AddAutoMapper(typeof(Startup));
 
+            services.AddSingleton<IFileStorage, FileStorageInLocal>();
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

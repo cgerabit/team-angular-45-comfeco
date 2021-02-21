@@ -26,5 +26,10 @@
         public const string PasswordRecoveryFrontendDefaultEndpoint = "http://localhost:4200/auth/recover";
 
         public const string CountOfRecordsHeaderName = "CountOfRecords"; 
+
+        public static class ImageContainerNames
+        {
+            public const string SponsorContainer = "Sponsor_Icons";
+        }
     }
 }

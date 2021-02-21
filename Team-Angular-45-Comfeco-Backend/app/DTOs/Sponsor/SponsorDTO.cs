@@ -1,13 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BackendComfeco.Models
+namespace BackendComfeco.DTOs.Sponsor
 {
-    public class Sponsor: IIdHelper
+    public class SponsorDTO
     {
         public int Id { get; set; }
-
-        [Required]
-        [StringLength(100)]
+  
         public string Name { get; set; }
 
 
