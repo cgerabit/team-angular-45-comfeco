@@ -1,10 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BackendComfeco.Models
+namespace BackendComfeco.DTOs.Comunity
 {
-    public class Comunity : IIdHelper
+    public class ComunityCreationDTO
     {
-        public int Id { get; set; }
         [Required]
         public string Name { get; set; }
 

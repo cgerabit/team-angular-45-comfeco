@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 
 using BackendComfeco.DTOs.Auth;
+using BackendComfeco.DTOs.Comunity;
 using BackendComfeco.DTOs.Sponsor;
 using BackendComfeco.Models;
 
@@ -26,8 +27,11 @@ namespace BackendComfeco.Mapper
 
             CreateMap<SponsorCreationDTO, Sponsor>().ForMember(x => x.SponsorIcon,
                 options => options.Ignore());
-
-
+            // =========================================================
+            //                          Communities 
+            // =========================================================
+            CreateMap<ComunityCreationDTO, Comunity>();
+            CreateMap<Comunity, ComunityDTO>().ReverseMap();
         }
     }
 }
