@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace BackendComfeco.Models
+namespace BackendComfeco.DTOs.Area
 {
-    public class Area :IIdHelper
+    public class AreaDTO
     {
         public int Id { get; set; }
 
@@ -12,9 +15,5 @@ namespace BackendComfeco.Models
         public string Name { get; set; }
 
         public string AreaIcon { get; set; }
-
-        public List<Technology> Technologies { get; set; }
-
-        
     }
 }

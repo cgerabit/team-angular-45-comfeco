@@ -29,6 +29,7 @@
 
         public static class ImageContainerNames
         {
+            public const string AreaContainer = "Area_Icons";
             public const string SponsorContainer = "Sponsor_Icons";
         }
     }
