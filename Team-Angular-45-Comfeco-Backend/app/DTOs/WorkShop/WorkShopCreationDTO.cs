@@ -1,16 +1,14 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace BackendComfeco.Models
+namespace BackendComfeco.DTOs.Area
 {
-    public class Workshop :IIdHelper
+    public class WorkShopCreationDTO
     {
-        public int Id { get; set; }
 
         [Required]
         public string UserId { get; set; }
 
-        public ApplicationUser User { get; set; }
 
         [Required]
         [StringLength(100)]
@@ -19,10 +17,7 @@ namespace BackendComfeco.Models
         [Required]
         public int TechnologyId { get; set; }
 
-        public Technology Technology { get; set; }
-
         [Required]
         public DateTime WorkShopDate { get; set; }
-
     }
 }

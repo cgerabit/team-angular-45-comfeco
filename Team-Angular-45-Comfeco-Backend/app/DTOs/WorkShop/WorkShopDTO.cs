@@ -1,28 +1,31 @@
-﻿using System;
+﻿using BackendComfeco.DTOs.Area;
+using BackendComfeco.DTOs.Technology;
+
+using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace BackendComfeco.Models
+namespace BackendComfeco.DTOs.WorkShop
 {
-    public class Workshop :IIdHelper
+    public class WorkShopDTO
     {
         public int Id { get; set; }
 
         [Required]
         public string UserId { get; set; }
 
-        public ApplicationUser User { get; set; }
+        public string UserName { get; set; }
+
 
         [Required]
         [StringLength(100)]
         public string Title { get; set; }
 
-        [Required]
-        public int TechnologyId { get; set; }
 
-        public Technology Technology { get; set; }
+        public TechnologyDTO Technology { get; set; }
+
+        public AreaDTO Area { get; set; }
 
         [Required]
         public DateTime WorkShopDate { get; set; }
-
     }
 }
