@@ -83,6 +83,10 @@ namespace BackendComfeco.Controllers
 
             if (sponsorCreationDTO.SponsorIcon != null)
             {
+                if (!string.IsNullOrEmpty(entity.SponsorIcon))
+                {
+                    await fileStorage.RemoveFile(entity.SponsorIcon, ApplicationConstants.ImageContainerNames.SponsorContainer);
+                }
                 entity.SponsorIcon = await SaveIcon(sponsorCreationDTO.SponsorIcon);
             }
 
