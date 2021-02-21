@@ -31,6 +31,7 @@
         {
             public const string AreaContainer = "Area_Icons";
             public const string SponsorContainer = "Sponsor_Icons";
+            public const string TechnologyContainer = "Technology_Icons";
         }
     }
 }
