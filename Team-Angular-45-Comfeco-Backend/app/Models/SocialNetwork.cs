@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BackendComfeco.Models
 {
-    public class SocialNetwork
+    public class SocialNetwork :IIdHelper
     {
 
         public int Id { get; set; }
