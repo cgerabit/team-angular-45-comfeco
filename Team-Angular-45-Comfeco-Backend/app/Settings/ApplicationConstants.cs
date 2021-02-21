@@ -25,6 +25,6 @@
 
         public const string PasswordRecoveryFrontendDefaultEndpoint = "http://localhost:4200/auth/recover";
 
-
+        public const string CountOfRecordsHeaderName = "CountOfRecords"; 
     }
 }
