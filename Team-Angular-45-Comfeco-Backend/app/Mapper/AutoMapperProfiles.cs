@@ -4,6 +4,7 @@ using BackendComfeco.DTOs.Area;
 using BackendComfeco.DTOs.Auth;
 using BackendComfeco.DTOs.Comunity;
 using BackendComfeco.DTOs.Sponsor;
+using BackendComfeco.DTOs.Technology;
 using BackendComfeco.Models;
 
 using Microsoft.AspNetCore.Authentication;
@@ -19,7 +20,8 @@ namespace BackendComfeco.Mapper
             //                          AUTH
             // =========================================================
             CreateMap<ApplicationUserCreationDTO, ApplicationUser>();
-            CreateMap<ApplicationUser, UserInfo>().ForMember(member => member.UserId, options => options.MapFrom(u => u.Id));
+            CreateMap<ApplicationUser, UserInfo>()
+                .ForMember(member => member.UserId, options => options.MapFrom(u => u.Id));
             CreateMap<AuthenticationScheme, ExternalProvidersDTO>();
 
             // =========================================================
@@ -39,8 +41,17 @@ namespace BackendComfeco.Mapper
             //                          Areas
             // =========================================================
             CreateMap<Area, AreaDTO>().ReverseMap();
-            CreateMap<AreaCreationDTO, Area>().ForMember(x => x.AreaIcon, options => options.Ignore());
+            CreateMap<AreaCreationDTO, Area>()
+                .ForMember(x => x.AreaIcon, options => options.Ignore());
+            // =========================================================
+            //                          Technology
+            // =========================================================
+            CreateMap<Technology, TechnologyDTO>().ReverseMap();
+            CreateMap<TechnologyCreationDTO, Technology>()
+                .ForMember(x => x.TechnologyIcon, options => options.Ignore());
+
         }
+
 
     }
 }

@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿
+
 using System.ComponentModel.DataAnnotations;
 
-namespace BackendComfeco.Models
+namespace BackendComfeco.DTOs.Technology
 {
-    public class Technology:IIdHelper
+    public class TechnologyDTO
     {
         public int Id { get; set; }
 
@@ -15,13 +16,5 @@ namespace BackendComfeco.Models
 
         [Required]
         public int AreaId { get; set; }
-
-        public Area Area { get; set; }
-        public List<ApplicationUserTechnology> ApplicationUserTechnologies { get; set; }
-
-        public List<Workshop> Workshops { get; set; }
-
-
-
     }
 }
