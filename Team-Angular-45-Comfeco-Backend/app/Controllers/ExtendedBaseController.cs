@@ -83,10 +83,19 @@ namespace BackendComfeco.Controllers
             return new CreatedAtRouteResult(routeName, new { id = entity.Id }, dto);
         }
 
-        protected async Task<ActionResult> Put<TCreacion, TEntidad>
-            (int id, TCreacion creacionDTO) where TEntidad : class, IIdHelper
+        protected async Task<ActionResult> Put<TCreate, TEntity>
+            (int id, TCreate creationDTO) where TEntity : class, IIdHelper
         {
-            var entity = mapper.Map<TEntidad>(creacionDTO);
+            var exist = await context
+                .Set<TEntity>()
+                .AnyAsync(x => x.Id == id);
+
+            if (!exist)
+            {
+                return NotFound();
+            }
+
+            var entity = mapper.Map<TEntity>(creationDTO);
             entity.Id = id;
             context.Entry(entity).State = EntityState.Modified;
             await context.SaveChangesAsync();
@@ -146,5 +155,6 @@ namespace BackendComfeco.Controllers
 
             return NoContent();
         }
+
     }
 }

@@ -2,9 +2,9 @@
 {
     public class PaginationDTO
     {
-        public int Page { get; set; }
+        public int Page { get; set; } = 1;
 
-        private int recordsPerPage { get; set; }
+        private int recordsPerPage { get; set; } = 10;
 
         private readonly int maxRecordsPerPage = 100;
 
