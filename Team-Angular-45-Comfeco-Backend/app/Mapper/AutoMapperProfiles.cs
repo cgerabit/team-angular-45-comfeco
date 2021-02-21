@@ -3,6 +3,7 @@
 using BackendComfeco.DTOs.Area;
 using BackendComfeco.DTOs.Auth;
 using BackendComfeco.DTOs.Comunity;
+using BackendComfeco.DTOs.SocialNetwork;
 using BackendComfeco.DTOs.Sponsor;
 using BackendComfeco.DTOs.Technology;
 using BackendComfeco.Models;
@@ -50,6 +51,12 @@ namespace BackendComfeco.Mapper
             CreateMap<TechnologyCreationDTO, Technology>()
                 .ForMember(x => x.TechnologyIcon, options => options.Ignore());
 
+            // =========================================================
+            //                          Social Network
+            // =========================================================
+
+            CreateMap<SocialNetwork, SocialNetworkDTO>().ReverseMap();
+            CreateMap<SocialNetworkCreationDTO, SocialNetwork>();
         }
 
 
