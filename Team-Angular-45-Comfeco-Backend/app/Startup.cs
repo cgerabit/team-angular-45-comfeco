@@ -103,6 +103,7 @@ namespace BackendComfeco
                 options.AddPolicy(ApplicationConstants.DevelopmentPolicyName,
                     new CorsPolicyBuilder()
                     .WithOrigins("http://localhost:4200","https://localhost:4200")
+                    .WithExposedHeaders(ApplicationConstants.CountOfRecordsHeaderName)
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowCredentials()
