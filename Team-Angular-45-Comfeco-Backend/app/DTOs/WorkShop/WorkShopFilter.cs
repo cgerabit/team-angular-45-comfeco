@@ -1,7 +1,10 @@
 ﻿using BackendComfeco.DTOs.Shared;
 
+using Microsoft.EntityFrameworkCore.Query;
+
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BackendComfeco.DTOs.WorkShop
 {
@@ -20,9 +23,6 @@ namespace BackendComfeco.DTOs.WorkShop
         public DateTime AfterThan { get; set; } = DateTime.UtcNow.AddDays(-1);
 
         public DateTime BeforeThan { get; set; }
-
-        public PaginationDTO PaginationDTO => new PaginationDTO { Page = Page, RecordsPerPage = RecordsPerPage };
-
 
         public int Page { get; set; } = 1;
         public int RecordsPerPage { get; set; } = 10;

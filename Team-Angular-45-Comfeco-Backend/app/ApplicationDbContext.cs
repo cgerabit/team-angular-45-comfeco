@@ -1,10 +1,12 @@
 ﻿using BackendComfeco.Models;
+using BackendComfeco.Settings;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-using Org.BouncyCastle.Math.EC.Rfc7748;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace BackendComfeco
 {
@@ -18,19 +20,37 @@ namespace BackendComfeco
 
        
         protected override void OnModelCreating(ModelBuilder builder)
-        {
+        { 
+            base.OnModelCreating(builder);
+
+            builder.Entity<ApplicationUser>()
+              .HasMany(x => x.Roles)
+              .WithOne()
+              .HasForeignKey(x => x.UserId)
+              .IsRequired()
+              .OnDelete(DeleteBehavior.Cascade);
+
+         
+
+            builder.Entity<ApplicationUserSocialNetwork>().HasKey(x => new { x.UserId, x.SocialNetworkId });
+
+            builder.Entity<ApplicationUserTechnology>().HasKey(x => new { x.UserId, x.TechnologyId });
+
+
+            builder.Entity<UserAuthenticationCode>().HasKey(x => x.Token);
+
             //-----------------------ONLY DEBUG------------------------------
 
             builder.Entity<ExternalLoginValidRedirectUrl>()
-                .HasData(new ExternalLoginValidRedirectUrl {Id=1 ,Url="http://localhost:4200/auth/external-signin-callback" });
+                .HasData(new ExternalLoginValidRedirectUrl { Id = 1, Url = "http://localhost:4200/auth/external-signin-callback" });
             builder.Entity<ExternalLoginValidRedirectUrl>()
-                .HasData(new ExternalLoginValidRedirectUrl { Id=2,Url="https://localhost:4200/auth/external-signin-callback" });
+                .HasData(new ExternalLoginValidRedirectUrl { Id = 2, Url = "https://localhost:4200/auth/external-signin-callback" });
 
 
             builder.Entity<PersistentLoginValidRedirectUrl>()
-                .HasData( new PersistentLoginValidRedirectUrl {Id=1,Url= "https://localhost:4200/auth/persistent-signin-callback" });
-              builder.Entity<PersistentLoginValidRedirectUrl>()
-                .HasData( new PersistentLoginValidRedirectUrl {Id=2,Url= "http://localhost:4200/auth/persistent-signin-callback" });
+                .HasData(new PersistentLoginValidRedirectUrl { Id = 1, Url = "https://localhost:4200/auth/persistent-signin-callback" });
+            builder.Entity<PersistentLoginValidRedirectUrl>()
+              .HasData(new PersistentLoginValidRedirectUrl { Id = 2, Url = "http://localhost:4200/auth/persistent-signin-callback" });
 
 
             //----------------------------------------------------------
@@ -39,26 +59,11 @@ namespace BackendComfeco
 
             builder.Entity<IdentityRole>().HasData(new IdentityRole
             {
-                Id= "6a8af04b-0405-4cd2-bc20-d59433235153",
-                Name="ContentCreator",
-                NormalizedName="ContentCreator"
+                Id = ApplicationConstants.Roles.ContentCreatorRoleId,
+                Name = ApplicationConstants.Roles.ContentCreatorRoleName,
+                NormalizedName = ApplicationConstants.Roles.ContentCreatorRoleName
             });
 
-
-
-
-        
-            
-
-            builder.Entity<ApplicationUserSocialNetwork>().HasKey(x => new { x.UserId, x.SocialNetworkId });
-            
-            builder.Entity<ApplicationUserTechnology>().HasKey(x=>new {x.UserId,x.TechnologyId });
-
-          
-            builder.Entity<UserAuthenticationCode>().HasKey(x => x.Token);
-
-
-            base.OnModelCreating(builder);
         }
         public DbSet<ExternalLoginValidRedirectUrl> ExternalLoginValidRedirectUrls { get; set; }
 

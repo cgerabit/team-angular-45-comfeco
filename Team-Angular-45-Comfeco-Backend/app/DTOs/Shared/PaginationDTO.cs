@@ -6,7 +6,7 @@
 
         private int recordsPerPage { get; set; } = 10;
 
-        private readonly int maxRecordsPerPage = 100;
+        private readonly int maxRecordsPerPage = 120;
 
         public int RecordsPerPage
         {
