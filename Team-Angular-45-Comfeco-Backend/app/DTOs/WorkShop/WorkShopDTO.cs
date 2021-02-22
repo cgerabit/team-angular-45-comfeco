@@ -16,6 +16,7 @@ namespace BackendComfeco.DTOs.WorkShop
         public string UserName { get; set; }
 
 
+
         [Required]
         [StringLength(100)]
         public string Title { get; set; }

@@ -15,5 +15,10 @@ namespace BackendComfeco.Models
         public List<ApplicationUserSocialNetwork> ApplicationUserSocialNetworks { get; set; }
 
         public List<Workshop> Workshops { get; set; }
+
+        public virtual ICollection<IdentityUserRole<string>> Roles { get; } = new List<IdentityUserRole<string>>();
+
+        
+        
     }
 }

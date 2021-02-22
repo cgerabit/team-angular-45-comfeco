@@ -32,6 +32,13 @@
             public const string AreaContainer = "Area_Icons";
             public const string SponsorContainer = "Sponsor_Icons";
             public const string TechnologyContainer = "Technology_Icons";
+            public const string ProfilePicturesContainer = "User_Profile"; 
+        }
+
+        public static class Roles
+        {
+            public const string ContentCreatorRoleId = "6a8af04b-0405-4cd2-bc20-d59433235153";
+            public const string ContentCreatorRoleName = "ContentCreator";
         }
     }
 }
