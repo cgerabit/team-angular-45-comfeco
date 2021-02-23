@@ -84,10 +84,7 @@ namespace BackendComfeco.Mapper
 
             CreateMap<WorkShopCreationDTO, Workshop>();
 
-                AreaId = o.Technology.AreaId
-            })).ForMember(x => x.UserName, options => options
-             .MapFrom(o => !string.IsNullOrEmpty(o.User.RealName) ? o.User.RealName : o.User.UserName));
-
+         
 
 
             // =========================================================
@@ -97,16 +94,16 @@ namespace BackendComfeco.Mapper
                 .ForMember(u => u.ApplicationUserTechnology, options => options.Ignore())
                 .ForMember(u => u.UserId, options => options.MapFrom(x => x.Id))
                 .ReverseMap();
-            // =========================================================
-            //                          Users
-            // =========================================================
-            CreateMap<ApplicationUserSocialNetwork, ApplicationUserSocialNetworkDTO>()
+        // =========================================================
+        //                          Users
+        // =========================================================
+        CreateMap<ApplicationUserSocialNetwork, ApplicationUserSocialNetworkDTO>()
                 .ReverseMap();
 
-            CreateMap<UpdateUserProfileDTO, ApplicationUser>().ForMember(u => u.ProfilePicture, options => options.Ignore());
+        CreateMap<UpdateUserProfileDTO, ApplicationUser>().ForMember(u => u.ProfilePicture, options => options.Ignore());
 
 
-            CreateMap<ApplicationUserTechnology, UserTechnologyDTO>()
+        CreateMap<ApplicationUserTechnology, UserTechnologyDTO>()
                 .ForMember(m => m.Id, options => options.MapFrom(m => m.Technology.Id))
                 .ForMember(m => m.Name, options => options.MapFrom(m => m.Technology.Name))
                 .ForMember(m => m.AreaId, options => options.MapFrom(m => m.Technology.AreaId))
@@ -119,10 +116,11 @@ namespace BackendComfeco.Mapper
             CreateMap<UserSocialNetworkCreateDTO, ApplicationUserSocialNetwork>()
                 .ReverseMap();
 
-            CreateMap<UserTechnologyCreationDTO, ApplicationUserTechnology>()
+        CreateMap<UserTechnologyCreationDTO, ApplicationUserTechnology>()
                 .ReverseMap();
 
-        }
+    }
+
 
 
 

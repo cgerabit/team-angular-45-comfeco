@@ -16,10 +16,6 @@ namespace BackendComfeco.DTOs.WorkShop
 
         public string UserName { get; set; }
 
-<<<<<<< Updated upstream
-=======
-        
->>>>>>> Stashed changes
 
 
         [Required]
