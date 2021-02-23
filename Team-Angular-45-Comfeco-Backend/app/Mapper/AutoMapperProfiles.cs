@@ -76,9 +76,18 @@ namespace BackendComfeco.Mapper
                 Id = o.Technology.Id,
                 TechnologyIcon = o.Technology.TechnologyIcon,
                 Name = o.Technology.Name,
+
+                AreaId = o.Technology.AreaId
+            })).ForMember(x => x.UserName, options => options
+             .MapFrom(o => !string.IsNullOrEmpty(o.User.RealName) ? o.User.RealName : o.User.UserName))
+            .ReverseMap();
+
+            CreateMap<WorkShopCreationDTO, Workshop>();
+
                 AreaId = o.Technology.AreaId
             })).ForMember(x => x.UserName, options => options
              .MapFrom(o => !string.IsNullOrEmpty(o.User.RealName) ? o.User.RealName : o.User.UserName));
+
 
 
             // =========================================================
@@ -112,6 +121,7 @@ namespace BackendComfeco.Mapper
 
             CreateMap<UserTechnologyCreationDTO, ApplicationUserTechnology>()
                 .ReverseMap();
+
         }
 
 

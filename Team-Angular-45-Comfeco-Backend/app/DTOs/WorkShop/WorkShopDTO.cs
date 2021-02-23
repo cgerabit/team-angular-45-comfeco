@@ -1,5 +1,6 @@
 ﻿using BackendComfeco.DTOs.Area;
 using BackendComfeco.DTOs.Technology;
+using BackendComfeco.DTOs.UserRelations;
 
 using System;
 using System.ComponentModel.DataAnnotations;
@@ -15,12 +16,17 @@ namespace BackendComfeco.DTOs.WorkShop
 
         public string UserName { get; set; }
 
+<<<<<<< Updated upstream
+=======
+        
+>>>>>>> Stashed changes
 
 
         [Required]
         [StringLength(100)]
         public string Title { get; set; }
 
+        public ApplicationUserSocialNetworkDTO PrincipalSocialNetwork { get; set; }
 
         public TechnologyDTO Technology { get; set; }
 
