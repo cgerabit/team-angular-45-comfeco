@@ -72,9 +72,51 @@ namespace BackendComfeco.Mapper
                 Id=o.Technology.Id,
                 TechnologyIcon = o.Technology.TechnologyIcon,
                 Name = o.Technology.Name,
+<<<<<<< Updated upstream
                 AreaId = o.Technology.AreaId    
             })).ForMember(x=>x.UserName , options => options
             .MapFrom(o=> !string.IsNullOrEmpty(o.User.RealName)?o.User.RealName:o.User.UserName));
+=======
+                AreaId = o.Technology.AreaId
+            })).ForMember(x => x.UserName, options => options
+             .MapFrom(o => !string.IsNullOrEmpty(o.User.RealName) ? o.User.RealName : o.User.UserName))
+            .ReverseMap();
+
+            CreateMap<WorkShopCreationDTO, Workshop>();
+
+
+            // =========================================================
+            //                          Content Creator
+            // =========================================================
+            CreateMap<ApplicationUser, ContentCreatorDTO>()
+                .ForMember(u => u.ApplicationUserTechnology, options => options.Ignore())
+                .ForMember(u => u.UserId, options => options.MapFrom(x => x.Id))
+                .ReverseMap();
+            // =========================================================
+            //                          Users
+            // =========================================================
+            CreateMap<ApplicationUserSocialNetwork, ApplicationUserSocialNetworkDTO>()
+                .ReverseMap();
+
+            CreateMap<UpdateUserProfileDTO, ApplicationUser>().ForMember(u => u.ProfilePicture, options => options.Ignore());
+
+
+            CreateMap<ApplicationUserTechnology, UserTechnologyDTO>()
+                .ForMember(m => m.Id, options => options.MapFrom(m => m.Technology.Id))
+                .ForMember(m => m.Name, options => options.MapFrom(m => m.Technology.Name))
+                .ForMember(m => m.AreaId, options => options.MapFrom(m => m.Technology.AreaId))
+                .ForMember(m => m.TechnologyIcon, options => options.MapFrom(m => m.Technology.TechnologyIcon));
+            CreateMap<ApplicationUser, UserProfileDTO>().ForMember(u => u.UserId, options => options.MapFrom(u => u.Id));
+
+            CreateMap<Technology, UserTechnologyDTO>();
+
+
+            CreateMap<UserSocialNetworkCreateDTO, ApplicationUserSocialNetwork>()
+                .ReverseMap();
+
+            CreateMap<UserTechnologyCreationDTO, ApplicationUserTechnology>()
+                .ReverseMap();
+>>>>>>> Stashed changes
         }
 
 
