@@ -3,9 +3,12 @@
 using BackendComfeco.DTOs.Area;
 using BackendComfeco.DTOs.Auth;
 using BackendComfeco.DTOs.Comunity;
+using BackendComfeco.DTOs.ContentCreators;
 using BackendComfeco.DTOs.SocialNetwork;
 using BackendComfeco.DTOs.Sponsor;
 using BackendComfeco.DTOs.Technology;
+using BackendComfeco.DTOs.UserRelations;
+using BackendComfeco.DTOs.Users;
 using BackendComfeco.DTOs.WorkShop;
 using BackendComfeco.Models;
 
@@ -66,23 +69,25 @@ namespace BackendComfeco.Mapper
             {
                 Name = o.Technology.Area.Name,
                 AreaIcon = o.Technology.Area.AreaIcon,
-                Id= o.Technology.Area.Id
+                Id = o.Technology.Area.Id
 
-            })).ForMember(x=>x.Technology , options => options.MapFrom(o=> new TechnologyDTO{ 
-                Id=o.Technology.Id,
+            })).ForMember(x => x.Technology, options => options.MapFrom(o => new TechnologyDTO
+            {
+                Id = o.Technology.Id,
                 TechnologyIcon = o.Technology.TechnologyIcon,
                 Name = o.Technology.Name,
-<<<<<<< Updated upstream
-                AreaId = o.Technology.AreaId    
-            })).ForMember(x=>x.UserName , options => options
-            .MapFrom(o=> !string.IsNullOrEmpty(o.User.RealName)?o.User.RealName:o.User.UserName));
-=======
+
                 AreaId = o.Technology.AreaId
             })).ForMember(x => x.UserName, options => options
              .MapFrom(o => !string.IsNullOrEmpty(o.User.RealName) ? o.User.RealName : o.User.UserName))
             .ReverseMap();
 
             CreateMap<WorkShopCreationDTO, Workshop>();
+
+                AreaId = o.Technology.AreaId
+            })).ForMember(x => x.UserName, options => options
+             .MapFrom(o => !string.IsNullOrEmpty(o.User.RealName) ? o.User.RealName : o.User.UserName));
+
 
 
             // =========================================================
@@ -116,8 +121,9 @@ namespace BackendComfeco.Mapper
 
             CreateMap<UserTechnologyCreationDTO, ApplicationUserTechnology>()
                 .ReverseMap();
->>>>>>> Stashed changes
+
         }
+
 
 
 

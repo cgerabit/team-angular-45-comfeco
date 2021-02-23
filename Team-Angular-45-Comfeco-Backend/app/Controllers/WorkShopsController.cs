@@ -10,7 +10,6 @@ using BackendComfeco.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -77,7 +76,11 @@ namespace BackendComfeco.Controllers
 
             await HttpContext.InserPaginationHeader(queryable);
 
-            queryable = queryable.Paginate(workShopFilter.PaginationDTO).OrderByDescending(x=>x.WorkShopDate);
+            queryable = queryable.Paginate(new DTOs.Shared.PaginationDTO
+            {
+                Page=workShopFilter.Page,
+                RecordsPerPage = workShopFilter.RecordsPerPage
+            }).OrderByDescending(x=>x.WorkShopDate);
 
 
             var entities = await queryable.ToListAsync();

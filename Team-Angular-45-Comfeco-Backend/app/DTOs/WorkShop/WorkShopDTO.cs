@@ -21,6 +21,7 @@ namespace BackendComfeco.DTOs.WorkShop
         
 >>>>>>> Stashed changes
 
+
         [Required]
         [StringLength(100)]
         public string Title { get; set; }
