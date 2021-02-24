@@ -2400,6 +2400,7 @@
     "anymatch" "^2.0.0"
     "async-each" "^1.0.1"
     "braces" "^2.3.2"
+    "fsevents" "^1.2.7"
     "glob-parent" "^3.1.0"
     "inherits" "^2.0.3"
     "is-binary-path" "^1.0.0"
@@ -2418,6 +2419,7 @@
   dependencies:
     "anymatch" "~3.1.1"
     "braces" "~3.0.2"
+    "fsevents" "~2.3.1"
     "glob-parent" "~5.1.0"
     "is-binary-path" "~2.1.0"
     "is-glob" "~4.0.1"
@@ -2841,6 +2843,11 @@
     "parse-json" "^5.0.0"
     "path-type" "^4.0.0"
     "yaml" "^1.10.0"
+
+"countdown@^2.6.0":
+  "integrity" "sha1-Z3+446nUzE52QVkBuiU7UYrzQXc="
+  "resolved" "https://registry.npmjs.org/countdown/-/countdown-2.6.0.tgz"
+  "version" "2.6.0"
 
 "create-ecdh@^4.0.0":
   "integrity" "sha512-mf+TCx8wWc9VpuxfP2ht0iSISLZnt0JgWlrOKZiNqyUZWnjIaCIVNQArMHnCZKfEYRg6IM7A+NeJoN8gf/Ws0A=="
@@ -3408,6 +3415,13 @@
   dependencies:
     "domelementtype" "^2.0.1"
     "entities" "^2.0.0"
+
+"dom7@^3.0.0":
+  "integrity" "sha512-oNlcUdHsC4zb7Msx7JN3K0Nro1dzJ48knvBOnDPKJ2GV9wl1i5vydJZUSyOfrkKFDZEud/jBsTk92S/VGSAe/g=="
+  "resolved" "https://registry.npmjs.org/dom7/-/dom7-3.0.0.tgz"
+  "version" "3.0.0"
+  dependencies:
+    "ssr-window" "^3.0.0-alpha.1"
 
 "domain-browser@^1.1.1":
   "integrity" "sha512-jnjyiM6eRyZl2H+W8Q/zLMA481hzi0eszAaBUzIVnmYVDBbnLxVNnfu1HgEBvCbL+71FrxMl3E6lpKH7Ge3OXA=="
@@ -5387,8 +5401,12 @@
     "copy-anything" "^2.0.1"
     "errno" "^0.1.1"
     "graceful-fs" "^4.1.2"
+    "image-size" "~0.5.0"
+    "make-dir" "^2.1.0"
     "mime" "^1.4.1"
+    "needle" "^2.5.2"
     "parse-node-version" "^1.0.1"
+    "source-map" "~0.6.0"
     "tslib" "^1.10.0"
   optionalDependencies:
     "image-size" "~0.5.0"
@@ -5778,6 +5796,7 @@
   "resolved" "https://registry.npmjs.org/minipass-fetch/-/minipass-fetch-1.3.3.tgz"
   "version" "1.3.3"
   dependencies:
+    "encoding" "^0.1.12"
     "minipass" "^3.1.0"
     "minipass-sized" "^1.0.3"
     "minizlib" "^2.0.0"
@@ -7557,6 +7576,8 @@
   "integrity" "sha512-B0LcJhjiwKkTl79aGVF/u5KdzsH8IylVfV56Ut6c9ouWLJcUK17T83aZBetNYSnZtXf2OHD4+2PbmRW+Fp5ulg=="
   "resolved" "https://registry.npmjs.org/rollup/-/rollup-2.38.4.tgz"
   "version" "2.38.4"
+  dependencies:
+    "fsevents" "~2.3.1"
   optionalDependencies:
     "fsevents" "~2.3.1"
 
@@ -8185,6 +8206,11 @@
     "safer-buffer" "^2.0.2"
     "tweetnacl" "~0.14.0"
 
+"ssr-window@^3.0.0", "ssr-window@^3.0.0-alpha.1":
+  "integrity" "sha512-q+8UfWDg9Itrg0yWK7oe5p/XRCJpJF9OBtXfOPgSJl+u3Xd5KI328RUEvUqSMVM9CiQUEf1QdBzJMkYGErj9QA=="
+  "resolved" "https://registry.npmjs.org/ssr-window/-/ssr-window-3.0.0.tgz"
+  "version" "3.0.0"
+
 "ssri@^6.0.1":
   "integrity" "sha512-3Wge10hNcT1Kur4PDFwEieXSCMCJs/7WvSACcrMYrNp+b8kDL1/0wJch5Ni2WrtwEa2IO8OsVfeKIciKCDx/QA=="
   "resolved" "https://registry.npmjs.org/ssri/-/ssri-6.0.1.tgz"
@@ -8461,6 +8487,14 @@
   "integrity" "sha512-EBUh4k9qyRRsttm9X9j7WUhLExetvTJpcbp1VTMJCpuI2UwHLesXMIw9M+UeuqBywv0UjNMR5PKH7Qnv65m8rw=="
   "resolved" "https://registry.npmjs.org/sweetalert2/-/sweetalert2-10.14.0.tgz"
   "version" "10.14.0"
+
+"swiper@^6.4.15":
+  "integrity" "sha512-FuURJ7hE9lCxPnXIJRKu2QCe+roE8CZV2WYsZxz+dcEd3kebgK0JRvV32HpM3LmFOz7UW+k2Dkdfxekk2kTfMg=="
+  "resolved" "https://registry.npmjs.org/swiper/-/swiper-6.4.15.tgz"
+  "version" "6.4.15"
+  dependencies:
+    "dom7" "^3.0.0"
+    "ssr-window" "^3.0.0"
 
 "symbol-observable@3.0.0":
   "integrity" "sha512-6tDOXSHiVjuCaasQSWTmHUWn4PuG7qa3+1WT031yTc/swT7+rLiw3GOrFxaH1E3lLP09dH3bVuVDf2gK5rxG3Q=="
@@ -9012,6 +9046,7 @@
     "chokidar" "^3.4.1"
     "graceful-fs" "^4.1.2"
     "neo-async" "^2.5.0"
+    "watchpack-chokidar2" "^2.0.1"
   optionalDependencies:
     "watchpack-chokidar2" "^2.0.1"
 

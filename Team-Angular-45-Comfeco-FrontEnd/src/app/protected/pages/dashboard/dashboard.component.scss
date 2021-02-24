@@ -1,0 +1,63 @@
+@import "../../../../utils/theme.scss";
+
+
+
+
+.swiper-container {
+  width: 60%;
+  height: 120px;
+  margin: 0 auto;
+
+}
+.swiper-image{
+  width: 80%;
+  border-radius: 30px;
+}
+
+.timer{
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+  max-width: $max-width;
+  background:linear-gradient(
+    to right,
+    $primary 30%,
+    $secondary 100%
+  );
+  width: 90%;
+  border-radius: 15px;
+  margin: 0 auto;
+  padding: 1rem;
+  &-desc{
+    margin: 0 auto;
+    p{
+      margin: 0 auto;
+      font-size: 1rem;
+      text-transform: uppercase;
+      color: $white;
+      @media screen and (min-width: 36em) {
+        font-size: 1.5rem;
+      }
+    }
+  }
+  &-time{
+    display: flex;
+    margin: 0 auto;
+    width: 100%;
+    justify-content: space-evenly;
+    &-unit{
+      margin: 0 auto;
+      color: $white;
+      strong{
+        margin: 0 auto;
+        display: block;
+        font-size: 1.5rem;
+        @media screen and (min-width: 36em) {
+          font-size: 2rem;
+        }
+      }
+    }
+  }
+
+}
