@@ -20,7 +20,7 @@ export class RecoverComponent implements OnInit {
   }
 
   miFormulario: FormGroup = this.fb.group({
-    email: ['arnaldo.castilla@gmail.com', [Validators.required, Validators.email]],
+    email: ['', [Validators.required, Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]],
   })
 
   miFormularioNuevo: FormGroup = this.fb.group(
@@ -44,7 +44,7 @@ export class RecoverComponent implements OnInit {
     this.activateRoute.queryParams.subscribe( params =>{
       this.recove.token = params.Token;
       this.recove.user_id = params.UserId;
-     
+
      if(this.recove.token != undefined && this.recove.user_id != undefined){
       this.flag = true;
      }else{
@@ -52,7 +52,9 @@ export class RecoverComponent implements OnInit {
      }
     })
   }
-
+  get emailNoValido(){
+    return this.miFormulario.get('email').invalid && this.miFormulario.get('email').touched
+  }
   get passwordNoValido(){
     return this.miFormularioNuevo.get('pass').invalid && this.miFormularioNuevo.get('pass').touched
   }
@@ -70,7 +72,7 @@ export class RecoverComponent implements OnInit {
 
     return password === password2 ? null : { notSame: true };
   }
-  
+
   cambiar(){
     Swal.fire('Info', "Estamos actualizando su clave, un momento.", 'info');
     Swal.showLoading();
@@ -79,7 +81,7 @@ export class RecoverComponent implements OnInit {
       Swal.fire('Info', "Clave actualizada, puedes iniciar sesion.", 'info');
       if(resp.status === 200){
         Swal.fire('Info', "Clave actualizada, puedes iniciar sesion.", 'info');
-      } 
+      }
       if(resp.status === 400){
         Swal.fire('Error', "Ocurrio un error al actualizar la clave", 'error');
       }
