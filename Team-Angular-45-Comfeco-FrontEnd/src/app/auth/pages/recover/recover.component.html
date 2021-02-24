@@ -12,7 +12,11 @@
             type="email"
             formControlName="email"
             placeholder="Ingrese su email"
+            [class.is-invalid]="emailNoValido"
           />
+          <small *ngIf="emailNoValido" class="text-danger font-weight-light">
+            Ingrese un correo valido
+          </small>
         </div>
         <div class="form-group">
           <button type="submit" [disabled]="miFormulario.invalid">
@@ -33,7 +37,7 @@
             placeholder="Ingresesu nueva clave"
             [class.is-invalid]="passwordNoValido"
           />
-          
+
           <small *ngIf="passwordNoValido" class="text-danger font-weight-light">
             Formato de contraseña incorrecto
           </small>        </div>
@@ -58,7 +62,6 @@
 
 
       <div class="divider"></div>
-      
+
     </div>
   </div>
-  

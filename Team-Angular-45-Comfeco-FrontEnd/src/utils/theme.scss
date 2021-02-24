@@ -3,14 +3,17 @@ $base-font-weight: 400;
 $base-line-height: 1.6em;
 
 // Colors
-$black: #000000;
+$black: #2E2E2E;
 $dark-gray: rgba($black, 0.8);
 $gray: rgba($black, 0.6);
 $light-gray: rgba($black, 0.4);
 $lighter-gray: rgba($black, 0.2);
 $white: #ffffff;
-$accent: #93cb70;
-
+$primary: #69156a;
+$secondary: #F2A007;
+$accent: #390F64;
+$light-primary: #F2D194;
+$light-secondary: #E4AEF2;
 // Form Settings
 $max-width: 600px;
 $max-height: 400px;

@@ -20,7 +20,7 @@ import { UnauthorizedInterceptorService } from './auth/services/unauthorized-int
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    NgbModule
+    NgbModule,
   ],
   providers: [
     {

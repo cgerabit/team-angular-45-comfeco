@@ -33,9 +33,9 @@
                 <button type="submit" *ngIf="!isLoading" [disabled]="miFormulario.invalid">
           Iniciar Sesión
         </button>
-                <div class="spinner-grow text-success mx-auto" *ngIf="isLoading" role="status">
-                    <span class="sr-only">Loading...</span>
-                </div>
+            <div class="spinner-grow text-dark mx-auto" *ngIf="isLoading" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
             </div>
         </form>
         <div class="divider"></div>

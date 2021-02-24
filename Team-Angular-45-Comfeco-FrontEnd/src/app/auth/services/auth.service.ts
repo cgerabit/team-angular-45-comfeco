@@ -169,14 +169,14 @@ export class AuthService {
       email: email
     }
     return this.http.post<any>(url, body).pipe(
-      tap( (resp) => { 
+      tap( (resp) => {
         console.log("FROM SERVICE", resp)
       }),
       catchError((err: HttpErrorResponse) => of(err.error))
     );
 
   }
-  
+
   cambiarClave(user_id: string, token: string, nueva_clave: string){
     const url = `${this.baseUrl}/Account/confirmrecoverpwd`;
     const body = {
@@ -186,7 +186,7 @@ export class AuthService {
     }
 
     return this.http.post<any>(url, body).pipe(
-      tap( (resp) => { 
+      tap( (resp) => {
         console.log("FROM SERVICE", resp)
       }),
       catchError((err: HttpErrorResponse) => of(err.error))
@@ -208,6 +208,8 @@ export class AuthService {
       .pipe(
         tap((resp) => {
           this.authenticateUser(resp);
+          console.log(resp);
+
         }),
         catchError((err: HttpErrorResponse) => of(err.error))
       );

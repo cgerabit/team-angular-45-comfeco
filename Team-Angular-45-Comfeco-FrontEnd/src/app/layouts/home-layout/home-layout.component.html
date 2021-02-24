@@ -1,1 +1,69 @@
-<p>home-layout works!</p>
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+  <div class="container-fluid justify-content-between">
+    <div class="d-flex">
+      <button class="hamburger-menu" type="button" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <a class="navbar-brand d-flex align-items-center" href="#">
+        <img
+          src="../../../assets/images/logo/logo1.png"
+          height="42"
+          alt=""
+          loading="lazy"
+        />
+      </a>
+      <ul class="navbar-items">
+        <li>
+          <a class="nav-link" href="#">Home</a>
+        </li>
+        <li>
+          <a class="nav-link" href="#">Features</a>
+        </li>
+        <li>
+          <a class="nav-link" href="#">Pricing</a>
+        </li>
+        <li>
+          <a class="nav-link" href="#">Otro</a>
+        </li>
+      </ul>
+    </div>
+    <ul class="navbar-nav flex-row align-items-center">
+      <li class="px-2 item-notify"><span>C</span></li>
+      <li ngbDropdown class="nav-item dropdown" display="dynamic">
+        <button
+          class="btn btn-outline-ghost d-flex flex-row align-items-center"
+          id="navbarDropdownMenuLink"
+          tabindex="0"
+          ngbDropdownToggle
+        >
+          <img
+            src="https://mdbootstrap.com/img/new/avatars/1.jpg"
+            class="rounded-circle"
+            height="36"
+            alt=""
+            loading="lazy"
+          />
+          <span class="d-none d-sm-block ms-1">{{usuario.userName}}</span>
+        </button>
+        <div
+          ngbDropdownMenu
+          class="dropdown-menu"
+          aria-labelledby="navbarDropdownMenuLink"
+        >
+          <a ngbDropdownItem class="dropdown-item" href="#">Action</a>
+          <a ngbDropdownItem class="dropdown-item" href="#">Another action</a>
+          <a ngbDropdownItem class="dropdown-item" href="#">Something else here</a>
+          <a ngbDropdownItem class="dropdown-item" (click)="logout()">Cerrar Sesion</a>
+        </div>
+      </li>
+    </ul>
+  </div>
+</nav>
+<div class="app-layout">
+  <div class="comunidades shadow"></div>
+  <div class="component">
+    <router-outlet></router-outlet>
+  </div>
+  <div class="talleres shadow"></div>
+</div>
+
