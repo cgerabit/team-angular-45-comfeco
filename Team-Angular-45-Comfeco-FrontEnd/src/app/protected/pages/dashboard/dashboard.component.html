@@ -1,69 +1,66 @@
-<h1>Bienvenido a Community Fest and Code</h1>
-<span>¡Conoce gente, aprende y Gana!</span>
-<p>La proxima edición comienza en 2022...</p>
-<h2>Ellos ya creen en esta iniciativa:</h2>
-<div class="carousel-lideres">
+<div class="welcome">
+  <h1 class="welcome_title">Bienvenido a Community Fest and Code</h1>
+  <div class="divider"></div>
+  <span class="welcome_span">¡Conoce gente, aprende y Gana!</span>
+  <p class="welcome_desc">
+    La proxima edición comienza en 2022, en la cual se planea involucrar a todos
+    los programadores independientes del área de conocimiento que se encuentre,
+    todo con un mismo propósito. Aprender en comunidad!
+  </p>
 </div>
-<div>
-  <span>Sponsors</span>
-  <button>Apoyar iniciativa</button>
+<div class="carousel-lideres">
+  <h2 class="title">Ellos ya creen en esta iniciativa:</h2>
+  <div class="content-container-lider">
+    <swiper
+      class="swiper-container-lider"
+      [config]="config"
+      [pagination]="{ clickable: true }"
+      (indexChange)="onIndexChange($event)"
+      (swiperTransitionStart)="onSwiperEvent('transitionStart')"
+      (swiperTransitionEnd)="onSwiperEvent('transitionEnd')"
+    >
+      <ng-template *ngFor="let slide of slides" swiperSlide>
+        <div class="slide shadow">
+          <img [src]="slide" alt="image" class="img-slide img-fluid" />
+          <div class="data-slide">
+            <div class="span-container">
+              <span>JS</span>
+            </div>
+            <p>Nombre del líder</p>
+          </div>
+        </div>
+      </ng-template>
+
+    </swiper>
+  </div>
+
+<div class="d-flex justify-content-between justify-align-center mb-2">
+  <h2 class="title">Sponsors</h2>
+  <button class="btn button-custom">Apoyar iniciativa</button>
 </div>
 <div class="carousel-sponsor">
-  <swiper
-      [slidesPerView]="8"
-      [spaceBetween]="0"
-      (swiper)="onSwiper($event)"
-      (slideChange)="onSlideChange()"
-      [navigation]="true"
+
+  <div class="content-container-sponsor">
+    <swiper
+      class="swiper-container-sponsor"
+      [config]="config2"
       [pagination]="{ clickable: true }"
-      [autoplay]="true"
+      (indexChange)="onIndexChange($event)"
+      (swiperTransitionStart)="onSwiperEvent('transitionStart')"
+      (swiperTransitionEnd)="onSwiperEvent('transitionEnd')"
     >
-
-      <ng-template swiperSlide>
-        <img class="swiper-image" src="https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F744f9499-dbb7-4a55-92b2-1f0781448bb9%2F1_prCweEqN9wGLx19kngaW2A.jpeg?table=block&id=31a42319-8352-4cba-935e-f323bf41c7a5&width=3070&userId=&cache=v2">
+      <ng-template *ngFor="let slide of slidesSponsor" swiperSlide>
+        <div class="slide shadow">
+          <img [src]="slide" alt="image" class="img-slide img-fluid" />
+        </div>
       </ng-template>
-      <ng-template swiperSlide>
-        <img class="swiper-image" src="https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F744f9499-dbb7-4a55-92b2-1f0781448bb9%2F1_prCweEqN9wGLx19kngaW2A.jpeg?table=block&id=31a42319-8352-4cba-935e-f323bf41c7a5&width=3070&userId=&cache=v2">
-      </ng-template>
-      <ng-template swiperSlide>
-        <img class="swiper-image" src="https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F744f9499-dbb7-4a55-92b2-1f0781448bb9%2F1_prCweEqN9wGLx19kngaW2A.jpeg?table=block&id=31a42319-8352-4cba-935e-f323bf41c7a5&width=3070&userId=&cache=v2">
-      </ng-template>
-      <ng-template swiperSlide>
-        <img class="swiper-image" src="https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F744f9499-dbb7-4a55-92b2-1f0781448bb9%2F1_prCweEqN9wGLx19kngaW2A.jpeg?table=block&id=31a42319-8352-4cba-935e-f323bf41c7a5&width=3070&userId=&cache=v2">
-      </ng-template>
-      <ng-template swiperSlide>
-        <img class="swiper-image" src="https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F744f9499-dbb7-4a55-92b2-1f0781448bb9%2F1_prCweEqN9wGLx19kngaW2A.jpeg?table=block&id=31a42319-8352-4cba-935e-f323bf41c7a5&width=3070&userId=&cache=v2">
-      </ng-template>
-      <ng-template swiperSlide>
-        <img class="swiper-image" src="https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F744f9499-dbb7-4a55-92b2-1f0781448bb9%2F1_prCweEqN9wGLx19kngaW2A.jpeg?table=block&id=31a42319-8352-4cba-935e-f323bf41c7a5&width=3070&userId=&cache=v2">
-      </ng-template>
-      <ng-template swiperSlide>
-        <img class="swiper-image" src="https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F744f9499-dbb7-4a55-92b2-1f0781448bb9%2F1_prCweEqN9wGLx19kngaW2A.jpeg?table=block&id=31a42319-8352-4cba-935e-f323bf41c7a5&width=3070&userId=&cache=v2">
-      </ng-template>
-      <ng-template swiperSlide>
-        <img class="swiper-image" src="https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F744f9499-dbb7-4a55-92b2-1f0781448bb9%2F1_prCweEqN9wGLx19kngaW2A.jpeg?table=block&id=31a42319-8352-4cba-935e-f323bf41c7a5&width=3070&userId=&cache=v2">
-      </ng-template>
-      <ng-template swiperSlide>
-        <img class="swiper-image" src="https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F744f9499-dbb7-4a55-92b2-1f0781448bb9%2F1_prCweEqN9wGLx19kngaW2A.jpeg?table=block&id=31a42319-8352-4cba-935e-f323bf41c7a5&width=3070&userId=&cache=v2">
-      </ng-template>
-      <ng-template swiperSlide>
-        <img class="swiper-image" src="https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F744f9499-dbb7-4a55-92b2-1f0781448bb9%2F1_prCweEqN9wGLx19kngaW2A.jpeg?table=block&id=31a42319-8352-4cba-935e-f323bf41c7a5&width=3070&userId=&cache=v2">
-      </ng-template>
-      <ng-template swiperSlide>
-        <img class="swiper-image" src="https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F744f9499-dbb7-4a55-92b2-1f0781448bb9%2F1_prCweEqN9wGLx19kngaW2A.jpeg?table=block&id=31a42319-8352-4cba-935e-f323bf41c7a5&width=3070&userId=&cache=v2">
-      </ng-template>
-      <ng-template swiperSlide>
-        <img class="swiper-image" src="https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F744f9499-dbb7-4a55-92b2-1f0781448bb9%2F1_prCweEqN9wGLx19kngaW2A.jpeg?table=block&id=31a42319-8352-4cba-935e-f323bf41c7a5&width=3070&userId=&cache=v2">
-      </ng-template>
-      <ng-template swiperSlide>
-        <img class="swiper-image" src="https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F744f9499-dbb7-4a55-92b2-1f0781448bb9%2F1_prCweEqN9wGLx19kngaW2A.jpeg?table=block&id=31a42319-8352-4cba-935e-f323bf41c7a5&width=3070&userId=&cache=v2">
-      </ng-template>
-
-
-  </swiper>
-
+    </swiper>
+    <!--<div class="swiper-pagination"></div>-->
+    <div class="swiper-button-prev"></div>
+    <div class="swiper-button-next"></div>
+  </div>
 </div>
-<h2>Preparate lo bueno esta por venir</h2>
+<h2 class="title">Preparate lo bueno esta por venir</h2>
 <div class="contador">
   <!--contador-->
   <div class="timer">
