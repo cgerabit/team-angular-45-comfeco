@@ -8,9 +8,9 @@
     "comunidades";
   grid-template-columns: 1fr;
   max-width: 1980px;
-  margin: 0 auto;
+  margin: 65px auto 0;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
   padding: 20px;
   @media screen and (min-width: 50em) {
@@ -30,6 +30,9 @@
     height: 320px;
     background-color: $primary;
     border-radius: 20px;
+    @media screen and (min-width: 70em) {
+      margin-top: 100px;
+    }
   }
   .component {
     grid-area: component;
@@ -106,8 +109,6 @@
     }
   }
 }
-
-/*Menu Lateral*/
 .sidenav {
   height: 100%;
   width: 0;

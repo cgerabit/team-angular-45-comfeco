@@ -1,5 +1,5 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
-  <div class="container-fluid justify-content-between">
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm fixed-top">
+  <div class="container-fluid justify-content-between flex-nowrap">
     <div class="d-flex">
       <button
         class="hamburger-menu"
@@ -12,9 +12,9 @@
       </button>
       <a class="navbar-brand d-flex align-items-center" href="#">
         <img
+          class="img-brand"
           src="../../../assets/images/logo/logo1.png"
-          height="42"
-          alt=""
+          alt="Comfeco"
           loading="lazy"
         />
       </a>
@@ -61,8 +61,11 @@
             alt=""
             loading="lazy"
           />
-          <span class="d-none d-sm-block ml-1 text-truncate"
-            style="max-width: 100px">{{usuario.userName}}</span>
+          <span
+            class="d-none d-sm-block ml-1 text-truncate"
+            style="max-width: 100px"
+            >{{ usuario.userName }}</span
+          >
         </button>
         <div
           ngbDropdownMenu
@@ -71,8 +74,12 @@
         >
           <a ngbDropdownItem class="dropdown-item" href="#">Action</a>
           <a ngbDropdownItem class="dropdown-item" href="#">Another action</a>
-          <a ngbDropdownItem class="dropdown-item" href="#">Something else here</a>
-          <a ngbDropdownItem class="dropdown-item" (click)="logout()">Cerrar Sesion</a>
+          <a ngbDropdownItem class="dropdown-item" href="#"
+            >Something else here</a
+          >
+          <button ngbDropdownItem class="dropdown-item" (click)="logout()">
+            Cerrar Sesion
+          </button>
         </div>
       </li>
     </ul>
