@@ -163,7 +163,7 @@
     "universal-analytics" "0.4.23"
     "uuid" "8.3.2"
 
-"@angular/common@~11.2.0":
+"@angular/common@>=9.0.0", "@angular/common@~11.2.0":
   "integrity" "sha512-wsWI5F6Y2DNxne2D5uk8e9U/vn95UYZLMNBW+QXI9U/I9kDSXoa8yEvNcn1x0XfNXBMst5pi4iSF5M8mIck1eg=="
   "resolved" "https://registry.npmjs.org/@angular/common/-/common-11.2.0.tgz"
   "version" "11.2.0"
@@ -203,7 +203,7 @@
   "resolved" "https://registry.npmjs.org/@angular/compiler/-/compiler-9.0.0.tgz"
   "version" "9.0.0"
 
-"@angular/core@~11.2.0":
+"@angular/core@>=9.0.0", "@angular/core@~11.2.0":
   "integrity" "sha512-jnbnJTW2GwfkRoXG8J4zs5FMcahMZwo6jrZGe9FiXjCYG9cLEuOXy4h99Z1s/o0vc/VXyWgym7SmeEgv+urf8g=="
   "resolved" "https://registry.npmjs.org/@angular/core/-/core-11.2.0.tgz"
   "version" "11.2.0"
@@ -5989,6 +5989,13 @@
   "resolved" "https://registry.npmjs.org/next-tick/-/next-tick-1.0.0.tgz"
   "version" "1.0.0"
 
+"ngx-swiper-wrapper@^10.0.0":
+  "integrity" "sha512-cP7yCV1j9fyPkaEu4muec+4ChwpYq1zn62qR6HcZttZgPcqaSEd8yLB7fp61ASAWR31iKUycVhqNtmsYstMXpA=="
+  "resolved" "https://registry.npmjs.org/ngx-swiper-wrapper/-/ngx-swiper-wrapper-10.0.0.tgz"
+  "version" "10.0.0"
+  dependencies:
+    "tslib" "^2.0.0"
+
 "nice-try@^1.0.4":
   "integrity" "sha512-1nh45deeb5olNY7eX82BkPO7SSxR5SSYJiPTrTdFUVYwAl8CKMA5N9PjTYkHiRjisVcxcQ1HXdLhx2qxxJzLNQ=="
   "resolved" "https://registry.npmjs.org/nice-try/-/nice-try-1.0.5.tgz"
@@ -8488,7 +8495,7 @@
   "resolved" "https://registry.npmjs.org/sweetalert2/-/sweetalert2-10.14.0.tgz"
   "version" "10.14.0"
 
-"swiper@^6.4.15":
+"swiper@^6.4.15", "swiper@>=6.0.0":
   "integrity" "sha512-FuURJ7hE9lCxPnXIJRKu2QCe+roE8CZV2WYsZxz+dcEd3kebgK0JRvV32HpM3LmFOz7UW+k2Dkdfxekk2kTfMg=="
   "resolved" "https://registry.npmjs.org/swiper/-/swiper-6.4.15.tgz"
   "version" "6.4.15"
