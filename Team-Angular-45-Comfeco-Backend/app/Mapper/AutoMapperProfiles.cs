@@ -4,6 +4,7 @@ using BackendComfeco.DTOs.Area;
 using BackendComfeco.DTOs.Auth;
 using BackendComfeco.DTOs.Comunity;
 using BackendComfeco.DTOs.ContentCreators;
+using BackendComfeco.DTOs.Event;
 using BackendComfeco.DTOs.SocialNetwork;
 using BackendComfeco.DTOs.Sponsor;
 using BackendComfeco.DTOs.Technology;
@@ -13,6 +14,7 @@ using BackendComfeco.DTOs.WorkShop;
 using BackendComfeco.Models;
 
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc.Diagnostics;
 using Microsoft.Extensions.Options;
 
 namespace BackendComfeco.Mapper
@@ -119,7 +121,15 @@ namespace BackendComfeco.Mapper
         CreateMap<UserTechnologyCreationDTO, ApplicationUserTechnology>()
                 .ReverseMap();
 
-    }
+
+
+            // =========================================================
+            //                          Events
+            // =========================================================
+
+            CreateMap<Event, EventDTO>().ReverseMap();
+            CreateMap<EventCreationDTO, Event>();
+        }
 
 
 
