@@ -87,5 +87,7 @@ namespace BackendComfeco
 
         public DbSet<Sponsor> Sponsors { get; set; }
 
+        public DbSet<Event> Events { get; set; }
+
     }
 }
