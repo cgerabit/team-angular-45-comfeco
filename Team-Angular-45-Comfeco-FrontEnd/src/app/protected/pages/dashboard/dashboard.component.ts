@@ -9,6 +9,8 @@ import SwiperCore, {
   Autoplay,
   SwiperOptions,
 } from 'swiper/core';
+import { Event } from '../../interfaces/interfaces';
+import { HomepageService } from '../../services/homepage.service';
 // install Swiper modules
 SwiperCore.use([Navigation, Pagination, Scrollbar, A11y, Autoplay]);
 
@@ -36,8 +38,10 @@ export class DashboardComponent implements OnInit {
   timerId: number = null;
 
   //datos del servicio
-  date = new Date("2022-02-23: 00:00");
-  desc:string = 'Inicio del Proyecto'
+  date:Date;
+  desc:string;
+  finalizado:boolean = false;
+
 
   public slides = [
     'https://www.comfeco.com/images/leaders/leader-bezael_perez.webp',
@@ -108,18 +112,21 @@ export class DashboardComponent implements OnInit {
     autoplay:false,
     centeredSlides:false,
     centeredSlidesBounds:true,
-    slidesPerView:3,
+    slidesPerView:2,
 
     breakpoints: {
-      640: {
-        slidesPerView: 3,
+      360:{
+        slidesPerView:3
       },
       768: {
         slidesPerView: 5,
       },
       1024: {
-        slidesPerView: 7
+        slidesPerView: 6
       },
+      1368:{
+        slidesPerView: 7
+      }
     }
   };
 
@@ -132,12 +139,31 @@ export class DashboardComponent implements OnInit {
   }
 
 
-  constructor() { }
+
+  constructor(private hs:HomepageService) {
+
+   }
+
 
   ngOnInit(): void {
-    //Comprobar si la fecha del evento ya fue vencida
-    if( new Date() <= this.date){
-          this.timerId = countdown( this.date,(ts) => {
+
+    this.hs.eventInfo().subscribe((resp:Event[])=>{
+      this.date =  new Date(resp[0].date);
+      //fecha pruebas
+      //this.date = new Date("2021-02-25 20:46");
+      this.desc = resp[0].name;
+      //funcionalidad del contador
+      this.contador(this.date);
+    });
+
+
+  }
+
+  //funcionalidad del contador
+  contador(date:Date):void{
+     //Comprobar si la fecha del evento ya fue vencida
+     if( new Date() <= date){
+      this.timerId = countdown( date,(ts) => {
             //comprobar que la fecha actual sea menor a la fecha del evento
             if(ts.value < 0){
               this.time = ts;
@@ -148,6 +174,7 @@ export class DashboardComponent implements OnInit {
                 minutes:0,
                 seconds:0
               }
+              this.finalizado=true;
               clearInterval(this.timerId);
             }
             //console.log(this.time);
@@ -161,8 +188,8 @@ export class DashboardComponent implements OnInit {
           minutes:0,
           seconds:0
         }
+        this.finalizado=true;
     }
-
   }
 
   ngOnDestroy(): void {
