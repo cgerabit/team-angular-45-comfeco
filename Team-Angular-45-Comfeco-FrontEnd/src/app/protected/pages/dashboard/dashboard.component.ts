@@ -150,7 +150,7 @@ export class DashboardComponent implements OnInit {
     this.hs.eventInfo().subscribe((resp:Event[])=>{
       this.date =  new Date(resp[0].date);
       //fecha pruebas
-      //this.date = new Date("2021-02-25 20:46");
+      //this.date = new Date("2021-02-25 20:58");
       this.desc = resp[0].name;
       //funcionalidad del contador
       this.contador(this.date);
@@ -168,12 +168,6 @@ export class DashboardComponent implements OnInit {
             if(ts.value < 0){
               this.time = ts;
             }else{
-              this.time = {
-                days:0,
-                hours:0,
-                minutes:0,
-                seconds:0
-              }
               this.finalizado=true;
               clearInterval(this.timerId);
             }
@@ -182,12 +176,6 @@ export class DashboardComponent implements OnInit {
       }, countdown.DAYS | countdown.HOURS | countdown.MINUTES | countdown.SECONDS);
 
     }else{
-        this.time = {
-          days:0,
-          hours:0,
-          minutes:0,
-          seconds:0
-        }
         this.finalizado=true;
     }
   }
