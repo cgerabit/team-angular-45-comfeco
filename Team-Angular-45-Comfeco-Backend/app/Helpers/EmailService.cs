@@ -29,7 +29,7 @@ namespace BackendComfeco.Helpers
 
         // we check for new emails every 3 seconds 
         readonly System.Timers.Timer EmailTimer
-              = new System.Timers.Timer(TimeSpan.FromSeconds(3).TotalMilliseconds);
+              = new System.Timers.Timer(TimeSpan.FromSeconds(4).TotalMilliseconds);
 
         public EmailService(IOptions<MailSettings> mailSettings)
         {
@@ -54,7 +54,7 @@ namespace BackendComfeco.Helpers
             {
                 recollectionSemaphore.Release();
             }
-            if (processingRequest==null || processingRequest.Count == 0)
+            if (processingRequest == null || processingRequest.Count == 0)
             {
                 return;
             }
@@ -62,7 +62,7 @@ namespace BackendComfeco.Helpers
             using var smtp = new SmtpClient();
             try
             {
-              
+
                 await smtp.ConnectAsync(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.StartTls);
                 await smtp.AuthenticateAsync(_mailSettings.Mail, _mailSettings.Password);
             }
@@ -84,40 +84,41 @@ namespace BackendComfeco.Helpers
                 }
             }
 
-            if( !smtp.IsConnected || !smtp.IsAuthenticated)
+            if (!smtp.IsConnected || !smtp.IsAuthenticated)
             {
                 return;
             }
 
-           var emailSendingTasks =  processingRequest.Select(async emailReq => {
+            var emailSendingTasks = processingRequest.Select(async emailReq =>
+            {
 
-               try
-               {
+                try
+                {
 
-                   var email = new MimeMessage
-                   {
-                       Sender = MailboxAddress.Parse(_mailSettings.Mail)
-                   };
-                   email.To.Add(MailboxAddress.Parse(emailReq.ToEmail));
-                   email.Subject = emailReq.Subject;
+                    var email = new MimeMessage
+                    {
+                        Sender = MailboxAddress.Parse(_mailSettings.Mail)
+                    };
+                    email.To.Add(MailboxAddress.Parse(emailReq.ToEmail));
+                    email.Subject = emailReq.Subject;
 
-                   var builder = new BodyBuilder
-                   {
-                       HtmlBody = emailReq.Body
-                   };
-                   email.Body = builder.ToMessageBody();
-                   await emailSemaphore.WaitAsync();
-                   await smtp.SendAsync(email);
-               }
-               finally
-               {
-                   emailSemaphore.Release();
-               }
+                    var builder = new BodyBuilder
+                    {
+                        HtmlBody = emailReq.Body
+                    };
+                    email.Body = builder.ToMessageBody();
+                    await emailSemaphore.WaitAsync();
+                    await smtp.SendAsync(email);
+                }
+                finally
+                {
+                    emailSemaphore.Release();
+                }
             });
 
 
             await Task.WhenAll(emailSendingTasks);
-          
+
             smtp.Disconnect(true);
 
         }

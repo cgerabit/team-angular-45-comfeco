@@ -347,6 +347,28 @@ namespace BackendComfeco.Controllers
 
         }
 
+        [HttpPost("changepwd")]
+        public async Task<ActionResult> ChangePassword(ChangePasswordDTO changePasswordDTO)
+        {
+            var user = await userManager.FindByIdAsync(changePasswordDTO.UserId);
+            if (user==null)
+            {
+                return NotFound();
+            }
+
+           var result = await userManager.ChangePasswordAsync(user, changePasswordDTO.CurrentPassword, changePasswordDTO.NewPassword);
+
+            if (result.Succeeded)
+            {
+                return Ok();
+            }
+
+            return BadRequest("Invalid attempt");
+
+        }
+
+
+
         [HttpGet("externalproviders")]
         public async Task<ActionResult<List<ExternalProvidersDTO>>> GetExternalProviders()
         {

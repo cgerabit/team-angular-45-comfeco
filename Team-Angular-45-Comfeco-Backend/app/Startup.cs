@@ -1,3 +1,4 @@
+using BackendComfeco.DTOs.Email;
 using BackendComfeco.Helpers;
 using BackendComfeco.Models;
 using BackendComfeco.Security;
@@ -20,6 +21,7 @@ using Microsoft.OpenApi.Models;
 
 using System;
 using System.Text;
+using System.Threading.Channels;
 
 namespace BackendComfeco
 {
@@ -114,6 +116,8 @@ namespace BackendComfeco
 
                 options.DefaultPolicyName = ApplicationConstants.DevelopmentPolicyName;
             });
+
+            services.AddSingleton(Channel.CreateUnbounded<MailRequest>());
             services.AddSingleton<IEmailService, EmailService>();
             services.AddTransient<ThreadSafeRandom>();
             services.AddAutoMapper(typeof(Startup));
