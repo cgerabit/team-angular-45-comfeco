@@ -63,7 +63,7 @@
 <h2 class="title">Preparate lo bueno esta por venir</h2>
 <div class="contador">
   <!--contador-->
-  <div class="timer">
+  <div class="timer" *ngIf="time != null && finalizado == false">
     <div class="timer-desc">
       <p>{{desc}}</p>
     </div>
@@ -85,6 +85,16 @@
         <span>Segundos</span>
       </p>
     </div>
+  </div>
+  <div class="timer" *ngIf="finalizado">
+    <div class="timer-desc">
+      <p>{{desc}}</p>
+    </div>
+    <div class="timer-time">
+      <p class="timer-time-unit">
+        <strong>A CODEAR !!</strong>
+        <span>Tiempo completado</span>
+      </p>
   </div>
   <!--contador-->
 </div>
