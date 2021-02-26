@@ -4,3 +4,11 @@ export interface Event {
   date: Date;
   isActive: boolean
 }
+
+export interface Technologies {
+  id: number;
+  name: string;
+  technologyIcon?: string;
+  areaId: number
+}
+

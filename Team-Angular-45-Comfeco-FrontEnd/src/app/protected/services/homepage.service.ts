@@ -29,6 +29,16 @@ export class HomepageService {
       catchError((err) => of(err.error))
     );
   }
+
+  getTecnologias() {
+    const url = `${this.baseUrl}/technologies`;
+    return this.http.get(url).pipe(
+      tap((resp) => {
+        console.log(resp);
+      }),
+      catchError((err) => of(err.error))
+    );
+  }
 }
 
 

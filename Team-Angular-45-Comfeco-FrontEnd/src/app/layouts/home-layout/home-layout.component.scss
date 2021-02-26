@@ -30,6 +30,7 @@
     height: 320px;
     background-color: $primary;
     border-radius: 20px;
+    padding: 10px;
     @media screen and (min-width: 70em) {
       margin-top: 100px;
     }
@@ -148,4 +149,31 @@
   &.open {
     width: 240px;
   }
+}
+
+.taller-izquierda {
+    text-decoration: none;
+    float: left;
+    position: relative;
+    color: aliceblue;
+    padding: 5px;
+}
+
+.taller-derecha {
+  text-decoration: none;
+  float: right;
+  position: relative;
+  color: blue;
+  padding: 5px;
+}
+
+.taller-separador {
+  color: white;
+  padding-left: 5px;
+  border: solid darkgrey 1px ;
+  background-color: darkgrey;
+}
+
+hr{
+  border: solid black 1px;
 }

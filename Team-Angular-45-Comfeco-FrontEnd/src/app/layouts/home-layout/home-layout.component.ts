@@ -2,6 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../auth/services/auth.service';
 
+import { Technologies } from '../../protected/interfaces/interfaces';
+import { HomepageService } from '../../protected/services/homepage.service';
+
+
 @Component({
   selector: 'app-home-layout',
   templateUrl: './home-layout.component.html',
@@ -9,8 +13,13 @@ import { AuthService } from '../../auth/services/auth.service';
 })
 export class HomeLayoutComponent implements OnInit {
 
-  constructor(private router: Router,
-    private authService: AuthService) { }
+  areas:  any = [];
+
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    private hs: HomepageService
+    ) { }
   //variable para abrir el menu
   sideNavIsOpen: boolean = false;
   //obtener datos del usuario
@@ -23,6 +32,9 @@ export class HomeLayoutComponent implements OnInit {
     };
   }
   ngOnInit(): void {
+    this.hs.getTecnologias().subscribe((resp:Technologies[])=>{
+        this.areas = resp;
+    });
   }
 
   logout(){

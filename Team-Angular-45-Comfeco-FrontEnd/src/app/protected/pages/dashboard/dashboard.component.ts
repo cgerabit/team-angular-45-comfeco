@@ -42,7 +42,6 @@ export class DashboardComponent implements OnInit {
   desc:string;
   finalizado:boolean = false;
 
-
   public slides = [
     'https://www.comfeco.com/images/leaders/leader-bezael_perez.webp',
     'https://www.comfeco.com/images/leaders/leader-manuel_ojeda.webp',
@@ -152,11 +151,10 @@ export class DashboardComponent implements OnInit {
       //fecha pruebas
       //this.date = new Date("2021-02-25 20:58");
       this.desc = resp[0].name;
+      
       //funcionalidad del contador
       this.contador(this.date);
     });
-
-
   }
 
   //funcionalidad del contador
