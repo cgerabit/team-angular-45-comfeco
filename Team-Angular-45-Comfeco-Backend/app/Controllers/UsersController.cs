@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 
+using BackendComfeco.DTOs.Event;
 using BackendComfeco.DTOs.Shared;
 using BackendComfeco.DTOs.SocialNetwork;
 using BackendComfeco.DTOs.Technology;
@@ -11,6 +12,7 @@ using BackendComfeco.Models;
 using BackendComfeco.Settings;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 
 using MimeKit.Encodings;
@@ -116,6 +118,7 @@ namespace BackendComfeco.Controllers
 
             return mapper.Map<UserProfileDTO>(user);
         }
+      
 
         [HttpGet("profile/{userId}/socialnetworks")]
         public async Task<ActionResult<List<ApplicationUserSocialNetworkDTO>>> GetSocialNetWork(string userId)
@@ -276,6 +279,8 @@ namespace BackendComfeco.Controllers
 
             return NoContent();
         } 
+
+       
 
         [HttpPost("profile/{userId}/technologies")]
         public async Task<ActionResult> CreateOrReplaceTechnology(string userId,UserTechnologyCreationDTO userTechnologyCreationDTO)

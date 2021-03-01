@@ -15,6 +15,9 @@ namespace BackendComfeco.Models
 
         public List<Technology> Technologies { get; set; }
 
-        
+        public List<ApplicationUser> Specialists { get; set; }
+
+
+
     }
 }

@@ -2,11 +2,15 @@
 
 namespace BackendComfeco.DTOs.Auth
 {
-    public class ConfirmEmailDTO
+    public class ChangeEmailDTO
     {
         [Required]
         public string UserId { get; set; }
         [Required]
-        public string Token { get; set; }
+        public string Password { get; set; }
+
+        [Required]
+        [EmailAddress]
+        public string NewEmail { get; set; }
     }
 }

@@ -38,7 +38,6 @@ namespace BackendComfeco.Controllers
         }
 
         [HttpGet]
-        [Authorize(AuthenticationSchemes =JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<List<AreaDTO>>> Get([FromQuery]PaginationDTO paginationDTO)
         {
             return await Get<Area, AreaDTO>(paginationDTO);
@@ -95,7 +94,6 @@ namespace BackendComfeco.Controllers
             return NoContent();
         }
 
-        [Authorize(Roles =ApplicationConstants.Roles.ContentCreatorRoleName)]
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)
         {

@@ -5,22 +5,21 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
+using Org.BouncyCastle.Math.EC.Rfc7748;
 
 namespace BackendComfeco
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
-        
+
         {
-            
+
         }
 
-       
+
         protected override void OnModelCreating(ModelBuilder builder)
-        { 
+        {
             base.OnModelCreating(builder);
 
             builder.Entity<ApplicationUser>()
@@ -30,14 +29,37 @@ namespace BackendComfeco
               .IsRequired()
               .OnDelete(DeleteBehavior.Cascade);
 
-         
+
 
             builder.Entity<ApplicationUserSocialNetwork>().HasKey(x => new { x.UserId, x.SocialNetworkId });
 
             builder.Entity<ApplicationUserTechnology>().HasKey(x => new { x.UserId, x.TechnologyId });
 
+            builder.Entity<ApplicationUserEvents>().HasKey(x => new
+            {
+                x.UserId,
+                x.EventId
+            });
 
             builder.Entity<UserAuthenticationCode>().HasKey(x => x.Token);
+
+            builder.Entity<ApplicationUser>()
+                .HasMany(x =>x.ApplicationUserEvents)
+                .WithOne(x=>x.User)
+                .HasForeignKey(x=>x.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<ApplicationUser>()
+                .HasOne(x => x.Specialty)
+                .WithMany(x => x.Specialists)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<ApplicationUserBadges>().HasKey(x => new
+            {
+                x.UserId,x.BadgeId
+
+            });
+
 
             //-----------------------ONLY DEBUG------------------------------
 
@@ -89,5 +111,14 @@ namespace BackendComfeco
 
         public DbSet<Event> Events { get; set; }
 
+        public DbSet<ApplicationUserEvents> ApplicationUserEvents { get; set; }
+
+        public DbSet<Country> Countries { get; set; }
+
+        public DbSet<Gender> Genders { get; set; }
+
+
+        public DbSet<ApplicationUserBadges> ApplicationUserBadges { get; set; }
+        public DbSet<Badge> Badges { get; set; }
     }
 }
