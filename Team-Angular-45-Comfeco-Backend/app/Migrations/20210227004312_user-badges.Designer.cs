@@ -4,14 +4,16 @@ using BackendComfeco;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BackendComfeco.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210227004312_user-badges")]
+    partial class userbadges
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,7 +39,7 @@ namespace BackendComfeco.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("CountryId")
+                    b.Property<int>("CountryId")
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
@@ -47,7 +49,7 @@ namespace BackendComfeco.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("GenderId")
+                    b.Property<int>("GenderId")
                         .HasColumnType("int");
 
                     b.Property<bool>("LockoutEnabled")
@@ -82,7 +84,7 @@ namespace BackendComfeco.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("SpecialtyId")
+                    b.Property<int>("SpecialtyId")
                         .HasColumnType("int");
 
                     b.Property<bool>("TwoFactorEnabled")
@@ -498,7 +500,7 @@ namespace BackendComfeco.Migrations
                         new
                         {
                             Id = "6a8af04b-0405-4cd2-bc20-d59433235153",
-                            ConcurrencyStamp = "57373875-438b-4719-b708-09c169294d09",
+                            ConcurrencyStamp = "808c5fb3-1463-4242-96bd-42cc74d46c9f",
                             Name = "ContentCreator",
                             NormalizedName = "ContentCreator"
                         });
@@ -612,16 +614,21 @@ namespace BackendComfeco.Migrations
                 {
                     b.HasOne("BackendComfeco.Models.Country", "Country")
                         .WithMany("Users")
-                        .HasForeignKey("CountryId");
+                        .HasForeignKey("CountryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("BackendComfeco.Models.Gender", "Gender")
                         .WithMany("Users")
-                        .HasForeignKey("GenderId");
+                        .HasForeignKey("GenderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("BackendComfeco.Models.Area", "Specialty")
                         .WithMany("Specialists")
                         .HasForeignKey("SpecialtyId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.Navigation("Country");
 

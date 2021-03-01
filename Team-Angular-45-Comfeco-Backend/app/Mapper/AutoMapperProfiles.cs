@@ -2,9 +2,12 @@
 
 using BackendComfeco.DTOs.Area;
 using BackendComfeco.DTOs.Auth;
+using BackendComfeco.DTOs.Badge;
 using BackendComfeco.DTOs.Comunity;
 using BackendComfeco.DTOs.ContentCreators;
+using BackendComfeco.DTOs.Country;
 using BackendComfeco.DTOs.Event;
+using BackendComfeco.DTOs.Gender;
 using BackendComfeco.DTOs.SocialNetwork;
 using BackendComfeco.DTOs.Sponsor;
 using BackendComfeco.DTOs.Technology;
@@ -129,6 +132,25 @@ namespace BackendComfeco.Mapper
 
             CreateMap<Event, EventDTO>().ReverseMap();
             CreateMap<EventCreationDTO, Event>();
+
+            // =========================================================
+            //                          Countries
+            // =========================================================
+            CreateMap<Country, CountryDTO>().ReverseMap();
+            CreateMap<CountryCreationDTO, Country>();
+            // =========================================================
+            //                          Genders
+            // =========================================================
+            CreateMap<Gender, GenderDTO>().ReverseMap();
+            CreateMap<GenderCreationDTO, Gender>();
+            // =========================================================
+            //                          Badges
+            // =========================================================
+
+            CreateMap<Badge, BadgeDTO>().ReverseMap();
+            CreateMap<BadgeCreationDTO, Badge>()
+                .ForMember(b => b.BadgeIcon, options => options.Ignore());
+
         }
 
 
@@ -137,3 +159,4 @@ namespace BackendComfeco.Mapper
 
     }
 }
+

@@ -4,14 +4,16 @@ using BackendComfeco;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BackendComfeco.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210227001113_new-entities-and-user-properties")]
+    partial class newentitiesanduserproperties
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,14 +32,11 @@ namespace BackendComfeco.Migrations
                     b.Property<string>("Biography")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("BornDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("CountryId")
+                    b.Property<int>("CountryId")
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
@@ -47,7 +46,7 @@ namespace BackendComfeco.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("GenderId")
+                    b.Property<int>("GenderId")
                         .HasColumnType("int");
 
                     b.Property<bool>("LockoutEnabled")
@@ -82,7 +81,7 @@ namespace BackendComfeco.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("SpecialtyId")
+                    b.Property<int>("SpecialtyId")
                         .HasColumnType("int");
 
                     b.Property<bool>("TwoFactorEnabled")
@@ -109,24 +108,6 @@ namespace BackendComfeco.Migrations
                     b.HasIndex("SpecialtyId");
 
                     b.ToTable("AspNetUsers");
-                });
-
-            modelBuilder.Entity("BackendComfeco.Models.ApplicationUserBadges", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("BadgeId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("GetDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("UserId", "BadgeId");
-
-                    b.HasIndex("BadgeId");
-
-                    b.ToTable("ApplicationUserBadges");
                 });
 
             modelBuilder.Entity("BackendComfeco.Models.ApplicationUserEvents", b =>
@@ -204,24 +185,6 @@ namespace BackendComfeco.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Areas");
-                });
-
-            modelBuilder.Entity("BackendComfeco.Models.Badge", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("BadgeIcon")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Badges");
                 });
 
             modelBuilder.Entity("BackendComfeco.Models.Comunity", b =>
@@ -498,7 +461,7 @@ namespace BackendComfeco.Migrations
                         new
                         {
                             Id = "6a8af04b-0405-4cd2-bc20-d59433235153",
-                            ConcurrencyStamp = "57373875-438b-4719-b708-09c169294d09",
+                            ConcurrencyStamp = "cc3035aa-9b12-48dd-b4d5-2b7976f147ee",
                             Name = "ContentCreator",
                             NormalizedName = "ContentCreator"
                         });
@@ -612,41 +575,27 @@ namespace BackendComfeco.Migrations
                 {
                     b.HasOne("BackendComfeco.Models.Country", "Country")
                         .WithMany("Users")
-                        .HasForeignKey("CountryId");
+                        .HasForeignKey("CountryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("BackendComfeco.Models.Gender", "Gender")
                         .WithMany("Users")
-                        .HasForeignKey("GenderId");
+                        .HasForeignKey("GenderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("BackendComfeco.Models.Area", "Specialty")
                         .WithMany("Specialists")
                         .HasForeignKey("SpecialtyId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.Navigation("Country");
 
                     b.Navigation("Gender");
 
                     b.Navigation("Specialty");
-                });
-
-            modelBuilder.Entity("BackendComfeco.Models.ApplicationUserBadges", b =>
-                {
-                    b.HasOne("BackendComfeco.Models.Badge", "Badge")
-                        .WithMany("ApplicationUserBadges")
-                        .HasForeignKey("BadgeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BackendComfeco.Models.ApplicationUser", "User")
-                        .WithMany("ApplicationUserBadges")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Badge");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BackendComfeco.Models.ApplicationUserEvents", b =>
@@ -789,8 +738,6 @@ namespace BackendComfeco.Migrations
 
             modelBuilder.Entity("BackendComfeco.Models.ApplicationUser", b =>
                 {
-                    b.Navigation("ApplicationUserBadges");
-
                     b.Navigation("ApplicationUserEvents");
 
                     b.Navigation("ApplicationUserSocialNetworks");
@@ -807,11 +754,6 @@ namespace BackendComfeco.Migrations
                     b.Navigation("Specialists");
 
                     b.Navigation("Technologies");
-                });
-
-            modelBuilder.Entity("BackendComfeco.Models.Badge", b =>
-                {
-                    b.Navigation("ApplicationUserBadges");
                 });
 
             modelBuilder.Entity("BackendComfeco.Models.Country", b =>

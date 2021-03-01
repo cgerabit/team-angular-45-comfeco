@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 
 using System;
@@ -171,7 +172,7 @@ namespace BackendComfeco.Controllers
         public async Task<ActionResult<TokenResponse>> Login(LoginDTO loginDTO)
         {
             ApplicationUser user = await (loginDTO.IsEmail ? userManager.FindByEmailAsync(loginDTO.UserName) : userManager.FindByNameAsync(loginDTO.UserName));
-               
+
             if (user == null)
             {
 
@@ -219,7 +220,122 @@ namespace BackendComfeco.Controllers
 
         }
 
+        [HttpPost("changeusername")]
+        public async Task<ActionResult> ChangeUsername(ChangeUsernameDTO changeUsernameDTO)
+        {
 
+            
+            var user = await userManager.FindByIdAsync(changeUsernameDTO.UserId);
+            if (user==null)
+            {
+                return NotFound();
+            }
+
+            bool inUse = await applicationDbContext.Users.AnyAsync(u=> u.UserName.ToLower() == changeUsernameDTO.newUsername.ToLower());
+            if (inUse)
+            {
+                return BadRequest("El nombre de usuario esta en uso");
+            }
+
+            var result = await signInManager.CheckPasswordSignInAsync(user, changeUsernameDTO.Password,false);
+
+            if (result.Succeeded)
+            {
+                if (user.EmailConfirmed)
+                {
+
+                    await CreateChangeUsername(user, changeUsernameDTO.newUsername);
+
+                    return Ok(new { needConfirm = true });
+
+                }
+                else
+                {
+                    applicationDbContext.Attach(user);
+
+                    user.UserName = changeUsernameDTO.newUsername;
+                    user.NormalizedUserName = changeUsernameDTO.newUsername.Replace(" ", "_").ToUpper();
+
+                    await applicationDbContext.SaveChangesAsync();
+
+                    return Ok(new {needConfirm =false });
+
+                }
+            }
+            
+           
+
+            
+            
+
+            return BadRequest("Credenciales invalidas");
+
+        }
+
+        [HttpGet("confirmchangeusername")]
+        public async Task<ActionResult> ConfirmChangeUsername([FromQuery]ConfirmChangeUsername confirmChangeUsername)
+        {
+            var user = await userManager.FindByIdAsync(confirmChangeUsername.UserId);
+
+            if (user==null)
+            {
+                return NotFound();
+            }
+
+            var tokenCheck = await userManager.VerifyUserTokenAsync(user, ApplicationConstants.AuthCodeTokenProviderName, $"username-{confirmChangeUsername.NewUsername}", confirmChangeUsername.Token);
+            if (tokenCheck)
+            {
+                applicationDbContext.Attach(user);
+
+                user.UserName = confirmChangeUsername.NewUsername;
+                user.NormalizedUserName = confirmChangeUsername.NewUsername.Replace(" ", "_").ToUpper();
+
+                await applicationDbContext.SaveChangesAsync();
+
+                return Redirect($"{ApplicationConstants.LoginFrontendDefaultEndpoint}?msg=Has cambiado tu nombre de usuario exitosamente");
+            }
+
+            return Redirect($"{ApplicationConstants.LoginFrontendDefaultEndpoint}?msg=El enlace es incorrecto o expiro");
+
+
+
+        }
+        private async Task<bool> CreateChangeUsername(ApplicationUser user,
+            string newUsername)
+        {
+
+            if (user == null)
+            {
+                return false;
+            }
+
+            var currentUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}";
+
+
+            string purpose = $"username-{newUsername}";
+            var token = await userManager.GenerateUserTokenAsync(user, ApplicationConstants.AuthCodeTokenProviderName, purpose);
+
+            string url = $"{currentUrl}/api/account/confirmchangeusername?UserId={HttpUtility.UrlEncode(user.Id)}&Token={HttpUtility.UrlEncode(token)}&NewUsername={HttpUtility.UrlEncode(newUsername)}";
+
+
+            string body = System.IO.File.ReadAllText(Path.Combine(env.WebRootPath, "templates", "index.htm"));
+
+
+
+
+            var logoSrc = $"{currentUrl}/LogoEmail756x244.png";
+
+            await mailService.SendEmailAsync(new MailRequest
+            {
+
+                Body = $"{body.Replace("TEXTOCONFIRMAR", $"Confirmar Email").Replace("_URL_", url).Replace("_SALUDO_", $"Hola, {user.UserName} por favor has click en el enlace para confirmar que eres el propietario de este email.").Replace("SRCLOGO", $"{logoSrc}")}",
+                Subject = $"Hola {user.UserName} Por favor confirma tu cuenta",
+                ToEmail = user.Email,
+            });
+
+            return true;
+
+        }
 
         [HttpGet("confirmaccount")]
         public async Task<ActionResult> ConfirmAccount([FromQuery] ConfirmEmailDTO confirmEmailDTO)
@@ -365,6 +481,84 @@ namespace BackendComfeco.Controllers
 
             return BadRequest("Invalid attempt");
 
+        }
+
+        [HttpPost("changeemail")]
+        public async Task<ActionResult> ChangeEmail(ChangeEmailDTO changeEmailDTO)
+        {
+            var user =await  userManager.FindByIdAsync(changeEmailDTO.UserId);
+            if (user==null)
+            {
+                return NotFound();
+            }
+            
+            
+            if(changeEmailDTO.NewEmail == user.Email)
+            {
+                return BadRequest("No puedes introducir el mismo email");
+            }
+
+            var emailExist = await applicationDbContext.Users.AnyAsync(u => u.NormalizedEmail.ToLower() == changeEmailDTO.NewEmail.ToLower());
+
+            if (emailExist)
+            {
+                return BadRequest("Ese email ya esta en uso");
+            }
+            var result = await signInManager.CheckPasswordSignInAsync(user, changeEmailDTO.Password, false);
+
+            if (result.Succeeded)
+            {
+                if (user.EmailConfirmed)
+                {
+                    // Send email to change the email
+                    await SendChangeEmail(user, changeEmailDTO.NewEmail);
+                    return Ok(new { needConfirm = true});
+                }
+                else
+                {
+                    // previus email is not confirmed
+                    string token = await userManager.GenerateChangeEmailTokenAsync(user, changeEmailDTO.NewEmail);
+
+                    var changeResult = await userManager.ChangeEmailAsync(user, changeEmailDTO.NewEmail, token);
+
+
+                    if (changeResult.Succeeded)
+                    {
+                        await SendEmailConfirmation(user);
+                        return Ok(new { needConfirm = false });
+                    }
+
+                }
+
+            }
+            return BadRequest("Has indicado una contraseña incorrecta");
+
+
+        }
+
+        [HttpGet("comfirmemailchange")]
+        public async Task<ActionResult> ConfirmChangeEmail([FromQuery]ConfirmEmailChangeDTO confirmEmailDTO)
+        {
+            var user = await userManager.FindByIdAsync(confirmEmailDTO.UserId);
+            if (user!=null)
+            {
+                var result = await userManager.ChangeEmailAsync(user, confirmEmailDTO.newEmail, confirmEmailDTO.Token);
+                if (result.Succeeded)
+                {
+
+                    applicationDbContext.Attach(user);
+                    
+                    user.EmailConfirmed = false;
+                    
+                    await applicationDbContext.SaveChangesAsync();
+
+                    await SendEmailConfirmation(user);
+
+                    return Redirect($"{ApplicationConstants.LoginFrontendDefaultEndpoint}?msg=Has cambiado tu email correctamente");
+                }
+            }
+
+            return Redirect($"{ApplicationConstants.LoginFrontendDefaultEndpoint}?msg=El enlace es incorrecto o ha expirado");
         }
 
 
@@ -609,6 +803,40 @@ namespace BackendComfeco.Controllers
             }
 
         }
+
+        private async Task SendChangeEmail(ApplicationUser user, string newEmail)
+        {
+                if(user == null)
+                {
+                    return;
+                }
+
+                var token = await userManager.GenerateChangeEmailTokenAsync(user,newEmail);
+
+                var currentUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}";
+
+             string url = $"{currentUrl}/api/account/comfirmemailchange?UserId={HttpUtility.UrlEncode(user.Id)}&Token={HttpUtility.UrlEncode(token)}&newEmail={HttpUtility.UrlEncode(newEmail)}";
+
+
+
+
+            string body = System.IO.File.ReadAllText(Path.Combine(env.WebRootPath, "templates", "index.htm"));
+
+
+                var logoSrc = $"{currentUrl}/LogoEmail756x244.png";
+
+                await mailService.SendEmailAsync(new MailRequest
+                {
+
+                    Body = $"{body.Replace("TEXTOCONFIRMAR", $"Cambio de email").Replace("_URL_", url).Replace("_SALUDO_", $"Hola, {user.UserName} has solicitado un cambio de email por favor has click en el enlace para confirmar este cambio").Replace("SRCLOGO", $"{logoSrc}").Replace("BIENVENIDO", "CAMBIO DE EMAIL")}",
+                    Subject = $"Hola {user.UserName} Cambia to email aqui",
+                    ToEmail = user.Email,
+                });
+
+            
+
+        }
+
 
 
         private TokenResponse BuildToken(UserInfo userInfo, IList<string> roles, bool persistLogin)
