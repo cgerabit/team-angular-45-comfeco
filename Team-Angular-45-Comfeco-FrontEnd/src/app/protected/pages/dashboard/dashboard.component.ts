@@ -9,7 +9,7 @@ import SwiperCore, {
   Autoplay,
   SwiperOptions,
 } from 'swiper/core';
-import { Event, Technologies } from '../../interfaces/interfaces';
+import { Event, Technologies, Comunity } from '../../interfaces/interfaces';
 import { HomepageService } from '../../services/homepage.service';
 // install Swiper modules
 SwiperCore.use([Navigation, Pagination, Scrollbar, A11y, Autoplay]);
@@ -34,7 +34,7 @@ interface Time {
 export class DashboardComponent implements OnInit {
 
   areas:  any = [];
-
+  comunidades :Comunity[]=[];
   //tiempo
   time:Time = null;
   timerId: number = null;
@@ -43,6 +43,8 @@ export class DashboardComponent implements OnInit {
   date:Date;
   desc:string;
   finalizado:boolean = false;
+
+
 
   public slides = [
     'https://www.comfeco.com/images/leaders/leader-bezael_perez.webp',
@@ -152,6 +154,15 @@ export class DashboardComponent implements OnInit {
         this.areas = resp;
     });
 
+    this.hs.getComunidades({
+      Page:1,
+      RecordsPerPage:4
+    })
+    .subscribe(resp => {
+      this.comunidades=resp;
+    },err => {
+      console.log("Ha ocurrido un error",err);
+    })
     this.hs.eventInfo().subscribe((resp:Event[])=>{
       this.date =  new Date(resp[0].date);
       //fecha pruebas
