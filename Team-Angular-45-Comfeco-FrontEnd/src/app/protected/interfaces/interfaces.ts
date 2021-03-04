@@ -12,3 +12,10 @@ export interface Technologies {
   areaId: number
 }
 
+export interface Comunity {
+
+id:number;
+name:string;
+url:string;
+
+}
