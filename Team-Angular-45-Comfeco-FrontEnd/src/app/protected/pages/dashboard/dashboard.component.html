@@ -1,100 +1,144 @@
-<div class="welcome">
-  <h1 class="welcome_title">Bienvenido a Community Fest and Code</h1>
-  <div class="divider"></div>
-  <span class="welcome_span">¡Conoce gente, aprende y Gana!</span>
-  <p class="welcome_desc">
-    La proxima edición comienza en 2022, en la cual se planea involucrar a todos
-    los programadores independientes del área de conocimiento que se encuentre,
-    todo con un mismo propósito. Aprender en comunidad!
-  </p>
-</div>
-<div class="carousel-lideres">
-  <h2 class="title">Ellos ya creen en esta iniciativa:</h2>
-  <div class="content-container-lider">
-    <swiper
-      class="swiper-container-lider"
-      [config]="config"
-      [pagination]="{ clickable: true }"
-      (indexChange)="onIndexChange($event)"
-      (swiperTransitionStart)="onSwiperEvent('transitionStart')"
-      (swiperTransitionEnd)="onSwiperEvent('transitionEnd')"
-    >
-      <ng-template *ngFor="let slide of slides" swiperSlide>
-        <div class="slide shadow">
-          <img [src]="slide" alt="image" class="img-slide img-fluid" />
-          <div class="data-slide">
-            <div class="span-container">
-              <span>JS</span>
+<app-navbar></app-navbar>
+<div class="app-layout">
+
+  <div class="comunidades shadow">
+    <p class="taller-izquierda">Talleres</p>
+    <a class="taller-derecha" href="#">Ver mas</a>
+    <div class="form-group">
+      <label for="power"></label>
+      <select class="form-control" id="power" required>
+        <option>Talleres por area de conocimiento</option>
+        <option value="" *ngFor="let area of areas">
+          {{area.name}}
+        </option>
+      </select>
+    </div>
+    <div class="taller-separador">
+      Hoy
+    </div>
+    <div>
+      <strong style="color: white;">Entrenamiento Angular</strong><br>
+      <samp style="color: darkgray; ">04:00 PM</samp><br>
+      <span style="color: whitesmoke;">By</span>  <span style="color: blue;"> Diego Viveros</span>
+      <hr>
+    </div>
+  </div>
+
+
+  <div class="component">
+    <div class="welcome">
+      <h1 class="welcome_title">Bienvenido a Community Fest and Code</h1>
+      <div class="divider"></div>
+      <span class="welcome_span">¡Conoce gente, aprende y Gana!</span>
+      <p class="welcome_desc">
+        La proxima edición comienza en 2022, en la cual se planea involucrar a todos
+        los programadores independientes del área de conocimiento que se encuentre,
+        todo con un mismo propósito. Aprender en comunidad!
+      </p>
+    </div>
+    <div class="carousel-lideres">
+      <h2 class="title">Ellos ya creen en esta iniciativa:</h2>
+      <div class="content-container-lider">
+        <swiper
+          class="swiper-container-lider"
+          [config]="config"
+          [pagination]="{ clickable: true }"
+          (indexChange)="onIndexChange($event)"
+          (swiperTransitionStart)="onSwiperEvent('transitionStart')"
+          (swiperTransitionEnd)="onSwiperEvent('transitionEnd')"
+        >
+          <ng-template *ngFor="let slide of slides" swiperSlide>
+            <div class="slide shadow">
+              <img [src]="slide" alt="image" class="img-slide img-fluid" />
+              <div class="data-slide">
+                <div class="span-container">
+                  <span>JS</span>
+                </div>
+                <p>Nombre del líder</p>
+              </div>
             </div>
-            <p>Nombre del líder</p>
-          </div>
+          </ng-template>
+
+        </swiper>
+      </div>
+    </div>
+    <div class="d-flex justify-content-between justify-align-center mb-2">
+      <h2 class="title">Sponsors</h2>
+      <button class="btn button-custom">Apoyar iniciativa</button>
+    </div>
+    <div class="carousel-sponsor">
+
+      <div class="content-container-sponsor">
+        <swiper
+          class="swiper-container-sponsor"
+          [config]="config2"
+          [pagination]="{ clickable: true }"
+          (indexChange)="onIndexChange($event)"
+          (swiperTransitionStart)="onSwiperEvent('transitionStart')"
+          (swiperTransitionEnd)="onSwiperEvent('transitionEnd')"
+        >
+          <ng-template *ngFor="let slide of slidesSponsor" swiperSlide>
+            <div class="slide shadow">
+              <img [src]="slide" alt="image" class="img-slide img-fluid" />
+            </div>
+          </ng-template>
+        </swiper>
+        <!--<div class="swiper-pagination"></div>-->
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+      </div>
+    </div>
+    <h2 class="title">Preparate lo bueno esta por venir</h2>
+    <div class="contador">
+      <!--contador-->
+      <div class="timer" *ngIf="time != null && finalizado == false">
+        <div class="timer-desc">
+          <p>{{desc}}</p>
         </div>
-      </ng-template>
-
-    </swiper>
-  </div>
-
-<div class="d-flex justify-content-between justify-align-center mb-2">
-  <h2 class="title">Sponsors</h2>
-  <button class="btn button-custom">Apoyar iniciativa</button>
-</div>
-<div class="carousel-sponsor">
-
-  <div class="content-container-sponsor">
-    <swiper
-      class="swiper-container-sponsor"
-      [config]="config2"
-      [pagination]="{ clickable: true }"
-      (indexChange)="onIndexChange($event)"
-      (swiperTransitionStart)="onSwiperEvent('transitionStart')"
-      (swiperTransitionEnd)="onSwiperEvent('transitionEnd')"
-    >
-      <ng-template *ngFor="let slide of slidesSponsor" swiperSlide>
-        <div class="slide shadow">
-          <img [src]="slide" alt="image" class="img-slide img-fluid" />
+        <div class="timer-time">
+          <p class="timer-time-unit">
+            <strong>{{time.days}}</strong>
+            <span>Dias</span>
+          </p>
+          <p class="timer-time-unit">
+            <strong>{{time.hours}}</strong>
+            <span>Horas</span>
+          </p>
+          <p class="timer-time-unit">
+            <strong>{{time.minutes}}</strong>
+            <span>Minutos</span>
+          </p>
+          <p class="timer-time-unit">
+            <strong>{{time.seconds}}</strong>
+            <span>Segundos</span>
+          </p>
         </div>
-      </ng-template>
-    </swiper>
-    <!--<div class="swiper-pagination"></div>-->
-    <div class="swiper-button-prev"></div>
-    <div class="swiper-button-next"></div>
+      </div>
+      <div class="timer" *ngIf="finalizado">
+        <div class="timer-desc">
+          <p>{{desc}}</p>
+        </div>
+        <div class="timer-time">
+          <p class="timer-time-unit">
+            <strong>A CODEAR !!</strong>
+            <span>Tiempo completado</span>
+          </p>
+      </div>
+      <!--contador-->
+    </div>
+    </div>
+  </div>
+
+
+  <div class="talleres shadow">
   </div>
 </div>
-<h2 class="title">Preparate lo bueno esta por venir</h2>
-<div class="contador">
-  <!--contador-->
-  <div class="timer" *ngIf="time != null && finalizado == false">
-    <div class="timer-desc">
-      <p>{{desc}}</p>
-    </div>
-    <div class="timer-time">
-      <p class="timer-time-unit">
-        <strong>{{time.days}}</strong>
-        <span>Dias</span>
-      </p>
-      <p class="timer-time-unit">
-        <strong>{{time.hours}}</strong>
-        <span>Horas</span>
-      </p>
-      <p class="timer-time-unit">
-        <strong>{{time.minutes}}</strong>
-        <span>Minutos</span>
-      </p>
-      <p class="timer-time-unit">
-        <strong>{{time.seconds}}</strong>
-        <span>Segundos</span>
-      </p>
-    </div>
-  </div>
-  <div class="timer" *ngIf="finalizado">
-    <div class="timer-desc">
-      <p>{{desc}}</p>
-    </div>
-    <div class="timer-time">
-      <p class="timer-time-unit">
-        <strong>A CODEAR !!</strong>
-        <span>Tiempo completado</span>
-      </p>
-  </div>
-  <!--contador-->
-</div>
+
+
+
+
+
+
+
+
+

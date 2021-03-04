@@ -9,7 +9,7 @@ import SwiperCore, {
   Autoplay,
   SwiperOptions,
 } from 'swiper/core';
-import { Event } from '../../interfaces/interfaces';
+import { Event, Technologies } from '../../interfaces/interfaces';
 import { HomepageService } from '../../services/homepage.service';
 // install Swiper modules
 SwiperCore.use([Navigation, Pagination, Scrollbar, A11y, Autoplay]);
@@ -32,6 +32,8 @@ interface Time {
 
 
 export class DashboardComponent implements OnInit {
+
+  areas:  any = [];
 
   //tiempo
   time:Time = null;
@@ -146,12 +148,16 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
 
+    this.hs.getTecnologias().subscribe((resp:Technologies[])=>{
+        this.areas = resp;
+    });
+
     this.hs.eventInfo().subscribe((resp:Event[])=>{
       this.date =  new Date(resp[0].date);
       //fecha pruebas
       //this.date = new Date("2021-02-25 20:58");
       this.desc = resp[0].name;
-      
+
       //funcionalidad del contador
       this.contador(this.date);
     });
