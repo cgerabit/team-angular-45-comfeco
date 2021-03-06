@@ -38,14 +38,14 @@
             <h2 class="title">Ellos ya creen en esta iniciativa:</h2>
             <div class="content-container-lider">
                 <swiper class="swiper-container-lider" [config]="config" [pagination]="{ clickable: true }" (indexChange)="onIndexChange($event)" (swiperTransitionStart)="onSwiperEvent('transitionStart')" (swiperTransitionEnd)="onSwiperEvent('transitionEnd')">
-                    <ng-template *ngFor="let slide of slides" swiperSlide>
+                    <ng-template *ngFor="let slide of contentCreators" swiperSlide>
                         <div class="slide shadow">
-                            <img [src]="slide" alt="image" class="img-slide img-fluid" />
+                            <img [src]="slide.profilePicture" alt="image" class="img-slide img-fluid" />
                             <div class="data-slide">
                                 <div class="span-container">
                                     <span>JS</span>
                                 </div>
-                                <p>Nombre del líder</p>
+                                <p>{{slide.realName}}</p>
                             </div>
                         </div>
                     </ng-template>
@@ -61,9 +61,9 @@
 
             <div class="content-container-sponsor">
                 <swiper class="swiper-container-sponsor" [config]="config2" [pagination]="{ clickable: true }" (indexChange)="onIndexChange($event)" (swiperTransitionStart)="onSwiperEvent('transitionStart')" (swiperTransitionEnd)="onSwiperEvent('transitionEnd')">
-                    <ng-template *ngFor="let slide of slidesSponsor" swiperSlide>
+                    <ng-template *ngFor="let slide of sponsors" swiperSlide>
                         <div class="slide shadow">
-                            <img [src]="slide" alt="image" class="img-slide img-fluid" />
+                            <img [src]="slide.sponsorIcon" alt="image" class="img-slide img-fluid" />
                         </div>
                     </ng-template>
                 </swiper>

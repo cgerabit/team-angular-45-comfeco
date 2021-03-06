@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { Comunity } from '../interfaces/interfaces';
+import { Comunity, Sponsor, ContentCreator } from '../interfaces/interfaces';
 import { Pagination } from '../../auth/interfaces/interfaces';
 
 @Injectable({
@@ -45,14 +45,43 @@ export class HomepageService {
   getComunidades(pagination:Pagination){
     const url = `${this.baseUrl}/communities`
 
-    let queryParams = new HttpParams()
-    .append('page',pagination.Page.toString())
-    .append('RecordsPerPage',pagination.RecordsPerPage.toString());
+    let queryParams = this.getPaginationParams(new HttpParams(),pagination);
+
 
 
 
     return this.http.get<Comunity[]>(url,{params:queryParams})
   }
+
+  getSponsors(pagination:Pagination)
+  {
+    const url = `${this.baseUrl}/sponsors`;
+
+       let queryParams = this.getPaginationParams(new HttpParams(),pagination);
+
+       return this.http.get<Sponsor[]>(url,{params:queryParams});
+
+  }
+
+  getContentCreators(pagination:Pagination){
+
+    const url = `${this.baseUrl}/users/contentcreators`
+
+    let queryParams = this.getPaginationParams(new HttpParams(),pagination);
+
+
+
+    return this.http.get<ContentCreator[]>(url,{params:queryParams})
+
+  }
+  private getPaginationParams(params:HttpParams ,pagination:Pagination):HttpParams{
+
+    return params.append('page',pagination.Page.toString())
+    .append('RecordsPerPage',pagination.RecordsPerPage.toString());
+
+  }
+
+
 }
 
 

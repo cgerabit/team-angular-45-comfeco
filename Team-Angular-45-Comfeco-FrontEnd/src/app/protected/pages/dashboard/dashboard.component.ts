@@ -1,3 +1,4 @@
+import { ThrowStmt } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
 import * as countdown from 'countdown';
 
@@ -9,7 +10,7 @@ import SwiperCore, {
   Autoplay,
   SwiperOptions,
 } from 'swiper/core';
-import { Event, Technologies, Comunity } from '../../interfaces/interfaces';
+import { Event, Technologies, Comunity, Sponsor, ContentCreator } from '../../interfaces/interfaces';
 import { HomepageService } from '../../services/homepage.service';
 // install Swiper modules
 SwiperCore.use([Navigation, Pagination, Scrollbar, A11y, Autoplay]);
@@ -35,6 +36,9 @@ export class DashboardComponent implements OnInit {
 
   areas:  any = [];
   comunidades :Comunity[]=[];
+  sponsors:Sponsor[] = [];
+
+  contentCreators:ContentCreator[];
   //tiempo
   time:Time = null;
   timerId: number = null;
@@ -56,17 +60,6 @@ export class DashboardComponent implements OnInit {
     'https://www.comfeco.com/images/leaders/leader-fernando_de_la_rosa.webp',
     'https://www.comfeco.com/images/leaders/leader-manuel_mu%C3%B1os.webp',
   ];
-  public slidesSponsor = [
-    'https://www.comfeco.com/images/sponsors/sponsor-huawei.webp',
-    'https://www.comfeco.com/images/sponsors/sponsor-fernando_herrera.webp',
-    'https://www.comfeco.com/images/sponsors/sponsor-leonidas_esteban.webp',
-    'https://www.comfeco.com/images/sponsors/sponsor-egghead.webp',
-    'https://www.comfeco.com/images/sponsors/sponsor-codigofacilito.webp',
-    'https://www.comfeco.com/images/sponsors/sponsor-latamdev.webp',
-    'https://www.comfeco.com/images/sponsors/sponsor-codelytv.webp',
-    'https://www.comfeco.com/images/sponsors/sponsor-tekkitv.webp',
-  ];
-
 
   public config: SwiperOptions = {
     a11y: { enabled: true },
@@ -150,28 +143,57 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
 
+    this.loadData();
+
+  }
+
+  loadData(){
     this.hs.getTecnologias().subscribe((resp:Technologies[])=>{
-        this.areas = resp;
-    });
+      this.areas = resp;
+  });
 
-    this.hs.getComunidades({
-      Page:1,
-      RecordsPerPage:4
-    })
-    .subscribe(resp => {
-      this.comunidades=resp;
-    },err => {
-      console.log("Ha ocurrido un error",err);
-    })
-    this.hs.eventInfo().subscribe((resp:Event[])=>{
-      this.date =  new Date(resp[0].date);
-      //fecha pruebas
-      //this.date = new Date("2021-02-25 20:58");
-      this.desc = resp[0].name;
+  //Comunidades
+  this.hs.getComunidades({
+    Page:1,
+    RecordsPerPage:4
+  })
+  .subscribe(resp => {
+    this.comunidades=resp;
+  },err => {
+    console.log("Ha ocurrido un error",err);
+  })
 
-      //funcionalidad del contador
-      this.contador(this.date);
-    });
+  this.hs.getContentCreators({
+    Page:1,
+    RecordsPerPage:100
+  })
+  .subscribe(resp => {
+
+    this.contentCreators = resp;
+    
+  },err=> console.log(err))
+  //Sponsors
+  this.hs.getSponsors({
+    Page:1,
+    RecordsPerPage:100
+  })
+  .subscribe(resp => {
+    this.sponsors = resp;
+  },
+  err => console.log(err))
+
+
+
+
+  this.hs.eventInfo().subscribe((resp:Event[])=>{
+    this.date =  new Date(resp[0].date);
+    //fecha pruebas
+    //this.date = new Date("2021-02-25 20:58");
+    this.desc = resp[0].name;
+
+    //funcionalidad del contador
+    this.contador(this.date);
+  });
   }
 
   //funcionalidad del contador
