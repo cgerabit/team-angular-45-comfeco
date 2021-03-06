@@ -12,6 +12,7 @@ namespace BackendComfeco.Models
         [Required]
         public string Hostname { get; set; }
 
+        public string SocialNetworkIcon { get; set; }
         public List<ApplicationUserSocialNetwork> ApplicationUserSocialNetworks { get; set; }
     }
 }
