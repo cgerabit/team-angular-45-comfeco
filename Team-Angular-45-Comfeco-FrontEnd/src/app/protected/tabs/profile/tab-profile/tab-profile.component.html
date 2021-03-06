@@ -1,5 +1,5 @@
 <app-navbar></app-navbar>
-<div class="app-layout">
+<div  class="app-layout animate__animated animate__fadeIn" *ngIf="!updateState" >
 
     <div class="eventos shadow">
     </div>
@@ -17,32 +17,30 @@
             </div>
             <h2 class="title">Actividad reciente:</h2>
             <div class="card mb-2 shadow-sm">
-                <div class="card-body">
-                    <p>Te has unido al evento Community Fest and Code.</p>
-                    <span><svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="40"
-            height="40"
-            viewBox="0 0 24 24"
-          >
-          <path fill="white" stroke="#69156a" d="M24 2v22h-24v-22h3v1c0 1.103.897 2 2 2s2-.897 2-2v-1h10v1c0 1.103.897 2 2 2s2-.897 2-2v-1h3zm-2 6h-20v14h20v-14zm-2-7c0-.552-.447-1-1-1s-1 .448-1 1v2c0 .552.447 1 1 1s1-.448 1-1v-2zm-14 2c0 .552-.447 1-1 1s-1-.448-1-1v-2c0-.552.447-1 1-1s1 .448 1 1v2zm1 11.729l.855-.791c1 .484 1.635.852 2.76 1.654 2.113-2.399 3.511-3.616 6.106-5.231l.279.64c-2.141 1.869-3.709 3.949-5.967 7.999-1.393-1.64-2.322-2.686-4.033-4.271z"></path>
-          </svg>
-        </span>
+              <div class="card-body">
+                <div class="actividad">
+                  <p>Te has unido al evento Community Fest and Code.</p>
+                  <span><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24">
+                      <path fill="white" stroke="#69156a"
+                        d="M24 2v22h-24v-22h3v1c0 1.103.897 2 2 2s2-.897 2-2v-1h10v1c0 1.103.897 2 2 2s2-.897 2-2v-1h3zm-2 6h-20v14h20v-14zm-2-7c0-.552-.447-1-1-1s-1 .448-1 1v2c0 .552.447 1 1 1s1-.448 1-1v-2zm-14 2c0 .552-.447 1-1 1s-1-.448-1-1v-2c0-.552.447-1 1-1s1 .448 1 1v2zm1 11.729l.855-.791c1 .484 1.635.852 2.76 1.654 2.113-2.399 3.511-3.616 6.106-5.231l.279.64c-2.141 1.869-3.709 3.949-5.967 7.999-1.393-1.64-2.322-2.686-4.033-4.271z">
+                      </path>
+                    </svg>
+                  </span>
                 </div>
+              </div>
             </div>
             <div class="card mb-2 shadow-sm">
-                <div class="card-body">
-                    <p>Te has unido al evento Community Fest and Code.</p>
-                    <span><svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="40"
-            height="40"
-            viewBox="0 0 24 24"
-          >
-          <path fill="white" stroke="#69156a" d="M24 2v22h-24v-22h3v1c0 1.103.897 2 2 2s2-.897 2-2v-1h10v1c0 1.103.897 2 2 2s2-.897 2-2v-1h3zm-2 6h-20v14h20v-14zm-2-7c0-.552-.447-1-1-1s-1 .448-1 1v2c0 .552.447 1 1 1s1-.448 1-1v-2zm-14 2c0 .552-.447 1-1 1s-1-.448-1-1v-2c0-.552.447-1 1-1s1 .448 1 1v2zm1 11.729l.855-.791c1 .484 1.635.852 2.76 1.654 2.113-2.399 3.511-3.616 6.106-5.231l.279.64c-2.141 1.869-3.709 3.949-5.967 7.999-1.393-1.64-2.322-2.686-4.033-4.271z"></path>
-          </svg>
-        </span>
+              <div class="card-body">
+                <div class="actividad">
+                  <p>Te has unido al evento Community Fest and Code.</p>
+                  <span><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24">
+                      <path fill="white" stroke="#69156a"
+                        d="M24 2v22h-24v-22h3v1c0 1.103.897 2 2 2s2-.897 2-2v-1h10v1c0 1.103.897 2 2 2s2-.897 2-2v-1h3zm-2 6h-20v14h20v-14zm-2-7c0-.552-.447-1-1-1s-1 .448-1 1v2c0 .552.447 1 1 1s1-.448 1-1v-2zm-14 2c0 .552-.447 1-1 1s-1-.448-1-1v-2c0-.552.447-1 1-1s1 .448 1 1v2zm1 11.729l.855-.791c1 .484 1.635.852 2.76 1.654 2.113-2.399 3.511-3.616 6.106-5.231l.279.64c-2.141 1.869-3.709 3.949-5.967 7.999-1.393-1.64-2.322-2.686-4.033-4.271z">
+                      </path>
+                    </svg>
+                  </span>
                 </div>
+              </div>
             </div>
         </div>
 
@@ -50,17 +48,16 @@
 
 
     <div class="profile shadow">
-        <div class="card mb-3">
+        <div class="card">
             <div class="card-header">
-                <a href="#">Editar Perfil</a>
+              <button (click)="update()" class="btn-custom">Editar Perfil</button>
             </div>
             <div class="card-body">
                 <div class="profile-data">
                     <img src="{{ profile &&
                       profile.profilePicture?
                       profile.profilePicture :
-                      usuario.avatar }}" class="rounded-circle bg-dark" height="80" alt="" loading="lazy" />
-
+                      usuario.avatar }}" class="rounded-circle bg-dark" height="80" width="80" style="object-fit: cover;" alt="" loading="lazy" />
                     <h2>{{ usuario.userName }}</h2>
                     <h3 *ngIf="userSpecialty">{{userSpecialty.name}}</h3>
                     <p *ngIf="profile && profile.biography">{{profile.biography}}</p>
@@ -99,4 +96,164 @@
       <p class="profile-bottom"> adasd</p>
    </div>-->
     </div>
+</div>
+
+
+<!--Editar datos-->
+<div *ngIf="updateState" class="update-layout animate__animated animate__fadeIn">
+  <button (click)="update()" type="button" class="back">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+      <path d="M16.67 0l2.83 2.829-9.339 9.175 9.339 9.167-2.83 2.829-12.17-11.996z" />
+    </svg>
+  </button>
+  <form [formGroup]="uploadForm" class="form" (ngSubmit)="submit()">
+    <h1>Editar perfil</h1>
+    <!-- Select File and Image Preview -->
+    <div class="form-avatar">
+      <div class="avatar-edit">
+        <input type="file" id="imageUpload" accept="image/*" (change)="showPreview($event)" />
+        <label for="imageUpload">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <path
+              d="M18.363 8.464l1.433 1.431-12.67 12.669-7.125 1.436 1.439-7.127 12.665-12.668 1.431 1.431-12.255 12.224-.726 3.584 3.584-.723 12.224-12.257zm-.056-8.464l-2.815 2.817 5.691 5.692 2.817-2.821-5.693-5.688zm-12.318 18.718l11.313-11.316-.705-.707-11.313 11.314.705.709z" />
+          </svg>
+        </label>
+      </div>
+      <div class="avatar-preview">
+        <img [src]="imageURL" alt="{{usuario.userName}}" style="object-fit: cover;">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="form-group_input">
+        <label for="email">Correo</label>
+        <input type="email" formControlName="email" placeholder="Ingrese su email" />
+        <small class="text-danger">
+          Ingrese un correo valido
+        </small>
+      </div>
+      <div class="form-group_input">
+        <label for="email">Correo</label>
+        <input type="email" formControlName="email" placeholder="Ingrese su email" />
+        <small class="text-danger">
+          Ingrese un correo valido
+        </small>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="form-group_input">
+        <label for="email">Correo</label>
+        <input type="email" formControlName="email" placeholder="Ingrese su email" />
+        <small class="text-danger">
+          Ingrese un correo valido
+        </small>
+      </div>
+      <div class="form-group_input">
+        <label for="email">Correo</label>
+        <div class="date-input">
+          <input formControlName="date" placeholder="yyyy-mm-dd" name="dp" [(ngModel)]="model" ngbDatepicker
+            #d="ngbDatepicker">
+          <button (click)="d.toggle()" type="button" class="calendar">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+              <path
+                d="M14 13h-4v-4h4v4zm6-4h-4v4h4v-4zm-12 6h-4v4h4v-4zm6 0h-4v4h4v-4zm-6-6h-4v4h4v-4zm16-8v13.386c0 2.391-6.648 9.614-9.811 9.614h-14.189v-23h24zm-2 6h-20v15h11.362c4.156 0 2.638-6 2.638-6s6 1.65 6-2.457v-6.543z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="form-group_input">
+        <label for="email">Correo</label>
+        <input type="email" formControlName="email" placeholder="Ingrese su email" />
+        <small class="text-danger">
+          Ingrese un correo valido
+        </small>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="form-group_input">
+        <label for="email">Correo</label>
+        <input type="email" formControlName="email" placeholder="Ingrese su email" />
+        <small class="text-danger">
+          Ingrese un correo valido
+        </small>
+      </div>
+      <div class="form-group_input">
+        <label for="email">Correo</label>
+        <input type="email" formControlName="email" placeholder="Ingrese su email" />
+        <small class="text-danger">
+          Ingrese un correo valido
+        </small>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="form-group_input">
+        <div class="input-social">
+          <span class="facebook"><img src="../../../../../assets/images/facebook.svg" alt="facebook"></span>
+          <label for="email">
+            facebook.com/
+          </label>
+          <input type="email" formControlName="email" placeholder="Ingrese su email" />
+        </div>
+        <small class="text-danger">
+          Ingrese un correo valido
+        </small>
+      </div>
+      <div class="form-group_input">
+        <div class="input-social">
+          <span class="youtube"><img src="../../../../../assets/images/youtube.svg" alt="youtube"></span>
+          <label for="email">
+            github.com/
+          </label>
+          <input type="email" formControlName="email" placeholder="Ingrese su email" />
+        </div>
+        <small class="text-danger">
+          Ingrese un correo valido
+        </small>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="form-group_input">
+        <div class="input-social">
+          <span class="linkedin"><img src="../../../../../assets/images/linkedin.svg" alt="linkedin"></span>
+          <label for="email">
+            linkedin.com/in/
+          </label>
+          <input type="email" formControlName="email" placeholder="Ingrese su email" />
+        </div>
+        <small class="text-danger">
+          Ingrese un correo valido
+        </small>
+      </div>
+      <div class="form-group_input">
+        <div class="input-social">
+          <span class="twitter"><img src="../../../../../assets/images/twitter.svg" alt="twitter"></span>
+          <label for="email">
+            twitter.com/
+          </label>
+          <input type="email" formControlName="email" placeholder="Ingrese su email" />
+        </div>
+        <small class="text-danger">
+          Ingrese un correo valido
+        </small>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="form-group_input">
+        <label for="email">Correo</label>
+        <textarea type="email" formControlName="email" placeholder="Ingrese su email"></textarea>
+        <small class="text-danger">
+          Ingrese un correo valido
+        </small>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <button type="submit" class="button-submit">Guardar cambios</button>
+    </div>
+  </form>
 </div>
