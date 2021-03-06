@@ -2,12 +2,19 @@
 
 using BackendComfeco.DTOs.Shared;
 using BackendComfeco.DTOs.SocialNetwork;
+using BackendComfeco.ExtensionMethods;
+using BackendComfeco.Helpers;
 using BackendComfeco.Models;
+using BackendComfeco.Settings;
 
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace BackendComfeco.Controllers
@@ -16,8 +23,16 @@ namespace BackendComfeco.Controllers
     [Route("api/socialnetworks")]
     public class SocialNetworksController : ExtendedBaseController
     {
-        public SocialNetworksController(ApplicationDbContext context, IMapper mapper) : base(context, mapper)
+        private readonly ApplicationDbContext context;
+        private readonly IMapper mapper;
+        private readonly IFileStorage fileStorage;
+
+        public SocialNetworksController(ApplicationDbContext context, IMapper mapper,
+            IFileStorage fileStorage) : base(context, mapper)
         {
+            this.context = context;
+            this.mapper = mapper;
+            this.fileStorage = fileStorage;
         }
 
         [HttpGet]
@@ -33,17 +48,65 @@ namespace BackendComfeco.Controllers
             return await Get<SocialNetwork, SocialNetworkDTO>(id);
         }
         [HttpPost]
-        public async Task<ActionResult> Post(SocialNetworkCreationDTO socialNetworkCreationDTO)
+        public async Task<ActionResult> Post([FromForm]SocialNetworkCreationDTO socialNetworkCreationDTO)
         {
 
-            return await Post<SocialNetworkCreationDTO, SocialNetwork, SocialNetworkDTO>(socialNetworkCreationDTO, "GetSocialNetwork");
+            var entity = mapper.Map<SocialNetwork>(socialNetworkCreationDTO);
+
+            if (socialNetworkCreationDTO.SocialNetworkIcon!=null)
+            {
+                entity.SocialNetworkIcon = await SaveIcon(socialNetworkCreationDTO.SocialNetworkIcon);
+            }
+
+            context.Add(entity);
+            await context.SaveChangesAsync();
+
+            var dto = mapper.Map<SocialNetworkDTO>(entity);
+
+            return new CreatedAtRouteResult("GetSocialNetwork", new { id = entity.Id }, dto);
+
+           
         }
         [HttpPut("{id:int}")]
-        public async Task<ActionResult> Put([FromRoute] int id, SocialNetworkCreationDTO socialNetworkCreationDTO)
+        public async Task<ActionResult> Put([FromRoute] int id, [FromForm]SocialNetworkCreationDTO socialNetworkCreationDTO)
         {
-            return await Put<SocialNetworkCreationDTO, SocialNetwork>(id, socialNetworkCreationDTO);
+            var entity = await context.SocialNetworks.FirstOrDefaultAsync(s => s.Id == id);
+
+            if (entity ==null)
+            {
+                return NotFound();
+            }
+
+            mapper.Map(socialNetworkCreationDTO, entity);
+
+            if (socialNetworkCreationDTO.SocialNetworkIcon != null)
+            {
+                if(entity.SocialNetworkIcon != null)
+                {
+                    await fileStorage.RemoveFile(entity.SocialNetworkIcon, ApplicationConstants.ImageContainerNames.SocialNetworkIconContainer);
+
+                }
+                entity.SocialNetworkIcon = await SaveIcon(socialNetworkCreationDTO.SocialNetworkIcon);
+
+
+            }
+
+            context.Attach(entity).State = EntityState.Modified;
+
+            await context.SaveChangesAsync();
+
+            return NoContent();
+
         }
 
+        private async Task<string> SaveIcon(IFormFile icon)
+        {
+            var content = await icon.ConvertToByteArray();
+
+            string iconPath = await fileStorage.SaveFile(content, Path.GetExtension(icon.FileName), ApplicationConstants.ImageContainerNames.SocialNetworkIconContainer, icon.ContentType, Guid.NewGuid().ToString());
+
+            return iconPath;
+        }
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)
         {

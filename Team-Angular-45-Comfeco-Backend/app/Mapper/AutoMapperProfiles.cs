@@ -65,7 +65,8 @@ namespace BackendComfeco.Mapper
             // =========================================================
 
             CreateMap<SocialNetwork, SocialNetworkDTO>().ReverseMap();
-            CreateMap<SocialNetworkCreationDTO, SocialNetwork>();
+            CreateMap<SocialNetworkCreationDTO, SocialNetwork>()
+                .ForMember(m => m.SocialNetworkIcon,options => options.Ignore());
 
             // =========================================================
             //                          Workshop

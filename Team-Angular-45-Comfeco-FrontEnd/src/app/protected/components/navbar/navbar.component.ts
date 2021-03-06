@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../auth/services/auth.service';
+import { UserProfile } from '../../../auth/interfaces/interfaces';
 
 @Component({
   selector: 'app-navbar',
@@ -11,6 +12,8 @@ export class NavbarComponent implements OnInit {
 
   constructor(  private router: Router,
           private authService: AuthService) { }
+
+
 
   //variable para abrir el menu
   sideNavIsOpen: boolean = false;
@@ -23,8 +26,14 @@ export class NavbarComponent implements OnInit {
         `https://avatars.dicebear.com/api/bottts/${userName}.svg`,
     };
   }
-
+  Profile:UserProfile
   ngOnInit(): void {
+
+    this.authService.userProfile.then(resp => {
+      if(resp){
+        this.Profile = resp;
+      }
+    })
   }
 
   logout(){
