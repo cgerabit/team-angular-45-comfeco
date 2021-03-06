@@ -39,3 +39,16 @@ export interface Pagination{
   Page:number;
   RecordsPerPage:number;
 }
+
+export interface UserProfile{
+  profilePicture:string;
+  realName:string;
+  userId:string;
+  biography:string;
+  specialtyId:number;
+  genderId:number;
+  countryId:number;
+  userName:string;
+  bornDate:Date;
+
+}

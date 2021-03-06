@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { UserProfile } from 'src/app/auth/interfaces/interfaces';
+import { HomepageService } from 'src/app/protected/services/homepage.service';
 import { AuthService } from '../../../../auth/services/auth.service';
+import { Technologies, Area, applicationUserSocalNetworks } from '../../../interfaces/interfaces';
 
 @Component({
   selector: 'app-tab-profile',
@@ -15,7 +18,14 @@ export class TabProfileComponent implements OnInit {
     'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Svelte_Logo.svg/1200px-Svelte_Logo.svg.png',
   ];
 
-  constructor( private authService: AuthService ) { }
+
+  constructor(private authService:AuthService,
+    private homeService:HomepageService) { }
+
+  profile:UserProfile;
+  userSpecialty:Area;
+
+  userSocialNetworks:applicationUserSocalNetworks[];
 
   get usuario(){
     const { userName } = this.authService.userInfo;
@@ -27,6 +37,10 @@ export class TabProfileComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+    this.authService.userProfile.then(r => this.profile = r );
+    this.authService.userSocialNetworks.then(r=> this.userSocialNetworks = r );
+    this.authService.userSpecialty.then(r => this.userSpecialty = r );
 
   }
 

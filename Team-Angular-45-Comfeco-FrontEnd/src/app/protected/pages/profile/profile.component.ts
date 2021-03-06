@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from '../../../auth/services/auth.service';
+import { UserProfile } from '../../../auth/interfaces/interfaces';
+import { Technologies } from '../../interfaces/interfaces';
+import { HomepageService } from '../../services/homepage.service';
 
 @Component({
   selector: 'app-profile',
@@ -7,9 +11,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ProfileComponent implements OnInit {
 
-  constructor() { }
-
   ngOnInit(): void {
+
+
+
   }
 
 }
