@@ -26,6 +26,12 @@ export interface Sponsor{
   sponsorIcon:string;
 }
 
+export interface Area{
+  id:number;
+  name:string;
+  areaIcon:string;
+}
+
 export interface ContentCreator{
 
 
@@ -36,7 +42,12 @@ export interface ContentCreator{
 
 
 }
+export interface applicationUserSocalNetworks{
+  socialNetworkId:number,
+  isPrincipal:boolean,
+  url:string
 
+}
 export interface applicationUserTechnology{
 
   id:number;

@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { Comunity, Sponsor, ContentCreator } from '../interfaces/interfaces';
+import { Comunity, Sponsor, ContentCreator, Technologies, Area } from '../interfaces/interfaces';
 import { Pagination } from '../../auth/interfaces/interfaces';
 
 @Injectable({
@@ -72,6 +72,13 @@ export class HomepageService {
 
 
     return this.http.get<ContentCreator[]>(url,{params:queryParams})
+
+  }
+
+  getArea(id:number){
+    const url =`${this.baseUrl}/areas/${id}`
+
+    return this.http.get<Area>(url);
 
   }
   private getPaginationParams(params:HttpParams ,pagination:Pagination):HttpParams{

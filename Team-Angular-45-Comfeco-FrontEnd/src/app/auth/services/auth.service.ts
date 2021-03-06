@@ -9,7 +9,7 @@ import { catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import * as shajs from 'sha.js';
 import { environment } from '../../../environments/environment';
-import { TokenResponse, Usuario } from '../interfaces/interfaces';
+import { TokenResponse, Usuario, UserProfile } from '../interfaces/interfaces';
 import { claimAuthCodeDTO } from '../DTOs/claimAuthCodeDTO';
 
 import {
@@ -20,6 +20,9 @@ import { userInfo } from '../interfaces/userInfo';
 import { Router } from '@angular/router';
 
 import { identifierModuleUrl } from '@angular/compiler';
+import { applicationUserSocalNetworks } from 'src/app/protected/interfaces/interfaces';
+import { Technologies, Area } from '../../protected/interfaces/interfaces';
+import { HomepageService } from 'src/app/protected/services/homepage.service';
 
 
 @Injectable({
@@ -101,9 +104,87 @@ export class AuthService {
     return this._userInfo;
   }
 
+  private _userProfile:UserProfile
+
+  get userProfile():Promise<UserProfile>
+  {
+
+    return new Promise((resolve) =>{
+
+      if(!this.isLoggedIn){
+       resolve(null);
+       return;
+      }
+      if(this._userProfile){
+        resolve(this._userProfile);
+        return;
+      }
+
+      this.getUserProfile().subscribe(resp => {
+          this._userProfile =resp;
+
+          resolve(resp);
+
+      },() => resolve(null));
+    })
+  }
+
+  private _userSocialNetworks: applicationUserSocalNetworks[];
+
+  get userSocialNetworks():Promise<applicationUserSocalNetworks[]>
+  {
+    return new Promise<applicationUserSocalNetworks[]>((resolve)=>{
+
+        if(!this.isLoggedIn){
+          resolve(null);
+          return;
+        }
+        if(this._userSocialNetworks){
+          resolve(this._userSocialNetworks);
+          return;
+        }
+
+        this.getUserSocialNetworks().subscribe(resp => {
+
+          this._userSocialNetworks =resp;
+          resolve(resp);
+
+        },()=> resolve(null))
+    });
+  }
+
+  private _userSpecialty : Area
+
+  get userSpecialty():Promise<Area>{
+    return new Promise<Area>((resolve) => {
+        if(!this.isLoggedIn){
+          resolve(null);
+          return;
+        }
+        if(this._userSpecialty){
+          resolve(this._userSpecialty);
+          return;
+        }
+          this.userProfile.then(resp => {
+              if(!resp || resp.specialtyId ==0){
+                resolve(null);
+                return;
+              }
+
+              this.homepageService.getArea(resp.specialtyId)
+              .subscribe(resp => {
+
+                this._userSpecialty =resp;
+                resolve(resp);
+
+              },()=>resolve(null))
+          })
+    })
+  }
   //---------------------------------------- END GETTERS ----------------------------
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient,
+    private homepageService:HomepageService) {}
 
   private _userHavePersistLogin: number;
   private async checkPersistLogin(){
@@ -373,5 +454,29 @@ export class AuthService {
       userId: tokenPayloadObject[environment.claimTypes.userId],
       email: tokenPayloadObject[environment.claimTypes.email],
     };
+  }
+
+  getUserProfile(){
+
+    if(!this.userInfo || !this.userInfo.userId){
+      return of(null);
+    }
+
+    const url = `${this.baseUrl}/users/profile/${this.userInfo.userId}`;
+
+
+      return this.http.get<UserProfile>(url);
+
+  }
+
+  getUserSocialNetworks(){
+    if(!this.userInfo || !this.userInfo.userId){
+      return of(null);
+    }
+
+    const url = `${this.baseUrl}/users/profile/${this.userInfo.userId}/socialnetworks`;
+
+    return this.http.get<applicationUserSocalNetworks[]>(url);
+
   }
 }
