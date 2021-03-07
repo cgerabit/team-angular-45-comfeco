@@ -7,7 +7,9 @@
   justify-content: space-evenly;
   padding: 20px;
   span{
-    margin-left: 5px;
+    @media screen and (min-width: 40em) {
+      margin-left: 5px;
+    }
   }
   a{
     color: $primary;
@@ -17,6 +19,9 @@
         display: inline
       }
     }
+    svg {
+      fill: $primary;
+    }
   }
 
 
@@ -24,6 +29,9 @@
   .active{
     background-color: $accent;
       color: $white;
+      svg {
+        fill: $white;
+      }
   }
 }
 
