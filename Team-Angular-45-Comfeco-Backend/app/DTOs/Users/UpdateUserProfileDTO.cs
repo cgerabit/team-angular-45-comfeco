@@ -1,8 +1,10 @@
-﻿using BackendComfeco.ValidationAtributes;
+﻿using BackendComfeco.DTOs.SocialNetwork;
+using BackendComfeco.ValidationAtributes;
 
 using Microsoft.AspNetCore.Http;
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace BackendComfeco.DTOs.Users

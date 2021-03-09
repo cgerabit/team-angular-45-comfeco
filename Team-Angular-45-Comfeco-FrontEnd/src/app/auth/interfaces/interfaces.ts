@@ -13,26 +13,6 @@ export interface TokenResponse {
 }
 
 
-export interface Exam{
-  questions:Question[];
-
-}
-
-export interface Question{
-
-  questionText:string;
-  answers:Answer[];
-
-}
-
-export interface Answer{
-
-  answerText:string;
-  isCorrect:boolean;
-
-
-}
-
 export interface Pagination{
 
 
@@ -52,3 +32,4 @@ export interface UserProfile{
   bornDate:Date;
 
 }
+

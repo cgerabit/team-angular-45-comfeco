@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { Comunity, Sponsor, ContentCreator, Technologies, Area } from '../interfaces/interfaces';
+import { Comunity, Sponsor, ContentCreator, Technologies, Area, Country, Gender, SocialNetwork } from '../interfaces/interfaces';
 import { Pagination } from '../../auth/interfaces/interfaces';
 
 @Injectable({
@@ -89,6 +89,40 @@ export class HomepageService {
   }
 
 
+  updateSocialNetworks(){
+
+
+
+  }
+
+  getCountries(){
+    const url =`${this.baseUrl}/countries`
+
+
+    return this.http.get<Country[]>(url);
+
+  }
+
+  getGenders(){
+    const url = `${this.baseUrl}/genders`;
+    return this.http.get<Gender[]>(url);
+  }
+
+  getAreas(pagination:Pagination){
+
+    const url = `${this.baseUrl}/areas`;
+
+    var params = this.getPaginationParams(new HttpParams(),pagination);
+
+    return this.http.get<Area[]>(url,{params});
+  }
+
+  getSocialNetworks(){
+    const url = `${this.baseUrl}/socialnetworks`;
+
+    return this.http.get<SocialNetwork[]>(url);
+
+  }
 }
 
 
