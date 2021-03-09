@@ -72,11 +72,11 @@ namespace BackendComfeco.Controllers
                 user.ProfilePicture = await fileStorage.SaveFile(bytes, Path.GetExtension(updateUserProfileDTO.ProfilePicture.FileName), ApplicationConstants.ImageContainerNames.ProfilePicturesContainer, updateUserProfileDTO.ProfilePicture.ContentType, Guid.NewGuid().ToString());
             }
 
+
             applicationDbContext.Entry(user).State = EntityState.Modified;
 
 
             await applicationDbContext.SaveChangesAsync();
-
 
             return NoContent();
 
@@ -125,6 +125,7 @@ namespace BackendComfeco.Controllers
         {
             var socialNetworks = await applicationDbContext.Users
                 .Include(x => x.ApplicationUserSocialNetworks)
+                .ThenInclude(x=>x.SocialNetwork)
                 .Where(u => u.Id == userId)
                 .AsNoTracking()
                 .Select(u => u.ApplicationUserSocialNetworks)
@@ -136,6 +137,8 @@ namespace BackendComfeco.Controllers
 
 
             var dto = mapper.Map<List<ApplicationUserSocialNetworkDTO>>(socialNetworks);
+
+       
 
             return dto;
 

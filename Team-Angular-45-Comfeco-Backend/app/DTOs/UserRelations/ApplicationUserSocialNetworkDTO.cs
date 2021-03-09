@@ -8,5 +8,8 @@
 
         public string Url { get; set; }
 
+        public string SocialNetworkName { get; set; }
+
+        public string SocialNetworkIcon { get; set; }
     }
 }

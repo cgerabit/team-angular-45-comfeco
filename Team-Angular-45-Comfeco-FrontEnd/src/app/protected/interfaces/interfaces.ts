@@ -35,17 +35,19 @@ export interface Area{
 export interface ContentCreator{
 
 
-  profilePicture:string,
-  realName:string,
+  profilePicture:string;
+  realName:string;
 
   applicationUserTechnology :applicationUserTechnology[];
 
 
 }
 export interface applicationUserSocalNetworks{
-  socialNetworkId:number,
-  isPrincipal:boolean,
-  url:string
+  socialNetworkId:number;
+  isPrincipal:boolean;
+  url:string;
+  socialNetworkIcon:string;
+  socialNetworkName:string;
 
 }
 export interface applicationUserTechnology{
@@ -57,4 +59,31 @@ export interface applicationUserTechnology{
   isPrincipal:boolean;
 }
 
+export interface UserUpdateDTO{
+  profilePicture:File;
+  realName:string;
+  biography:string;
+  specialtyId:number;
+  genderId:number;
+  countryId:number;
+  bornDate:Date;
 
+}
+
+export interface Country{
+  id:number;
+  name:string;
+}
+
+
+export interface Gender{
+  id:number;
+  name:string;
+}
+
+export interface SocialNetwork{
+  id:number;
+  hostname:string;
+  name:string;
+  socialNetworkIcon:string;
+}

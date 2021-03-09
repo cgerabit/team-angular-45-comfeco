@@ -104,6 +104,8 @@ namespace BackendComfeco.Mapper
         //                          Users
         // =========================================================
         CreateMap<ApplicationUserSocialNetwork, ApplicationUserSocialNetworkDTO>()
+                .ForMember(s => s.SocialNetworkName,options => options.MapFrom(x=>x.SocialNetwork.Name))
+                .ForMember(s=> s.SocialNetworkIcon , options => options.MapFrom(x=>x.SocialNetwork.SocialNetworkIcon))
                 .ReverseMap();
 
         CreateMap<UpdateUserProfileDTO, ApplicationUser>().ForMember(u => u.ProfilePicture, options => options.Ignore());
