@@ -4,14 +4,16 @@ using BackendComfeco;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BackendComfeco.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210310044032_badge-properties")]
+    partial class badgeproperties
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -231,22 +233,6 @@ namespace BackendComfeco.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Badges");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "Esta persona es muy sociable",
-                            Instructions = "Para obtener esta insignia actualiza los datos de tu perfil",
-                            Name = "Sociable"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Description = "Esta persona es muy competitiva",
-                            Instructions = "Inscribete en tu primer evento",
-                            Name = "Concursante"
-                        });
                 });
 
             modelBuilder.Entity("BackendComfeco.Models.Comunity", b =>
@@ -526,7 +512,7 @@ namespace BackendComfeco.Migrations
                         new
                         {
                             Id = "6a8af04b-0405-4cd2-bc20-d59433235153",
-                            ConcurrencyStamp = "3941e0c1-6fbf-4ebb-af22-308f0dbe489c",
+                            ConcurrencyStamp = "8b425617-41fd-4a5f-8ab9-7647c17c0b78",
                             Name = "ContentCreator",
                             NormalizedName = "ContentCreator"
                         });
@@ -649,7 +635,7 @@ namespace BackendComfeco.Migrations
                     b.HasOne("BackendComfeco.Models.Area", "Specialty")
                         .WithMany("Specialists")
                         .HasForeignKey("SpecialtyId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("Country");
 

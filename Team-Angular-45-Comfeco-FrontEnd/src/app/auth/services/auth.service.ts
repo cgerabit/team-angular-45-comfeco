@@ -9,7 +9,7 @@ import { catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import * as shajs from 'sha.js';
 import { environment } from '../../../environments/environment';
-import { TokenResponse, Usuario, UserProfile } from '../interfaces/interfaces';
+import { TokenResponse, Usuario, UserProfile, UserBadges } from '../interfaces/interfaces';
 import { claimAuthCodeDTO } from '../DTOs/claimAuthCodeDTO';
 
 import {
@@ -179,6 +179,28 @@ export class AuthService {
 
               },()=>resolve(null))
           })
+    })
+  }
+
+  private _userBadges:UserBadges[];
+  get userBadges():Promise<UserBadges[]>{
+    return new Promise((resolve)=>{
+      if(!this.isLoggedIn){
+        resolve(null);
+        return;
+      }
+
+      if(this._userBadges){
+        resolve(this._userBadges);
+        return;
+      }
+      return this.http.get<UserBadges[]>(`${this.baseUrl}/users/profile/${this.userInfo.userId}/badges`).subscribe(
+        resp=>{
+
+          this._userBadges=resp;
+          resolve(resp);
+          
+        },()=>resolve(null))
     })
   }
   //---------------------------------------- END GETTERS ----------------------------

@@ -94,7 +94,7 @@ namespace BackendComfeco.Controllers
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)
         {
-            return await Delete<Area>(id);
+            return await Delete<Badge>(id);
         }
 
 

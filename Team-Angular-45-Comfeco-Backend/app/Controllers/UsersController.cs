@@ -1,9 +1,6 @@
 ﻿using AutoMapper;
 
-using BackendComfeco.DTOs.Event;
 using BackendComfeco.DTOs.Shared;
-using BackendComfeco.DTOs.SocialNetwork;
-using BackendComfeco.DTOs.Technology;
 using BackendComfeco.DTOs.UserRelations;
 using BackendComfeco.DTOs.Users;
 using BackendComfeco.ExtensionMethods;
@@ -12,10 +9,7 @@ using BackendComfeco.Models;
 using BackendComfeco.Settings;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Diagnostics;
 using Microsoft.EntityFrameworkCore;
-
-using MimeKit.Encodings;
 
 using System;
 using System.Collections.Generic;
@@ -76,6 +70,19 @@ namespace BackendComfeco.Controllers
             applicationDbContext.Entry(user).State = EntityState.Modified;
 
 
+            bool haveSociableBadge = await applicationDbContext.ApplicationUserBadges.AnyAsync(x => x.UserId == userId && x.BadgeId == 1);
+            if (!haveSociableBadge)
+            {
+                var sociableBadge = new ApplicationUserBadges
+                {
+                    UserId = userId,
+                    BadgeId = 1,
+                    GetDate = DateTime.UtcNow
+                };
+
+                applicationDbContext.Add(sociableBadge);
+            }
+
             await applicationDbContext.SaveChangesAsync();
 
             return NoContent();
@@ -118,14 +125,26 @@ namespace BackendComfeco.Controllers
 
             return mapper.Map<UserProfileDTO>(user);
         }
-      
+
+        [HttpGet("profile/{userId}/badges")]
+        public async Task<ActionResult<List<UserBadgeDTO>>> GetUserBadges(string userId)
+        {
+
+            var badges = await applicationDbContext.ApplicationUserBadges
+                .Include(b => b.Badge).Where(x => x.UserId == userId).OrderBy(y => y.GetDate).ToListAsync();
+
+            var dto = mapper.Map<List<UserBadgeDTO>>(badges);
+
+            return dto;
+
+        }
 
         [HttpGet("profile/{userId}/socialnetworks")]
         public async Task<ActionResult<List<ApplicationUserSocialNetworkDTO>>> GetSocialNetWork(string userId)
         {
             var socialNetworks = await applicationDbContext.Users
                 .Include(x => x.ApplicationUserSocialNetworks)
-                .ThenInclude(x=>x.SocialNetwork)
+                .ThenInclude(x => x.SocialNetwork)
                 .Where(u => u.Id == userId)
                 .AsNoTracking()
                 .Select(u => u.ApplicationUserSocialNetworks)
@@ -138,13 +157,13 @@ namespace BackendComfeco.Controllers
 
             var dto = mapper.Map<List<ApplicationUserSocialNetworkDTO>>(socialNetworks);
 
-       
+
 
             return dto;
 
         }
         [HttpDelete("profile/{userId}/socialnetworks/{socialNetworkId:int}")]
-        public async Task<ActionResult> DeleteUserSocialNetwork( string userId, int socialNetworkId)
+        public async Task<ActionResult> DeleteUserSocialNetwork(string userId, int socialNetworkId)
         {
             var socialNetwork = await applicationDbContext.ApplicationUserSocialNetworks.FindAsync(userId, socialNetworkId);
 
@@ -159,7 +178,7 @@ namespace BackendComfeco.Controllers
                     .ApplicationUserSocialNetworks
                     .FirstOrDefaultAsync(x => x.UserId == userId && x.SocialNetworkId != socialNetwork.SocialNetworkId);
 
-                if(remaimingUserSocialNetwork != null)
+                if (remaimingUserSocialNetwork != null)
                 {
                     applicationDbContext.Attach(remaimingUserSocialNetwork);
                     remaimingUserSocialNetwork.IsPrincipal = true;
@@ -175,7 +194,7 @@ namespace BackendComfeco.Controllers
         [HttpPost("profile/{userId}/socialnetworks")]
         public async Task<ActionResult> CreateOrReplaceSocialNetwork(string userId, UserSocialNetworkCreateDTO socialNetworkCreationDTO)
         {
-            var userExist =await applicationDbContext.Users.AnyAsync(x => x.Id == userId);
+            var userExist = await applicationDbContext.Users.AnyAsync(x => x.Id == userId);
             if (!userExist)
             {
                 return NotFound("Usuario no existe");
@@ -189,17 +208,17 @@ namespace BackendComfeco.Controllers
             var currentUserSocialNetwork = await applicationDbContext
                 .ApplicationUserSocialNetworks.FindAsync(userId, socialNetworkCreationDTO.SocialNetworkId);
             // Asegurar que el usuario tenga al menos una red social principal
-            if(currentUserSocialNetwork !=null && currentUserSocialNetwork.IsPrincipal)
+            if (currentUserSocialNetwork != null && currentUserSocialNetwork.IsPrincipal)
             {
                 socialNetworkCreationDTO.IsPrincipal = true;
             }
             else if (!socialNetworkCreationDTO.IsPrincipal)
             {
-                bool isThereSomePrincipal =await  applicationDbContext
+                bool isThereSomePrincipal = await applicationDbContext
                     .ApplicationUserSocialNetworks
                     .Where(s => s.UserId == userId)
                     .AnyAsync(s => s.IsPrincipal);
-                socialNetworkCreationDTO.IsPrincipal = 
+                socialNetworkCreationDTO.IsPrincipal =
                     !isThereSomePrincipal;
             }
             else
@@ -213,8 +232,8 @@ namespace BackendComfeco.Controllers
                     principalSocialNetwork.IsPrincipal = false;
                 }
             }
-            
-            if(currentUserSocialNetwork == null)
+
+            if (currentUserSocialNetwork == null)
             {
                 var entity = mapper.Map<ApplicationUserSocialNetwork>(socialNetworkCreationDTO);
                 entity.UserId = userId;
@@ -230,7 +249,7 @@ namespace BackendComfeco.Controllers
             await applicationDbContext.SaveChangesAsync();
 
             return NoContent();
-        } 
+        }
 
         [HttpGet("profile/{userId}/technologies")]
         public async Task<ActionResult<List<UserTechnologyDTO>>> GetUserTechnologies(string userId)
@@ -243,8 +262,8 @@ namespace BackendComfeco.Controllers
                 return NotFound();
             }
 
-            var technologies = await 
-                applicationDbContext.ApplicationUserTechnologies.Include(x=>x.Technology).Where(x => x.UserId == userId).ToListAsync();
+            var technologies = await
+                applicationDbContext.ApplicationUserTechnologies.Include(x => x.Technology).Where(x => x.UserId == userId).ToListAsync();
 
 
             var dto = mapper.Map<List<UserTechnologyDTO>>(technologies);
@@ -281,12 +300,12 @@ namespace BackendComfeco.Controllers
             await applicationDbContext.SaveChangesAsync();
 
             return NoContent();
-        } 
+        }
 
-       
+
 
         [HttpPost("profile/{userId}/technologies")]
-        public async Task<ActionResult> CreateOrReplaceTechnology(string userId,UserTechnologyCreationDTO userTechnologyCreationDTO)
+        public async Task<ActionResult> CreateOrReplaceTechnology(string userId, UserTechnologyCreationDTO userTechnologyCreationDTO)
         {
             bool userExist = await applicationDbContext.Users.AnyAsync(u => u.Id == userId);
             if (!userExist)
@@ -299,15 +318,15 @@ namespace BackendComfeco.Controllers
                 return NotFound();
             }
 
-            var userTechnology = await applicationDbContext.ApplicationUserTechnologies.FirstOrDefaultAsync(u => u.UserId == userId && u.TechnologyId == userTechnologyCreationDTO.TechnologyId); 
+            var userTechnology = await applicationDbContext.ApplicationUserTechnologies.FirstOrDefaultAsync(u => u.UserId == userId && u.TechnologyId == userTechnologyCreationDTO.TechnologyId);
             //Asegurar tecnologia principal
-            if(userTechnology!=null && userTechnology.IsPrincipal)
+            if (userTechnology != null && userTechnology.IsPrincipal)
             {
                 userTechnologyCreationDTO.IsPrincipal = true;
             }
             else if (!userTechnologyCreationDTO.IsPrincipal)
             {
-                bool principalExist = await applicationDbContext.ApplicationUserTechnologies.AnyAsync( u => u.UserId == userId && u.IsPrincipal);
+                bool principalExist = await applicationDbContext.ApplicationUserTechnologies.AnyAsync(u => u.UserId == userId && u.IsPrincipal);
 
                 userTechnologyCreationDTO.IsPrincipal = !principalExist;
             }
@@ -315,7 +334,7 @@ namespace BackendComfeco.Controllers
             {
                 var principalUserTechnology = await applicationDbContext.ApplicationUserTechnologies.FirstOrDefaultAsync(u => u.UserId == userId && u.IsPrincipal);
 
-                if (principalUserTechnology!=null)
+                if (principalUserTechnology != null)
                 {
                     applicationDbContext.Attach(principalUserTechnology);
                     principalUserTechnology.IsPrincipal = false;
@@ -325,7 +344,7 @@ namespace BackendComfeco.Controllers
 
             if (userTechnology != null)
             {
-                mapper.Map(userTechnologyCreationDTO,userTechnology);
+                mapper.Map(userTechnologyCreationDTO, userTechnology);
 
                 applicationDbContext.Entry(userTechnology).State = EntityState.Modified;
             }
