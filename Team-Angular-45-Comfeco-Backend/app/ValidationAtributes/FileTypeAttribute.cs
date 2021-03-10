@@ -37,6 +37,8 @@ namespace BackendComfeco.ValidationAtributes
                     return ValidationResult.Success;
                 }
 
+                
+
                 bool validExtension = ValidTypes.Contains(formFile.ContentType);
 
                 if (!validExtension)

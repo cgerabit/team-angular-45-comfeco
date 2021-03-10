@@ -9,6 +9,9 @@
 
         public string BadgeIcon { get; set; }
 
+        public string Description { get; set; }
+        public string Instructions { get; set; }
+
 
 
     }

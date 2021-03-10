@@ -6,6 +6,7 @@ import { Technologies, Area, applicationUserSocalNetworks, Country, Gender, Soci
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { debug } from 'console';
+import { UserBadges } from '../../../../auth/interfaces/interfaces';
 
 @Component({
   selector: 'app-tab-profile',
@@ -56,6 +57,8 @@ export class TabProfileComponent implements OnInit {
   genders:Gender[]=[];
 
   areas:Area[]=[];
+
+  badges:UserBadges[]=[];
 
   userSocialNetworks:applicationUserSocalNetworks[];
 
@@ -133,8 +136,11 @@ export class TabProfileComponent implements OnInit {
         this.form.get('github').setValue(github.url)
       }
 
+
     } );
     this.authService.userSpecialty.then(r => this.userSpecialty = r );
+
+    this.authService.userBadges.then(r=> this.badges = r);
 
     this.homeService.getAreas({Page:1,RecordsPerPage:150})
     .subscribe(resp => {

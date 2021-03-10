@@ -30,6 +30,15 @@ export interface UserProfile{
   countryId:number;
   userName:string;
   bornDate:Date;
-
 }
 
+export interface UserBadges {
+
+  badgeId:string;
+  badgeName:string;
+  badgeIcon:string;
+  description:string;
+  instructions:string;
+  getDate:Date;
+
+}

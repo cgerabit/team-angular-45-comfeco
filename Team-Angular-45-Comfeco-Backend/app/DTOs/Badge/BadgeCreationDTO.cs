@@ -11,5 +11,14 @@ namespace BackendComfeco.DTOs.Badge
         public string Name { get; set; }
 
         public IFormFile BadgeIcon { get; set; }
+        [Required]
+        [MinLength(3)]
+        public string Description { get; set; }
+        [Required]
+        [MinLength(3)]
+        public string Instructions { get; set; }
+
+
+
     }
 }

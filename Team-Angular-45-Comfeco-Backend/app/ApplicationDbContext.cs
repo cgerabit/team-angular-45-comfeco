@@ -52,7 +52,7 @@ namespace BackendComfeco
             builder.Entity<ApplicationUser>()
                 .HasOne(x => x.Specialty)
                 .WithMany(x => x.Specialists)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.SetNull);
 
             builder.Entity<ApplicationUserBadges>().HasKey(x => new
             {
@@ -60,6 +60,24 @@ namespace BackendComfeco
 
             });
 
+
+
+
+            builder.Entity<Badge>().HasData(new Badge
+            {
+                Name="Sociable",
+                Id=1,
+                Description="Esta persona es muy sociable",
+                Instructions="Para obtener esta insignia actualiza los datos de tu perfil"
+            });
+            builder.Entity<Badge>().HasData(new Badge
+            {
+                Name="Concursante",
+                Id=2,
+                Description="Esta persona es muy competitiva",
+                Instructions="Inscribete en tu primer evento"
+
+            });
 
             //-----------------------ONLY DEBUG------------------------------
 
@@ -73,6 +91,7 @@ namespace BackendComfeco
                 .HasData(new PersistentLoginValidRedirectUrl { Id = 1, Url = "https://localhost:4200/auth/persistent-signin-callback" });
             builder.Entity<PersistentLoginValidRedirectUrl>()
               .HasData(new PersistentLoginValidRedirectUrl { Id = 2, Url = "http://localhost:4200/auth/persistent-signin-callback" });
+
 
 
             //----------------------------------------------------------

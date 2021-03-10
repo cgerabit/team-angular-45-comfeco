@@ -154,6 +154,12 @@ namespace BackendComfeco.Mapper
             CreateMap<BadgeCreationDTO, Badge>()
                 .ForMember(b => b.BadgeIcon, options => options.Ignore());
 
+            CreateMap<ApplicationUserBadges, UserBadgeDTO>()
+                .ForMember(x => x.BadgeIcon, options => options.MapFrom(y => y.Badge.BadgeIcon))
+                .ForMember(x => x.BadgeName, options => options.MapFrom(y => y.Badge.Name))
+                .ForMember(x=>x.Instructions , options => options.MapFrom(y=> y.Badge.Instructions))
+                .ForMember(x=>x.Description , options => options.MapFrom(y=> y.Badge.Description));
+
         }
 
 
