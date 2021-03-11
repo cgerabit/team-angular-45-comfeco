@@ -1,1 +1,182 @@
-<p>tab-group works!</p>
+<div class="group-container">
+
+    <h1 class="title-group">Groups:</h1>
+
+    <div class="group-filters">
+        <select class="filter-input-select input">
+          <option selected value="-1">Seleccione una tecnologia</option>
+
+
+        </select>
+        <input class="filter-input-input input" placeholder="Filtrar por nombre">
+
+    </div>
+    <div class="actual-group">
+        <div class="actual-group-inner">
+            <div class="header-actual-group">
+                <h3>Mi grupo</h3>
+                <a>Ir al grupo</a>
+            </div>
+            <div class="second-header">
+                <h3>Nombre grupo</h3>
+                <img src="../../../../../assets/images/facebook.svg">
+            </div>
+            <div class="actual-group-members">
+                <div class="member">
+
+                    <div class="identifier">
+                        <div class="identifier-img">
+                            <img src="../../../../../assets/images/facebook.svg">
+                        </div>
+                        <div class="identifier-text">
+                            <p>
+                                Juan Secu
+                            </p>
+                            <p class="subtitle">
+                                Novato
+                            </p>
+                        </div>
+
+                    </div>
+                    <div class="role">
+                        <p>
+                            Member
+                        </p>
+                    </div>
+                </div>
+                <div class="member">
+
+                    <div class="identifier">
+                        <div class="identifier-img">
+                            <img src="../../../../../assets/images/facebook.svg">
+                        </div>
+                        <div class="identifier-text">
+                            <p>
+                                Juan Secu
+                            </p>
+                            <p class="subtitle">
+                                Novato
+                            </p>
+                        </div>
+
+                    </div>
+                    <div class="role">
+                        <p>
+                            Member
+                        </p>
+                    </div>
+                </div>
+                <div class="member">
+
+                    <div class="identifier">
+                        <div class="identifier-img">
+                            <img src="../../../../../assets/images/facebook.svg">
+                        </div>
+                        <div class="identifier-text">
+                            <p>
+                                Juan Secu
+                            </p>
+                            <p class="subtitle">
+                                Novato
+                            </p>
+                        </div>
+
+                    </div>
+                    <div class="role">
+                        <p>
+                            Member
+                        </p>
+                    </div>
+                </div>
+                <div class="member">
+
+                    <div class="identifier">
+                        <div class="identifier-img">
+                            <img src="../../../../../assets/images/facebook.svg">
+                        </div>
+                        <div class="identifier-text">
+                            <p>
+                                Juan Secu
+                            </p>
+                            <p class="subtitle">
+                                Novato
+                            </p>
+                        </div>
+
+                    </div>
+                    <div class="role">
+                        <p>
+                            Member
+                        </p>
+                    </div>
+                </div>
+                <div class="member">
+
+                    <div class="identifier">
+                        <div class="identifier-img">
+                            <img src="../../../../../assets/images/facebook.svg">
+                        </div>
+                        <div class="identifier-text">
+                            <p>
+                                Juan Secu
+                            </p>
+                            <p class="subtitle">
+                                Novato
+                            </p>
+                        </div>
+
+                    </div>
+                    <div class="role">
+                        <p>
+                            Member
+                        </p>
+                    </div>
+                </div>
+                <div class="member">
+
+                    <div class="identifier">
+                        <div class="identifier-img">
+                            <img src="../../../../../assets/images/facebook.svg">
+                        </div>
+                        <div class="identifier-text">
+                            <p>
+                                Juan Secu
+                            </p>
+                            <p class="subtitle">
+                                Novato
+                            </p>
+                        </div>
+
+                    </div>
+                    <div class="role">
+                        <p>
+                            Member
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="actual-group-footer">
+                <button class="btn-custom warning-action">Abandonar</button>
+                <button class="btn-custom">Ir al chat</button>
+            </div>
+        </div>
+
+    </div>
+    <div class="group-container-inner">
+        <div class="group-card" *ngFor="let group of groups">
+            <div class="card-header">
+                <img [src]="group.groupImage">
+                <p>{{group.technologyName}}</p>
+            </div>
+            <div class="group-card-body">
+                <h2>{{group.name}}</h2>
+                <p>{{group.description}}</p>
+            </div>
+            <footer>
+                <button class="card-join-button">Unirse</button>
+            </footer>
+
+        </div>
+
+    </div>
+</div>

@@ -87,3 +87,17 @@ export interface SocialNetwork{
   name:string;
   socialNetworkIcon:string;
 }
+
+export interface GroupFilter{
+  Name?:string;
+  TechnologyId?:number;
+}
+
+export interface Group{
+  id:number;
+  name:string;
+  description:string;
+  technologyId:number;
+  technologyName:string;
+  groupImage:string;
+}

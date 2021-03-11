@@ -34,7 +34,7 @@
             public const string TechnologyContainer = "Technology_Icons";
             public const string ProfilePicturesContainer = "User_Profile";
             public const string SocialNetworkIconContainer = "Social_Network";
-
+            public const string GroupImagesContainer = "Group_Img";
             public const string BadgePicturesContainer = "Badge_Icons";
         }
 

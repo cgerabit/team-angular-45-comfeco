@@ -136,7 +136,7 @@ namespace BackendComfeco
 
         public DbSet<Gender> Genders { get; set; }
 
-
+        public DbSet<Group> Groups { get; set; }
         public DbSet<ApplicationUserBadges> ApplicationUserBadges { get; set; }
         public DbSet<Badge> Badges { get; set; }
     }

@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { Comunity, Sponsor, ContentCreator, Technologies, Area, Country, Gender, SocialNetwork } from '../interfaces/interfaces';
+import { Comunity, Sponsor, ContentCreator, Technologies, Area, Country, Gender, SocialNetwork, GroupFilter, Group } from '../interfaces/interfaces';
 import { Pagination } from '../../auth/interfaces/interfaces';
 
 @Injectable({
@@ -121,6 +121,24 @@ export class HomepageService {
     const url = `${this.baseUrl}/socialnetworks`;
 
     return this.http.get<SocialNetwork[]>(url);
+
+  }
+
+  getGroups(groupFilter:GroupFilter){
+
+    let params = new HttpParams();
+    if(groupFilter.Name){
+      params = params.append('Name',groupFilter.Name);
+    }
+
+    if(groupFilter.TechnologyId){
+      params = params.append("TechnologyId",groupFilter.TechnologyId.toString());
+
+    }
+
+    return this.http.get<Group[]>(`${this.baseUrl}/groups`,{params})
+
+
 
   }
 }
