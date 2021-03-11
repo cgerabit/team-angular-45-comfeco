@@ -92,172 +92,204 @@
 
 <!--Editar datos-->
 <div *ngIf="updateState" class="update-layout animate__animated animate__fadeIn">
-    <button (click)="update()" type="button" class="back">
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-      <path d="M16.67 0l2.83 2.829-9.339 9.175 9.339 9.167-2.83 2.829-12.17-11.996z" />
-    </svg>
+  <button (click)="update()" type="button" class="back">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+          <path d="M16.67 0l2.83 2.829-9.339 9.175 9.339 9.167-2.83 2.829-12.17-11.996z" />
+      </svg>
   </button>
-    <form [formGroup]="form" class="form" (ngSubmit)="submit()">
-        <h1>Editar perfil</h1>
-        <!-- Select File and Image Preview -->
-        <div class="form-avatar">
-            <div class="avatar-edit">
-                <input type="file" id="imageUpload" accept="image/*" (change)="showPreview($event)" />
-                <label for="imageUpload">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-            <path
-              d="M18.363 8.464l1.433 1.431-12.67 12.669-7.125 1.436 1.439-7.127 12.665-12.668 1.431 1.431-12.255 12.224-.726 3.584 3.584-.723 12.224-12.257zm-.056-8.464l-2.815 2.817 5.691 5.692 2.817-2.821-5.693-5.688zm-12.318 18.718l11.313-11.316-.705-.707-11.313 11.314.705.709z" />
-          </svg>
-        </label>
-            </div>
-            <div class="avatar-preview">
-                <img [src]="imageURL" alt="{{usuario.userName}}" style="object-fit: cover;">
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="form-group_input">
-                <label for="email">Correo</label>
-                <input type="email" formControlName="email" placeholder="Ingrese su email" />
-                <small class="text-danger">
-          Ingrese un correo valido
-        </small>
-            </div>
-            <div class="form-group_input">
-                <label for="email">Correo</label>
-                <input type="email" formControlName="email" placeholder="Ingrese su email" />
-                <small class="text-danger">
-          Ingrese un correo valido
-        </small>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="form-group_input">
-                <label for="email">Genero</label>
-                <select formControlName="genderId">
+  <form [formGroup]="form" class="form" (ngSubmit)="submit()">
+      <h1>Editar perfil</h1>
+      <div class="form-header">
+          <div class="form-avatar">
+              <div class="avatar-preview">
+                  <img src="{{ profile &&
+                    profile.profilePicture?
+                    profile.profilePicture :
+                    usuario.avatar }}" alt="{{usuario.userName}}" style="object-fit: cover;">
+                  <div class="avatar-edit">
+                      <input type="file" id="imageUpload" accept="image/*" (change)="showPreview($event)" />
+                      <label for="imageUpload">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                              <path
+                                  d="M18.363 8.464l1.433 1.431-12.67 12.669-7.125 1.436 1.439-7.127 12.665-12.668 1.431 1.431-12.255 12.224-.726 3.584 3.584-.723 12.224-12.257zm-.056-8.464l-2.815 2.817 5.691 5.692 2.817-2.821-5.693-5.688zm-12.318 18.718l11.313-11.316-.705-.707-11.313 11.314.705.709z" />
+                          </svg>
+                      </label>
+                  </div>
+              </div>
+              <div class="form-userdata">
+                  <p>{{usuario.userName}}</p>
+                  <p>example@gmail.com</p>
+              </div>
+          </div>
+          <div class="form-list list-group">
+              <button type="button" class="list-group-item list-group-item-action btn-list-item"
+                  (click)="open('Username', false, usuario.userName)">
+                  <span>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                          <path
+                              d="M19 7.001c0 3.865-3.134 7-7 7s-7-3.135-7-7c0-3.867 3.134-7.001 7-7.001s7 3.134 7 7.001zm-1.598 7.18c-1.506 1.137-3.374 1.82-5.402 1.82-2.03 0-3.899-.685-5.407-1.822-4.072 1.793-6.593 7.376-6.593 9.821h24c0-2.423-2.6-8.006-6.598-9.819z" />
+                      </svg>
+                  </span>
+                  Cambiar mi Username
+              </button>
+              <button type="button" class="list-group-item list-group-item-action btn-list-item"
+                  (click)="open('Email', false, 'email')">
+                  <span>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                          <path
+                              d="M12 12.713l-11.985-9.713h23.971l-11.986 9.713zm-5.425-1.822l-6.575-5.329v12.501l6.575-7.172zm10.85 0l6.575 7.172v-12.501l-6.575 5.329zm-1.557 1.261l-3.868 3.135-3.868-3.135-8.11 8.848h23.956l-8.11-8.848z" />
+                      </svg>
+                  </span>
+                  Cambiar mi Email
+              </button>
+              <button type="button" class="list-group-item list-group-item-action btn-list-item"
+                  (click)="open('Contraseña', true, '')">
+                  <span>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                          <path
+                              d="M12.451 17.337l-2.451 2.663h-2v2h-2v2h-6v-1.293l7.06-7.06c-.214-.26-.413-.533-.599-.815l-6.461 6.461v-2.293l6.865-6.949c1.08 2.424 3.095 4.336 5.586 5.286zm11.549-9.337c0 4.418-3.582 8-8 8s-8-3.582-8-8 3.582-8 8-8 8 3.582 8 8zm-3-3c0-1.104-.896-2-2-2s-2 .896-2 2 .896 2 2 2 2-.896 2-2z" />
+                      </svg>
+                  </span>
+                  Cambiar mi Contraseña
+              </button>
+          </div>
+      </div>
+      <div class="form-divider">
+          <span>Mi información personal</span>
+      </div>
+      <div class="form-group">
+          <div class="form-group_input">
+              <label for="email">Genero</label>
+              <select formControlName="genderId">
                   <option [value]="gender.id" *ngFor="let gender of genders">
-                    {{gender.name}}
+                      {{gender.name}}
                   </option>
-                </select>
-                <small class="text-danger">
-          Seleccione un genero
-        </small>
-            </div>
-            <div class="form-group_input">
-                <label for="email">Fecha nacimiento</label>
-                <div class="date-input">
-                    <input formControlName="bornDate" placeholder="yyyy-mm-dd" name="dp" [(ngModel)]="model" ngbDatepicker #d="ngbDatepicker">
-                    <button (click)="d.toggle()" type="button" class="calendar">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-              <path
-                d="M14 13h-4v-4h4v4zm6-4h-4v4h4v-4zm-12 6h-4v4h4v-4zm6 0h-4v4h4v-4zm-6-6h-4v4h4v-4zm16-8v13.386c0 2.391-6.648 9.614-9.811 9.614h-14.189v-23h24zm-2 6h-20v15h11.362c4.156 0 2.638-6 2.638-6s6 1.65 6-2.457v-6.543z" />
-            </svg>
-          </button>
-                </div>
-            </div>
-            <div class="form-group_input">
-                <label for="email">Pais</label>
-                <select formControlName="countryId">
-                  <option [value]="country.id" *ngFor="let country of countries">
-                    {{country.name}}
-                  </option>
-                </select>
-                <small class="text-danger">
-         Seleccione un pais
-        </small>
-            </div>
-        </div>
+              </select>
+              <small class="text-danger">
+                  Seleccione un genero
+              </small>
+          </div>
+          <div class="form-group_input">
+              <label for="email">Fecha nacimiento</label>
+              <div class="date-input">
+                  <input formControlName="bornDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker
+                      #d="ngbDatepicker">
+                  <button (click)="d.toggle()" type="button" class="calendar">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                          <path
+                              d="M14 13h-4v-4h4v4zm6-4h-4v4h4v-4zm-12 6h-4v4h4v-4zm6 0h-4v4h4v-4zm-6-6h-4v4h4v-4zm16-8v13.386c0 2.391-6.648 9.614-9.811 9.614h-14.189v-23h24zm-2 6h-20v15h11.362c4.156 0 2.638-6 2.638-6s6 1.65 6-2.457v-6.543z" />
+                      </svg>
+                  </button>
+              </div>
+              <small class="text-danger">
+                  Seleccione un fecha
+              </small>
+          </div>
+      </div>
 
-        <div class="form-group">
-            <div class="form-group_input">
-                <label for="email">Especialidad</label>
-                <select formControlName="specialtyId">
+      <div class="form-group">
+          <div class="form-group_input">
+              <label for="email">Especialidad</label>
+              <select formControlName="specialtyId">
                   <option [value]="area.id" *ngFor="let area of areas">
-                    {{area.name}}
+                      {{area.name}}
                   </option>
-                </select>
-                <small class="text-danger">
-          Seleccione una especialidad
-        </small>
-            </div>
-            <div class="form-group_input">
-                <label for="email">Correo</label>
-                <input type="email" formControlName="email" placeholder="Ingrese su email" />
-                <small class="text-danger">
-          Ingrese un correo valido
-        </small>
-            </div>
-        </div>
+              </select>
+              <small class="text-danger">
+                  Seleccione una especialidad
+              </small>
+          </div>
+          <div class="form-group_input">
+              <label for="email">Pais</label>
+              <select formControlName="countryId">
+                  <option [value]="country.id" *ngFor="let country of countries">
+                      {{country.name}}
+                  </option>
+              </select>
+              <small class="text-danger">
+                  Seleccione un pais
+              </small>
+          </div>
+      </div>
 
-        <div class="form-group" *ngIf="socialNetworks && socialNetworks.length>0">
-            <div class="form-group_input">
-                <div class="input-social">
-                    <span [class]="getFacebookData().name.toLowerCase()">
-                      <img [src]="getFacebookData().socialNetworkIcon" [alt]="getFacebookData()
-                      .name.toLowerCase()"></span>
-                    <label for="facebook">
-           {{getFacebookData().hostname}}/
-          </label>
-                    <input type="text" formControlName="facebook" placeholder="Ingresa tu facebook" />
-                </div>
-                <small class="text-danger">
-         Ingrese un enlace a facebook valido
-        </small>
-            </div>
-            <div class="form-group_input">
-                <div class="input-social">
-                    <span [class]="getGithubData().name.toLowerCase()"><img [src]="getGithubData().socialNetworkIcon" [alt]="getGithubData().name.toLowerCase()"></span>
-                    <label for="Github">
-           {{getGithubData().hostname}}
-          </label>
-                    <input type="text" formControlName="github" placeholder="Ingrese su github" />
-                </div>
-                <small class="text-danger">
-          Ingrese un enlace a github valido
-        </small>
-            </div>
-        </div>
+      <div class="form-group" *ngIf="socialNetworks && socialNetworks.length>0">
+          <div class="form-group_input">
+              <div class="input-social">
+                  <span [class]="getFacebookData().name.toLowerCase()">
+                      <img src="../../../../../assets/images/iconmonstr-facebook.svg"
+                          [alt]="getFacebookData().name.toLowerCase()">
+                  </span>
+                  <label for="facebook">
+                      {{getFacebookData().hostname}}/
+                  </label>
+                  <input type="text" formControlName="facebook" placeholder="Ingresa tu facebook" />
+              </div>
+              <small class="text-danger">
+                  Ingrese un enlace a facebook valido
+              </small>
+          </div>
+          <div class="form-group_input">
+              <div class="input-social">
+                  <span [class]="getGithubData().name.toLowerCase()">
+                      <img src="../../../../../assets/images/iconmonstr-github.svg"
+                          [alt]="getGithubData().name.toLowerCase()">
+                  </span>
+                  <label for="Github">
+                      {{getGithubData().hostname}}
+                  </label>
+                  <input type="text" formControlName="github" placeholder="Ingrese su github" />
+              </div>
+              <small class="text-danger">
+                  Ingrese un enlace a github valido
+              </small>
+          </div>
+      </div>
 
-        <div class="form-group" *ngIf="socialNetworks && socialNetworks.length>0">
-            <div class="form-group_input">
-                <div class="input-social">
-                    <span class="linkedin"><img [src]="getLinkedinData().socialNetworkIcon" alt="linkedin"></span>
-                    <label for="linkedin">
-           {{getLinkedinData().hostname}}
-          </label>
-                    <input type="text" formControlName="linkedin" placeholder="Ingrese su linkedin" />
-                </div>
-                <small class="text-danger">
-          Ingrese un enlace a linkedin valido
-        </small>
-            </div>
-            <div class="form-group_input">
-                <div class="input-social">
-                    <span class="twitter"><img [src]="getTwitterData().socialNetworkIcon" alt="twitter"></span>
-                    <label for="twitter">
-            {{getTwitterData().hostname}}
-          </label>
-                    <input type="text" formControlName="twitter" placeholder="Ingrese su twitter" />
-                </div>
-                <small class="text-danger">
-          Ingrese un enlace a twitter valido
-        </small>
-            </div>
-        </div>
+      <div class="form-group" *ngIf="socialNetworks && socialNetworks.length>0">
+          <div class="form-group_input">
+              <div class="input-social">
+                  <span class="linkedin">
+                      <img src="../../../../../assets/images/iconmonstr-linkedin.svg"
+                          [alt]="getLinkedinData().name.toLowerCase()">
+                  </span>
+                  <label for="linkedin">
+                      {{getLinkedinData().hostname}}
+                  </label>
+                  <input type="text" formControlName="linkedin" placeholder="Ingrese su linkedin" />
+              </div>
+              <small class="text-danger">
+                  Ingrese un enlace a linkedin valido
+              </small>
+          </div>
+          <div class="form-group_input">
+              <div class="input-social">
+                  <span class="twitter">
+                      <img src="../../../../../assets/images/iconmonstr-twitter.svg"
+                          [alt]="getTwitterData().name.toLowerCase()">
+                  </span>
+                  <label for="twitter">
+                      {{getTwitterData().hostname}}
+                  </label>
+                  <input type="text" formControlName="twitter" placeholder="Ingrese su twitter" />
+              </div>
+              <small class="text-danger">
+                  Ingrese un enlace a twitter valido
+              </small>
+          </div>
+      </div>
 
-        <div class="form-group">
-            <div class="form-group_input">
-                <label for="biography">Biografia</label>
-                <textarea type="text" formControlName="biography" placeholder="Ingrese su biografia"></textarea>
-                <small class="text-danger">
-         Ingrese su biografia
-        </small>
-            </div>
-        </div>
+      <div class="form-group">
+          <div class="form-group_input">
+              <label for="biography">Biografia</label>
+              <textarea type="text" formControlName="biography" placeholder="Ingrese su biografia"></textarea>
+              <small class="text-danger">
+                  Ingrese su biografia
+              </small>
+          </div>
+      </div>
 
-        <div class="form-group">
-            <button type="submit" class="button-submit">Guardar cambios</button>
-        </div>
-    </form>
+      <div class="form-group">
+          <button type="submit" class="button-submit">Guardar cambios</button>
+      </div>
+  </form>
 </div>

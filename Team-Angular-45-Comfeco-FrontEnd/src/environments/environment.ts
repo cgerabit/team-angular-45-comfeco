@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  baseUrl: "https://comfeco.cristiangerani.com/swagger/index.html/api",
+  baseUrl: "https://comfeco.cristiangerani.com/api",
   tokenFieldName :"access_token",
   tokenExpirationFieldName:"token_expiration",
   bearertokenResponseTypeName : "Bearer",

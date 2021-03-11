@@ -22,10 +22,11 @@ import { TabEventComponent } from './tabs/profile/tab-event/tab-event.component'
   slidesPerView: 'auto'
 };*/
 import { ReactiveFormsModule } from '@angular/forms';
+import { ChangeComponent } from './components/change/change.component';
 
 
 @NgModule({
-  declarations: [DashboardComponent, ProfileComponent, NavbarComponent, TabProfileComponent, TabInsigniaComponent, TabGroupComponent, TabEventComponent],
+  declarations: [DashboardComponent, ProfileComponent, NavbarComponent, TabProfileComponent, TabInsigniaComponent, TabGroupComponent, TabEventComponent, ChangeComponent],
   imports: [
     CommonModule,
     ProtectedRoutingModule,
