@@ -70,9 +70,10 @@ export class TabProfileComponent implements OnInit {
 
 
   get usuario(){
-    const { userName } = this.authService.userInfo;
+    const { userName, email } = this.authService.userInfo;
     return {
       userName: userName,
+      email: email,
       avatar:
         `https://avatars.dicebear.com/api/bottts/${userName}.svg`,
     };

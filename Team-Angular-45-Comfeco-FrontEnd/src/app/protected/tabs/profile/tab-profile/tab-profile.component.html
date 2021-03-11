@@ -118,7 +118,7 @@
               </div>
               <div class="form-userdata">
                   <p>{{usuario.userName}}</p>
-                  <p>example@gmail.com</p>
+                  <p>{{ usuario.email }}</p>
               </div>
           </div>
           <div class="form-list list-group">
@@ -133,7 +133,7 @@
                   Cambiar mi Username
               </button>
               <button type="button" class="list-group-item list-group-item-action btn-list-item"
-                  (click)="open('Email', false, 'email')">
+                  (click)="open('Email', false, usuario.email)">
                   <span>
                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                           <path
