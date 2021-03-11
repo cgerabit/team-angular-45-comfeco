@@ -21,6 +21,7 @@ namespace BackendComfeco.Models
 
         public List<Workshop> Workshops { get; set; }
 
+        public List<Group> Groups { get; set; }
 
 
     }

@@ -4,14 +4,16 @@ using BackendComfeco;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BackendComfeco.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210311125059_add-groups")]
+    partial class addgroups
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -362,9 +364,6 @@ namespace BackendComfeco.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("GroupImage")
                         .HasColumnType("nvarchar(max)");
 
@@ -557,7 +556,7 @@ namespace BackendComfeco.Migrations
                         new
                         {
                             Id = "6a8af04b-0405-4cd2-bc20-d59433235153",
-                            ConcurrencyStamp = "aae958be-0554-48d6-a221-1535e34181be",
+                            ConcurrencyStamp = "3d02892b-77a5-460a-b650-58fad05d4286",
                             Name = "ContentCreator",
                             NormalizedName = "ContentCreator"
                         });

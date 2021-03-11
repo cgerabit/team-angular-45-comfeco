@@ -32,9 +32,13 @@ namespace BackendComfeco.Models
         public Country Country { get; set; }
         public int? CountryId { get; set; }
 
-        public DateTime BornDate{ get; set; }
+        public int? GroupId { get; set; }
+        public Group Group { get; set; }
+         public DateTime BornDate{ get; set; }
 
         public List<ApplicationUserBadges> ApplicationUserBadges { get; set; }
+
+        
 
     }
 }

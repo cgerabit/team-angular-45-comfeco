@@ -8,6 +8,7 @@ using BackendComfeco.DTOs.ContentCreators;
 using BackendComfeco.DTOs.Country;
 using BackendComfeco.DTOs.Event;
 using BackendComfeco.DTOs.Gender;
+using BackendComfeco.DTOs.Group;
 using BackendComfeco.DTOs.SocialNetwork;
 using BackendComfeco.DTOs.Sponsor;
 using BackendComfeco.DTOs.Technology;
@@ -159,6 +160,18 @@ namespace BackendComfeco.Mapper
                 .ForMember(x => x.BadgeName, options => options.MapFrom(y => y.Badge.Name))
                 .ForMember(x=>x.Instructions , options => options.MapFrom(y=> y.Badge.Instructions))
                 .ForMember(x=>x.Description , options => options.MapFrom(y=> y.Badge.Description));
+
+            // =========================================================
+            //                          Groups
+            // =========================================================
+
+
+            CreateMap<Group, GroupDTO>()
+                .ForMember(x=>x.TechnologyName, options => options.MapFrom(x=>x.Technology.Name))
+                .ReverseMap();
+            CreateMap<GroupCreationDTO, Group>()
+                .ForMember(m => m.GroupImage, options => options.Ignore());
+
 
         }
 
