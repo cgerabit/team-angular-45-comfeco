@@ -4,9 +4,10 @@ import { HomepageService } from 'src/app/protected/services/homepage.service';
 import { AuthService } from '../../../../auth/services/auth.service';
 import { Technologies, Area, applicationUserSocalNetworks, Country, Gender, SocialNetwork } from '../../../interfaces/interfaces';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDateStruct, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { debug } from 'console';
 import { UserBadges } from '../../../../auth/interfaces/interfaces';
+import { ChangeComponent } from 'src/app/protected/components/change/change.component';
 
 @Component({
   selector: 'app-tab-profile',
@@ -47,7 +48,8 @@ export class TabProfileComponent implements OnInit {
 
   constructor(private authService:AuthService,
     private fb: FormBuilder,
-   private homeService:HomepageService) { }
+   private homeService:HomepageService,
+   private modalService: NgbModal) { }
 
   profile:UserProfile;
   userSpecialty:Area;
@@ -68,9 +70,10 @@ export class TabProfileComponent implements OnInit {
 
 
   get usuario(){
-    const { userName } = this.authService.userInfo;
+    const { userName, email } = this.authService.userInfo;
     return {
       userName: userName,
+      email: email,
       avatar:
         `https://avatars.dicebear.com/api/bottts/${userName}.svg`,
     };
@@ -79,8 +82,18 @@ export class TabProfileComponent implements OnInit {
   //cambiar componente visualizado
   update() {
     this.updateState = !this.updateState;
-
   }
+
+   //Abrir modal
+   open(label: string, isPassword: boolean, inputData: string) {
+    const modalRef = this.modalService.open(ChangeComponent, { centered: true });
+    modalRef.componentInstance.dataModal = {
+      label,
+      isPassword,
+      inputData,
+    };
+  }
+
 
   ngOnInit(): void {
 
