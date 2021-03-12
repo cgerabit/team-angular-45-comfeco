@@ -6,7 +6,5 @@
         public bool Success { get; set; }
         public bool AlreadyInThisGroup { get; set; } = false;
 
-
-
     }
 }
