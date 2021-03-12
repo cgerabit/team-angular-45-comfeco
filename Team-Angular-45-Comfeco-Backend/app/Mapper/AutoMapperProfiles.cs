@@ -21,6 +21,8 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc.Diagnostics;
 using Microsoft.Extensions.Options;
 
+using System.Linq;
+
 namespace BackendComfeco.Mapper
 {
     public class AutoMapperProfiles : Profile
@@ -172,6 +174,14 @@ namespace BackendComfeco.Mapper
             CreateMap<GroupCreationDTO, Group>()
                 .ForMember(m => m.GroupImage, options => options.Ignore());
 
+            CreateMap<Group, UserGroupDTO>()
+                .ForMember(y => y.GroupName, options => options.MapFrom(g => g.Name))
+                .ForMember(y => y.Members, options => options.MapFrom(g => g.Users.Select(u => new GroupMember
+                {
+                    Name = u.UserName,
+                    ProfilePicture = u.ProfilePicture,
+                    IsGroupLeader = u.IsGroupLeader
+                })));
 
         }
 

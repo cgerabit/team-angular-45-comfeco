@@ -34,6 +34,8 @@ namespace BackendComfeco.Models
 
         public int? GroupId { get; set; }
         public Group Group { get; set; }
+
+        public bool IsGroupLeader { get; set; } = false;
          public DateTime BornDate{ get; set; }
 
         public List<ApplicationUserBadges> ApplicationUserBadges { get; set; }

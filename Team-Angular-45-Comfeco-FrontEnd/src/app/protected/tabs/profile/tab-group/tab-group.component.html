@@ -3,177 +3,69 @@
     <h1 class="title-group">Groups:</h1>
 
     <div class="group-filters">
-        <select class="filter-input-select input">
+        <select [(ngModel)]="technologiesFilter" class="filter-input-select input">
           <option selected value="-1">Seleccione una tecnologia</option>
-
+          <option [value]="technologie.id" *ngFor="let technologie of technologies">
+            {{technologie.name}}
+          </option>
 
         </select>
-        <input class="filter-input-input input" placeholder="Filtrar por nombre">
+        <input [(ngModel)]="nameFilter" class="filter-input-input input" placeholder="Filtrar por nombre">
 
     </div>
-    <div class="actual-group">
+    <div *ngIf="userGroup" class="actual-group">
         <div class="actual-group-inner">
             <div class="header-actual-group">
                 <h3>Mi grupo</h3>
                 <a>Ir al grupo</a>
             </div>
             <div class="second-header">
-                <h3>Nombre grupo</h3>
-                <img src="../../../../../assets/images/facebook.svg">
+                <h3>{{userGroup.groupName}}</h3>
+                <img [src]="userGroup.groupImage">
             </div>
             <div class="actual-group-members">
-                <div class="member">
+                <div *ngFor="let member of userGroup.members" class="member">
 
                     <div class="identifier">
                         <div class="identifier-img">
-                            <img src="../../../../../assets/images/facebook.svg">
+                            <img [src]="member.profilePicture">
                         </div>
-                        <div class="identifier-text">
+                        <div class="identifier-text ">
                             <p>
-                                Juan Secu
+                                {{member.name}}
                             </p>
-                            <p class="subtitle">
+                            <p class="subtitle ">
                                 Novato
                             </p>
                         </div>
 
                     </div>
-                    <div class="role">
+                    <div class="role ">
                         <p>
-                            Member
-                        </p>
-                    </div>
-                </div>
-                <div class="member">
-
-                    <div class="identifier">
-                        <div class="identifier-img">
-                            <img src="../../../../../assets/images/facebook.svg">
-                        </div>
-                        <div class="identifier-text">
-                            <p>
-                                Juan Secu
-                            </p>
-                            <p class="subtitle">
-                                Novato
-                            </p>
-                        </div>
-
-                    </div>
-                    <div class="role">
-                        <p>
-                            Member
-                        </p>
-                    </div>
-                </div>
-                <div class="member">
-
-                    <div class="identifier">
-                        <div class="identifier-img">
-                            <img src="../../../../../assets/images/facebook.svg">
-                        </div>
-                        <div class="identifier-text">
-                            <p>
-                                Juan Secu
-                            </p>
-                            <p class="subtitle">
-                                Novato
-                            </p>
-                        </div>
-
-                    </div>
-                    <div class="role">
-                        <p>
-                            Member
-                        </p>
-                    </div>
-                </div>
-                <div class="member">
-
-                    <div class="identifier">
-                        <div class="identifier-img">
-                            <img src="../../../../../assets/images/facebook.svg">
-                        </div>
-                        <div class="identifier-text">
-                            <p>
-                                Juan Secu
-                            </p>
-                            <p class="subtitle">
-                                Novato
-                            </p>
-                        </div>
-
-                    </div>
-                    <div class="role">
-                        <p>
-                            Member
-                        </p>
-                    </div>
-                </div>
-                <div class="member">
-
-                    <div class="identifier">
-                        <div class="identifier-img">
-                            <img src="../../../../../assets/images/facebook.svg">
-                        </div>
-                        <div class="identifier-text">
-                            <p>
-                                Juan Secu
-                            </p>
-                            <p class="subtitle">
-                                Novato
-                            </p>
-                        </div>
-
-                    </div>
-                    <div class="role">
-                        <p>
-                            Member
-                        </p>
-                    </div>
-                </div>
-                <div class="member">
-
-                    <div class="identifier">
-                        <div class="identifier-img">
-                            <img src="../../../../../assets/images/facebook.svg">
-                        </div>
-                        <div class="identifier-text">
-                            <p>
-                                Juan Secu
-                            </p>
-                            <p class="subtitle">
-                                Novato
-                            </p>
-                        </div>
-
-                    </div>
-                    <div class="role">
-                        <p>
-                            Member
+                            {{member.isGroupLeader ?"Lider":"Member"}}
                         </p>
                     </div>
                 </div>
             </div>
-            <div class="actual-group-footer">
-                <button class="btn-custom warning-action">Abandonar</button>
-                <button class="btn-custom">Ir al chat</button>
+            <div class="actual-group-footer ">
+                <button (click)="leaveMeFromGroup()" class="btn-custom warning-action ">Abandonar</button>
+                <button class="btn-custom ">Ir al chat</button>
             </div>
         </div>
 
     </div>
-    <div class="group-container-inner">
-        <div class="group-card" *ngFor="let group of groups">
-            <div class="card-header">
-                <img [src]="group.groupImage">
+    <div class="group-container-inner ">
+        <div class="group-card " *ngFor="let group of groups ">
+            <div class="card-header ">
+                <img [src]="group.groupImage ">
                 <p>{{group.technologyName}}</p>
             </div>
-            <div class="group-card-body">
+            <div class="group-card-body ">
                 <h2>{{group.name}}</h2>
                 <p>{{group.description}}</p>
             </div>
             <footer>
-                <button class="card-join-button">Unirse</button>
+                <button (click)="joinInGroup(group.id)" class="card-join-button ">Unirse</button>
             </footer>
 
         </div>

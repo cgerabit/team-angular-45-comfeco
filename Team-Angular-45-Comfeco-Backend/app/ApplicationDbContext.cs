@@ -60,8 +60,7 @@ namespace BackendComfeco
 
             });
 
-
-
+           
 
             builder.Entity<Badge>().HasData(new Badge
             {
@@ -79,6 +78,7 @@ namespace BackendComfeco
 
             });
 
+            
             //-----------------------ONLY DEBUG------------------------------
 
             builder.Entity<ExternalLoginValidRedirectUrl>()

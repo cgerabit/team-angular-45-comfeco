@@ -21,7 +21,7 @@ import { TabEventComponent } from './tabs/profile/tab-event/tab-event.component'
   direction: 'horizontal',
   slidesPerView: 'auto'
 };*/
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule,FormsModule } from '@angular/forms';
 import { ChangeComponent } from './components/change/change.component';
 
 
@@ -32,7 +32,8 @@ import { ChangeComponent } from './components/change/change.component';
     ProtectedRoutingModule,
     SwiperModule,
     NgbModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FormsModule
   ],
   /*providers: [
     {
