@@ -13,7 +13,7 @@
         <input [(ngModel)]="nameFilter" class="filter-input-input input" placeholder="Filtrar por nombre">
 
     </div>
-    <div *ngIf="userGroup" class="actual-group">
+    <div *ngIf="userGroup; else nogroup" class="actual-group">
         <div class="actual-group-inner">
             <div class="header-actual-group">
                 <h3>Mi grupo</h3>
@@ -54,6 +54,16 @@
         </div>
 
     </div>
+    <ng-template #nogroup>
+        <div class="actual-group">
+            <div class="no-group-inner">
+
+                <h1 class="no-group-tittle">
+                    Actualmente no formas parte de ningun grupo
+                </h1>
+            </div>
+        </div>
+    </ng-template>
     <div class="group-container-inner ">
         <div class="group-card " *ngFor="let group of groups ">
             <div class="card-header ">
