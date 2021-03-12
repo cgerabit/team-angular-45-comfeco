@@ -131,7 +131,7 @@ export class HomepageService {
       params = params.append('Name',groupFilter.Name);
     }
 
-    if(groupFilter.TechnologyId){
+    if(groupFilter.TechnologyId && groupFilter.TechnologyId>0){
       params = params.append("TechnologyId",groupFilter.TechnologyId.toString());
 
     }

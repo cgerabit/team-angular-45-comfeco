@@ -9,7 +9,7 @@ import { catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import * as shajs from 'sha.js';
 import { environment } from '../../../environments/environment';
-import { TokenResponse, Usuario, UserProfile, UserBadges } from '../interfaces/interfaces';
+import { TokenResponse, Usuario, UserProfile, UserBadges, UserGroup, GroupJoinResult } from '../interfaces/interfaces';
 import { claimAuthCodeDTO } from '../DTOs/claimAuthCodeDTO';
 
 import {
@@ -199,10 +199,12 @@ export class AuthService {
 
           this._userBadges=resp;
           resolve(resp);
-          
+
         },()=>resolve(null))
     })
   }
+
+
   //---------------------------------------- END GETTERS ----------------------------
 
   constructor(private http: HttpClient,
@@ -253,6 +255,7 @@ export class AuthService {
       await this._checkSessionRecover(pathname);
     } catch (exception) {}
   }
+
 
   register(name: string, email: string, password: string) {
     const url = `${this.baseUrl}/Account/register`;
@@ -500,5 +503,72 @@ export class AuthService {
 
     return this.http.get<applicationUserSocalNetworks[]>(url);
 
+  }
+
+  currentUserGroup:UserGroup
+  getUserGroup(useCache:boolean=true):Promise<UserGroup>{
+    return new Promise<UserGroup>((resolve)=>{
+
+        if(!this.isLoggedIn){
+          resolve(null);
+          return;
+        }
+
+        if(this.currentUserGroup && useCache){
+            resolve(this.currentUserGroup);
+            return;
+        }
+
+        this.http.get<UserGroup>(`${this.baseUrl}/groups/members/usergroup/${this.userInfo.userId}`)
+        .subscribe(resp => {
+
+          this.currentUserGroup = resp;
+          resolve(resp);
+
+        },()=>resolve(null))
+
+    });
+  }
+
+  leaveUserFromGroup(){
+    return new Promise<boolean>(resolve=>{
+
+
+      if(!this.isLoggedIn){
+        return resolve(false);
+      }
+
+      this.http.delete(`${this.baseUrl}/groups/members/${this.userInfo.userId}`)
+      .subscribe(() => {
+          resolve(true);
+
+      },()=>resolve(false))
+
+    })
+  }
+
+  addUserInAGroup(groupId:number){
+    return new Promise<GroupJoinResult>(resolve=>{
+
+      let failureResult = {
+        success:false,
+        alreadyInAgroup:false,
+        alreadyInThisGroup:false
+      };
+      if(!this.isLoggedIn){
+        return resolve(failureResult);
+
+      }
+
+      this.http.post<GroupJoinResult>(`${this.baseUrl}/groups/members/${groupId}`,{userId:this.userInfo.userId}).subscribe(r => {
+
+          resolve(r);
+          return;
+
+      }, ()=>{
+          return resolve(failureResult);
+      })
+
+    })
   }
 }

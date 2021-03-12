@@ -40,5 +40,25 @@ export interface UserBadges {
   description:string;
   instructions:string;
   getDate:Date;
+}
 
+export interface UserGroup{
+
+  members:GroupMember[];
+  groupName:string;
+  groupImage:string;
+}
+
+
+export interface GroupMember
+{
+  name:string;
+  profilePicture:string;
+  isGroupLeader:boolean;
+}
+
+export interface GroupJoinResult {
+  alreadyInAgroup:boolean;
+  success:boolean;
+  alreadyInThisGroup:boolean;
 }
