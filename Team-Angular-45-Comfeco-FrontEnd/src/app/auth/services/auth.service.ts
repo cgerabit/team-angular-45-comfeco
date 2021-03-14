@@ -5,11 +5,11 @@ import {
   HttpHeaders,
 } from '@angular/common/http';
 
-import { catchError, tap } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { catchError, tap,map } from 'rxjs/operators';
+import { of, Observable, Subject } from 'rxjs';
 import * as shajs from 'sha.js';
 import { environment } from '../../../environments/environment';
-import { TokenResponse, Usuario, UserProfile, UserBadges, UserGroup, GroupJoinResult } from '../interfaces/interfaces';
+import { TokenResponse, Usuario, UserProfile, UserBadges, UserGroup, GroupJoinResult, changeUsernameDTO, changeEmailDTO, changePasswordDTO, updateProfileDTO, socialNetworkCreationDTO } from '../interfaces/interfaces';
 import { claimAuthCodeDTO } from '../DTOs/claimAuthCodeDTO';
 
 import {
@@ -23,6 +23,9 @@ import { identifierModuleUrl } from '@angular/compiler';
 import { applicationUserSocalNetworks } from 'src/app/protected/interfaces/interfaces';
 import { Technologies, Area } from '../../protected/interfaces/interfaces';
 import { HomepageService } from 'src/app/protected/services/homepage.service';
+import { timeStamp } from 'console';
+import { HttpParams } from '@angular/common/http';
+
 
 
 @Injectable({
@@ -104,6 +107,9 @@ export class AuthService {
     return this._userInfo;
   }
 
+  private _profileChanged:Subject<UserProfile> =new Subject<UserProfile>();
+  public profileChanged:Observable<UserProfile> = this._profileChanged.asObservable();
+
   private _userProfile:UserProfile
 
   get userProfile():Promise<UserProfile>
@@ -121,7 +127,17 @@ export class AuthService {
       }
 
       this.getUserProfile().subscribe(resp => {
-          this._userProfile =resp;
+
+
+          if(resp.bornDate){
+         let splitedDate = resp.bornDate.split('T')[0].split('-');
+        resp.bornDateParsed = new Date(
+          Number.parseInt(splitedDate[0]),
+         Number.parseInt(splitedDate[1])-1
+        ,Number.parseInt(splitedDate[2]));
+       }
+
+      this._userProfile =resp;
 
           resolve(resp);
 
@@ -152,6 +168,9 @@ export class AuthService {
         },()=> resolve(null))
     });
   }
+
+  private _userSpecialtyChanged:Subject<Area> =new Subject<Area>();
+  public userSpecialtyChanged:Observable<Area> = this._userSpecialtyChanged.asObservable();
 
   private _userSpecialty : Area
 
@@ -481,7 +500,7 @@ export class AuthService {
     };
   }
 
-  getUserProfile(){
+  getUserProfile() : Observable<UserProfile>{
 
     if(!this.userInfo || !this.userInfo.userId){
       return of(null);
@@ -570,5 +589,77 @@ export class AuthService {
       })
 
     })
+  }
+
+  changeUsername(changeUsernameDTO:changeUsernameDTO){
+
+    if(!changeUsernameDTO.userId){
+      changeUsernameDTO.userId = this.userInfo.userId
+    }
+
+    return this.http.post(`${this.baseUrl}/account/changeusername`,changeUsernameDTO);
+
+  }
+
+  changeEmail(changeEmail:changeEmailDTO){
+      if(!changeEmail.userId){
+        changeEmail.userId = this.userInfo.userId;
+      }
+
+      return this.http.post(`${this.baseUrl}/account/changeemail`,changeEmail);
+
+
+  }
+
+  changePassword(changePasswordDTO:changePasswordDTO){
+    if(!changePasswordDTO.userId){
+      changePasswordDTO.userId = this.userInfo.userId
+    }
+
+    return this.http.post(`${this.baseUrl}/account/changepwd`,changePasswordDTO)
+
+  }
+
+  updateProfile(updateProfileDTO:updateProfileDTO){
+   var formData:FormData=new FormData();
+   if(updateProfileDTO.profilePicture){
+    formData.append('profilePicture',updateProfileDTO.profilePicture);
+   }
+   formData.append('bornDate',updateProfileDTO.bornDate);
+   formData.append('biography',updateProfileDTO.biography);
+   formData.append('countryId',updateProfileDTO.countryId.toString());
+   formData.append('genderId',updateProfileDTO.genderId.toString());
+   formData.append('specialtyId',updateProfileDTO.specialtyId.toString())
+
+   return this.http.put(`${this.baseUrl}/users/profile/${this.userInfo.userId}`,formData)
+   .pipe(
+     map(r => {
+      //delete cache
+      this._userProfile =null;
+      this._userSpecialty =null;
+      this.userProfile.then(p => {
+        this._profileChanged.next(p);
+      });
+
+      this.userSpecialty.then(p => {
+        this._userSpecialtyChanged.next(p);
+      })
+
+
+      return r;
+     })
+   )
+
+  }
+
+  updateSocialNetworks(socialNetworkCreationDTO:socialNetworkCreationDTO[]){
+
+      return this.http.post(`${this.baseUrl}/users/profile/${this.userInfo.userId}/fillsocialnetworks`,socialNetworkCreationDTO)
+      .pipe(map(r=>{
+        //delete cache
+        this._userSocialNetworks=null;
+        return r;
+      }));
+
   }
 }

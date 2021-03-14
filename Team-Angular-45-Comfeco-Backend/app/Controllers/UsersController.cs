@@ -251,6 +251,42 @@ namespace BackendComfeco.Controllers
             return NoContent();
         }
 
+        [HttpPost("profile/{userId}/fillsocialnetworks")]
+        public async Task<ActionResult> CreateOrReplaceSocialNetworks(string userId, List<UserSocialNetworkCreateDTO> socialNetworkCreationDTO)
+        {
+
+            var user = await applicationDbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            if (user==null)
+            {
+                return NotFound();
+            }
+
+            for(int i = 0; i < socialNetworkCreationDTO.Count; i++)
+            {
+                var SocialNetwork = await 
+                    applicationDbContext.ApplicationUserSocialNetworks
+                    .FirstOrDefaultAsync(s => s.SocialNetworkId == socialNetworkCreationDTO[i].SocialNetworkId && s.UserId == userId);
+
+                if (SocialNetwork !=null)
+                {
+                    applicationDbContext.Attach(SocialNetwork);
+                    SocialNetwork.Url = socialNetworkCreationDTO[i].Url;
+                    await applicationDbContext.SaveChangesAsync();
+                }
+                else
+                {
+                    var socialNetworkUser = mapper.Map<ApplicationUserSocialNetwork>(socialNetworkCreationDTO[i]);
+
+                    socialNetworkUser.UserId = userId;
+
+                    await applicationDbContext.SaveChangesAsync();
+                }
+
+            }
+
+            return NoContent();
+        }
+
         [HttpGet("profile/{userId}/technologies")]
         public async Task<ActionResult<List<UserTechnologyDTO>>> GetUserTechnologies(string userId)
         {

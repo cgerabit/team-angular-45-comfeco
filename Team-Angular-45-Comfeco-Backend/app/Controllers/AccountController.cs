@@ -78,7 +78,7 @@ namespace BackendComfeco.Controllers
             var user = await GetUserFromContext();
 
             if (user == null) { return Unauthorized(); }
-
+            
             return await BuildLoginToken(user.Email, false);
         }
 
@@ -466,17 +466,39 @@ namespace BackendComfeco.Controllers
         [HttpPost("changepwd")]
         public async Task<ActionResult> ChangePassword(ChangePasswordDTO changePasswordDTO)
         {
+           
             var user = await userManager.FindByIdAsync(changePasswordDTO.UserId);
             if (user==null)
             {
                 return NotFound();
             }
 
-           var result = await userManager.ChangePasswordAsync(user, changePasswordDTO.CurrentPassword, changePasswordDTO.NewPassword);
-
-            if (result.Succeeded)
+            if (string.IsNullOrEmpty(changePasswordDTO.CurrentPassword))
             {
-                return Ok();
+                bool hasPassword = await userManager.HasPasswordAsync(user);
+
+                if (hasPassword)
+                {
+                    return BadRequest("CurrentPassword is required");
+                }
+
+                var r = await userManager.AddPasswordAsync(user, changePasswordDTO.NewPassword);
+                if (r.Succeeded)
+                {
+                    return Ok();
+                }
+
+
+            }
+            else
+            {
+
+                var result = await userManager.ChangePasswordAsync(user, changePasswordDTO.CurrentPassword, changePasswordDTO.NewPassword);
+
+                if (result.Succeeded)
+                {
+                    return Ok();
+                }
             }
 
             return BadRequest("Invalid attempt");

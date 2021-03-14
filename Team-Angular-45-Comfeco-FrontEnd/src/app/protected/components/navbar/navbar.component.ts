@@ -11,7 +11,7 @@ import { UserProfile } from '../../../auth/interfaces/interfaces';
 export class NavbarComponent implements OnInit {
 
   constructor(  private router: Router,
-          private authService: AuthService) { }
+          public authService: AuthService) { }
 
 
 
@@ -33,6 +33,10 @@ export class NavbarComponent implements OnInit {
       if(resp){
         this.Profile = resp;
       }
+    })
+
+    this.authService.profileChanged.subscribe( p => {
+      this.Profile = p;
     })
   }
 

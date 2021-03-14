@@ -1,3 +1,5 @@
+import { FlipEffectEvents } from "swiper/types";
+import { SocialNetwork } from '../../protected/interfaces/interfaces';
 
 export interface Usuario {
   uid: string;
@@ -29,7 +31,8 @@ export interface UserProfile{
   genderId:number;
   countryId:number;
   userName:string;
-  bornDate:Date;
+  bornDate:string;
+  bornDateParsed:Date;
 }
 
 export interface UserBadges {
@@ -62,3 +65,44 @@ export interface GroupJoinResult {
   success:boolean;
   alreadyInThisGroup:boolean;
 }
+
+export interface changeUsernameDTO{
+
+newUsername:string;
+password:string;
+userId?:string;
+
+}
+
+export interface changeEmailDTO{
+
+  newEmail:string;
+  password:string;
+  userId?:string;
+
+  }
+
+  export interface changePasswordDTO{
+    currentPassword:string;
+    newPassword:string;
+    userId?:string;
+  }
+
+  export interface updateProfileDTO{
+    profilePicture?:File;
+    biography:string;
+    specialtyId:number;
+    genderId:number;
+    countryId:number;
+    bornDate:string;
+  }
+
+
+  export interface socialNetworkCreationDTO
+  {
+    socialNetworkId:number;
+
+    url:string;
+
+    isPrincipal?:boolean;
+  }
