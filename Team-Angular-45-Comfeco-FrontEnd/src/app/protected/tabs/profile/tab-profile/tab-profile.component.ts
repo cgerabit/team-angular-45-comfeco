@@ -2,11 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { UserProfile } from 'src/app/auth/interfaces/interfaces';
 import { HomepageService } from 'src/app/protected/services/homepage.service';
 import { AuthService } from '../../../../auth/services/auth.service';
-import { Technologies, Area, applicationUserSocalNetworks, Country, Gender, SocialNetwork } from '../../../interfaces/interfaces';
+import {  Area, applicationUserSocalNetworks, Country, Gender, SocialNetwork } from '../../../interfaces/interfaces';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NgbDateStruct, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { debug } from 'console';
-import { UserBadges } from '../../../../auth/interfaces/interfaces';
+import { UserBadges, updateProfileDTO, socialNetworkCreationDTO } from '../../../../auth/interfaces/interfaces';
 import { ChangeComponent } from 'src/app/protected/components/change/change.component';
 
 @Component({
@@ -29,21 +28,6 @@ export class TabProfileComponent implements OnInit {
 
   //imagen del usuario
   imageURL: string = this.usuario.avatar;
-
-  //FORMULARIO
-  uploadForm: FormGroup = this.fb.group({
-    avatar: [null],
-    email: [
-      '',
-      [
-        Validators.required,
-        Validators.pattern(
-          /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-        ),
-      ],
-    ],
-    date: [''],
-  });
 
 
   constructor(private authService:AuthService,
@@ -110,11 +94,21 @@ export class TabProfileComponent implements OnInit {
         facebook:[''],
         twitter:[''],
         linkedin:[''],
-        github:['']
+        github:[''],
+        profilePicture:[null]
       }
     );
 
+    this.authService.profileChanged.subscribe(p=> {
+        this.profile = p;
+
+    });
+
+    this.authService.userSpecialtyChanged.subscribe(s => {
+      this.userSpecialty = s;
+    })
   }
+
 
   loadData(){
 
@@ -125,7 +119,21 @@ export class TabProfileComponent implements OnInit {
       this.form.get('specialtyId').setValue(this.profile.specialtyId);
       this.form.get('countryId').setValue(this.profile.countryId);
       this.form.get('genderId').setValue(this.profile.genderId);
-      this.form.get('bornDate').setValue(this.profile.bornDate);
+
+
+     if(r.bornDate){
+        let day = r.bornDateParsed.getDate();
+        let month = r.bornDateParsed.getMonth()+1;
+        let year = r.bornDateParsed.getFullYear();
+
+
+
+
+        this.model = {day,month,year};
+        this.form.get('bornDate').setValue(this.model);
+      }
+
+
 
     } );
     this.authService.userSocialNetworks.then(r=> {
@@ -133,20 +141,20 @@ export class TabProfileComponent implements OnInit {
 
       let facebookO = r.find(s => s.socialNetworkName.toLowerCase()=="facebook")
       if(facebookO){
-        this.form.get('facebook').setValue(facebookO.url)
+        this.form.get('facebook').setValue(facebookO.url.replace("https://www.facebook.com/",""))
       }
       let linkedin = r.find(s => s.socialNetworkName.toLowerCase() == "linkedin");
       if(linkedin){
-        this.form.get('linkedin').setValue(linkedin.url);
+        this.form.get('linkedin').setValue(linkedin.url.replace("https://www.linkedin.com/",""));
       }
       let twitter = r.find(s=> s.socialNetworkName.toLowerCase() == "twitter");
       if(twitter){
 
-        this.form.get('twitter').setValue(twitter.url)
+        this.form.get('twitter').setValue(twitter.url.replace("https://twitter.com/",""))
       }
       let github = r.find(s=> s.socialNetworkName.toLowerCase() =="github");
       if(github){
-        this.form.get('github').setValue(github.url)
+        this.form.get('github').setValue(github.url.replace("https://github.com/",""))
       }
 
 
@@ -179,10 +187,9 @@ export class TabProfileComponent implements OnInit {
   // Image Preview
   showPreview(event) {
     const file = (event.target as HTMLInputElement).files[0];
-    this.uploadForm.patchValue({
-      avatar: file,
+    this.form.patchValue({
+      profilePicture: file,
     });
-    this.uploadForm.get('avatar').updateValueAndValidity();
 
     // File Preview
     const reader = new FileReader();
@@ -194,7 +201,61 @@ export class TabProfileComponent implements OnInit {
 
   // Submit Form
   submit() {
-    console.log(this.form.value);
+
+    this.form.markAllAsTouched();
+
+    if(!this.form.valid){
+        return;
+    }
+    let date:NgbDateStruct =this.form.get('bornDate').value;
+
+    this.authService.updateProfile({
+     genderId:this.form.get('genderId').value,
+     biography:this.form.get('biography').value,
+     bornDate:`${date.year}-${date.month}-${date.day}`,
+     countryId:this.form.get('countryId').value,
+     specialtyId:this.form.get('specialtyId').value,
+     profilePicture:this.form.get('profilePicture').value
+
+    }).subscribe(() => {},()=>{});
+
+
+    let socialNetworkArray:socialNetworkCreationDTO[] = [];
+    let twitterField= this.form.get("twitter");
+    if(twitterField.dirty && twitterField.value){
+      socialNetworkArray.push({
+        url:`https://twitter.com/${twitterField.value}`,
+        socialNetworkId:this.getTwitterData().id
+      });
+    }
+
+    let linkedinField= this.form.get('linkedin')
+    if(linkedinField.dirty && linkedinField.value){
+      socialNetworkArray.push({
+        url:`https://www.linkedin.com/${linkedinField.value}`,
+        socialNetworkId:this.getLinkedinData().id
+      })
+    }
+    let githubField = this.form.get('github');
+    if(githubField.dirty && githubField.value){
+      socialNetworkArray.push({
+        url:`https://github.com/${githubField.value}`,
+        socialNetworkId:this.getGithubData().id
+      })
+    }
+    let facebookField = this.form.get('facebook');
+    if(facebookField.dirty && facebookField.value){
+      socialNetworkArray.push({
+        url:`https://www.facebook.com/${facebookField.value}`,
+        socialNetworkId:this.getFacebookData().id
+      });
+    }
+    if(socialNetworkArray.length>0){
+      this.authService.updateSocialNetworks(socialNetworkArray).subscribe(()=>{},()=>{})
+    }
+
+    //this.authService.updateSocialNetworks()
+
   }
 
   facebookData:SocialNetwork;
@@ -229,4 +290,8 @@ export class TabProfileComponent implements OnInit {
     }
     return this.githubData;
   }
+
+
+
+
 }

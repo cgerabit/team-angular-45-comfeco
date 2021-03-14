@@ -170,7 +170,7 @@ export class DashboardComponent implements OnInit {
   .subscribe(resp => {
 
     this.contentCreators = resp;
-    
+
   },err=> console.log(err))
   //Sponsors
   this.hs.getSponsors({
@@ -188,7 +188,7 @@ export class DashboardComponent implements OnInit {
   this.hs.eventInfo().subscribe((resp:Event[])=>{
     this.date =  new Date(resp[0].date);
     //fecha pruebas
-    //this.date = new Date("2021-02-25 20:58");
+    this.date = new Date("2021-02-25 20:58");
     this.desc = resp[0].name;
 
     //funcionalidad del contador

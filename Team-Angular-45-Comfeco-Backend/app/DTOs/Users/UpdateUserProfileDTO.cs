@@ -15,7 +15,6 @@ namespace BackendComfeco.DTOs.Users
         [FileWeight(4096)]
         public IFormFile ProfilePicture { get; set; }
 
-        [Required]
         public string RealName { get; set; }
         [Required]
         public string Biography { get; set; }
