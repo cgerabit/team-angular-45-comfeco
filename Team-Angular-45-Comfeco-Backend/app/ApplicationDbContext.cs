@@ -62,6 +62,7 @@ namespace BackendComfeco
 
             });
 
+            
            
 
             builder.Entity<Badge>().HasData(new Badge
@@ -141,5 +142,6 @@ namespace BackendComfeco
         public DbSet<Group> Groups { get; set; }
         public DbSet<ApplicationUserBadges> ApplicationUserBadges { get; set; }
         public DbSet<Badge> Badges { get; set; }
+        public DbSet<UserActivity> UserActivities { get; set; }
     }
 }

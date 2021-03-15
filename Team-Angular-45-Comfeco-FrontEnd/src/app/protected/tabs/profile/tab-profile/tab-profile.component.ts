@@ -5,7 +5,7 @@ import { AuthService } from '../../../../auth/services/auth.service';
 import {  Area, applicationUserSocalNetworks, Country, Gender, SocialNetwork, ActiveEvent } from '../../../interfaces/interfaces';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NgbDateStruct, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { UserBadges,  socialNetworkCreationDTO, UserEventInscriptionDTO } from '../../../../auth/interfaces/interfaces';
+import { UserBadges, socialNetworkCreationDTO, UserEventInscriptionDTO, UserActivityDTO } from '../../../../auth/interfaces/interfaces';
 import { ChangeComponent } from 'src/app/protected/components/change/change.component';
 import Swal from 'sweetalert2';
 
@@ -56,6 +56,7 @@ export class TabProfileComponent implements OnInit {
 
   userEvents:UserEventInscriptionDTO[] = [];
 
+  userActivities:UserActivityDTO[] = [];
 
   @Output()
   eventosEmitter:EventEmitter<object> = new EventEmitter();
@@ -120,6 +121,10 @@ export class TabProfileComponent implements OnInit {
     this.authService.userEventsChanged.subscribe(r=> {
       this.userEvents = r;
     })
+
+    this.authService.userActivityChanged.subscribe(r=>{
+      this.userActivities= r;
+    })
   }
 
 
@@ -128,6 +133,11 @@ export class TabProfileComponent implements OnInit {
     this.authService.userEvents.then(r=> {
       this.userEvents = r;
     })
+
+    this.authService.userActivity.then(resp => {
+      this.userActivities = resp;
+    })
+
     this.authService.userProfile.then(r => {
 
       this.profile =r;

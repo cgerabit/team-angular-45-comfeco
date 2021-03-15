@@ -397,6 +397,22 @@ namespace BackendComfeco.Controllers
             return NoContent();
         }
 
+        [HttpGet("profile/{userId}/activity")]
+        public async Task<ActionResult<List<UserActivityDTO>>> GetActivities(string userId)
+        {
+            var userActivities = await applicationDbContext
+                .UserActivities
+                .Where(a => a.UserId == userId)
+                .OrderByDescending(a => a.Date)
+                .Take(10)
+                .ToListAsync();
+
+            var dto = mapper.Map<List<UserActivityDTO>>(userActivities);
+
+            return dto;
+
+        }
+
 
 
     }
