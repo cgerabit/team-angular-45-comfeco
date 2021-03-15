@@ -137,7 +137,10 @@ namespace BackendComfeco.Mapper
             // =========================================================
 
             CreateMap<Event, EventDTO>().ReverseMap();
-            CreateMap<EventCreationDTO, Event>();
+            CreateMap<EventCreationDTO, Event>()
+                .ForMember(e => e.EventPicture, options => options.Ignore());
+            CreateMap<ApplicationUserEvents, UserEventInscriptionDTO>()
+                .ForMember(e => e.EventName, o => o.MapFrom(p => p.Event.Name));
 
             // =========================================================
             //                          Countries

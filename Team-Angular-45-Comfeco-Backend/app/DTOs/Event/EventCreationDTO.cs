@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+
+using System;
 
 namespace BackendComfeco.DTOs.Event
 {
@@ -9,5 +11,10 @@ namespace BackendComfeco.DTOs.Event
         public DateTime Date { get; set; }
 
         public bool IsActive { get; set; }
+
+        public string Description { get; set; }
+        public IFormFile EventPicture { get; set; }
+
+        public bool IsTimer { get; set; }
     }
 }

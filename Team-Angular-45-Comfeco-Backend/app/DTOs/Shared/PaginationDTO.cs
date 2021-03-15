@@ -4,9 +4,9 @@
     {
         public int Page { get; set; } = 1;
 
-        private int recordsPerPage { get; set; } = 10;
+        private int recordsPerPage { get; set; } = 150;
 
-        private readonly int maxRecordsPerPage = 120;
+        private readonly int maxRecordsPerPage = 150;
 
         public int RecordsPerPage
         {

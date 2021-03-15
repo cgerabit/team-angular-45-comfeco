@@ -9,7 +9,7 @@ import { catchError, tap,map } from 'rxjs/operators';
 import { of, Observable, Subject } from 'rxjs';
 import * as shajs from 'sha.js';
 import { environment } from '../../../environments/environment';
-import { TokenResponse, Usuario, UserProfile, UserBadges, UserGroup, GroupJoinResult, changeUsernameDTO, changeEmailDTO, changePasswordDTO, updateProfileDTO, socialNetworkCreationDTO } from '../interfaces/interfaces';
+import { TokenResponse, Usuario, UserProfile, UserBadges, UserGroup, GroupJoinResult, changeUsernameDTO, changeEmailDTO, changePasswordDTO, updateProfileDTO, socialNetworkCreationDTO, UserEventInscriptionDTO } from '../interfaces/interfaces';
 import { claimAuthCodeDTO } from '../DTOs/claimAuthCodeDTO';
 
 import {
@@ -213,7 +213,7 @@ export class AuthService {
         resolve(this._userBadges);
         return;
       }
-      return this.http.get<UserBadges[]>(`${this.baseUrl}/users/profile/${this.userInfo.userId}/badges`).subscribe(
+       this.http.get<UserBadges[]>(`${this.baseUrl}/users/profile/${this.userInfo.userId}/badges`).subscribe(
         resp=>{
 
           this._userBadges=resp;
@@ -222,6 +222,31 @@ export class AuthService {
         },()=>resolve(null))
     })
   }
+
+  private _userEventsChanged:Subject<UserEventInscriptionDTO[]> =new Subject<UserEventInscriptionDTO[]>();
+  userEventsChanged:Observable<UserEventInscriptionDTO[]> = this._userEventsChanged.asObservable();
+
+  private _userEvents:UserEventInscriptionDTO[];
+  get userEvents():Promise<UserEventInscriptionDTO[]>{
+    return new Promise<UserEventInscriptionDTO[]>(resolve => {
+      if(!this.isLoggedIn){
+        return resolve(null);
+      }
+
+      if(this._userEvents){
+        return resolve(this._userEvents);
+      }
+
+      this.http.get<UserEventInscriptionDTO[]>(`${this.baseUrl}/events/userevents/${this.userInfo.userId}`)
+      .subscribe(r => {
+        this._userEvents = r;
+        resolve(r);
+      },()=>resolve(null))
+
+
+    })
+  }
+
 
 
   //---------------------------------------- END GETTERS ----------------------------
@@ -661,5 +686,37 @@ export class AuthService {
         return r;
       }));
 
+  }
+
+  addUserToEvent(eventId:number, userId:string){
+
+    const addUserDTO = {
+      userId
+    }
+    return this.http.post(`${this.baseUrl}/events/${eventId}/adduser`,addUserDTO)
+    .pipe(map(r =>{
+      this._userEvents=null;
+      this.userEvents.then(r=>{
+
+        this._userEventsChanged.next(r);
+      })
+
+      return r;
+    }));
+  }
+
+  removeUserFromEvent(eventId:number,userId:string){
+
+    return this.http
+    .delete(`${this.baseUrl}/events/${eventId}/removeuser/${userId}`)
+    .pipe(map(r =>{
+      this._userEvents=null;
+      this.userEvents.then(r=>{
+
+        this._userEventsChanged.next(r);
+      })
+
+      return r;
+    }));
   }
 }

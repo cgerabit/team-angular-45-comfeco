@@ -1,12 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output,EventEmitter } from '@angular/core';
 import { UserProfile } from 'src/app/auth/interfaces/interfaces';
 import { HomepageService } from 'src/app/protected/services/homepage.service';
 import { AuthService } from '../../../../auth/services/auth.service';
-import {  Area, applicationUserSocalNetworks, Country, Gender, SocialNetwork } from '../../../interfaces/interfaces';
+import {  Area, applicationUserSocalNetworks, Country, Gender, SocialNetwork, ActiveEvent } from '../../../interfaces/interfaces';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NgbDateStruct, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { UserBadges, updateProfileDTO, socialNetworkCreationDTO } from '../../../../auth/interfaces/interfaces';
+import { UserBadges,  socialNetworkCreationDTO, UserEventInscriptionDTO } from '../../../../auth/interfaces/interfaces';
 import { ChangeComponent } from 'src/app/protected/components/change/change.component';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-tab-profile',
@@ -53,6 +54,12 @@ export class TabProfileComponent implements OnInit {
   socialNetworks:SocialNetwork[] = [];
 
 
+  userEvents:UserEventInscriptionDTO[] = [];
+
+
+  @Output()
+  eventosEmitter:EventEmitter<object> = new EventEmitter();
+
   get usuario(){
     const { userName, email } = this.authService.userInfo;
     return {
@@ -62,6 +69,8 @@ export class TabProfileComponent implements OnInit {
         `https://avatars.dicebear.com/api/bottts/${userName}.svg`,
     };
   }
+
+
 
   //cambiar componente visualizado
   update() {
@@ -107,11 +116,18 @@ export class TabProfileComponent implements OnInit {
     this.authService.userSpecialtyChanged.subscribe(s => {
       this.userSpecialty = s;
     })
+
+    this.authService.userEventsChanged.subscribe(r=> {
+      this.userEvents = r;
+    })
   }
 
 
   loadData(){
 
+    this.authService.userEvents.then(r=> {
+      this.userEvents = r;
+    })
     this.authService.userProfile.then(r => {
 
       this.profile =r;
@@ -289,6 +305,38 @@ export class TabProfileComponent implements OnInit {
       this.githubData=this.socialNetworks.find(s=> s.name.toLowerCase()=="github");
     }
     return this.githubData;
+  }
+  leaveFromEvent(event:UserEventInscriptionDTO){
+    Swal.fire({
+      title: '¿Estas seguro?',
+      text: `¿Estas seguro que quieres salir del evento ${event.eventName}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#F2A007',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si quiero salir'
+    }).then(r =>{
+      if(r.isConfirmed){
+        this.authService.
+        removeUserFromEvent(event.eventId,this.authService.userInfo.userId).subscribe(()=>{
+          Swal.fire({
+            title:"Exito!",
+            text:"Has abandonado correctamente el evento",
+            icon:"success"
+          })
+        },()=>{
+          Swal.fire({
+            title:"Error!",
+            text:"Ha ocurrido un error inesperado",
+            icon:"error"
+          })
+        });
+      }
+    })
+  }
+
+  moveToEvents(){
+    this.eventosEmitter.next();
   }
 
 
