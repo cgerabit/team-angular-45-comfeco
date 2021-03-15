@@ -40,6 +40,7 @@ namespace BackendComfeco.Models
 
         public List<ApplicationUserBadges> ApplicationUserBadges { get; set; }
 
+        public List<UserActivity> UserActivities { get; set; }
         
 
     }

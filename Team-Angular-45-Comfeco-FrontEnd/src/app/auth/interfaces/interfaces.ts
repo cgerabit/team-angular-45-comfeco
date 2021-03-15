@@ -117,3 +117,9 @@ export interface changeEmailDTO{
     eventName:String;
 
   }
+
+  export interface UserActivityDTO{
+
+    text: string,
+    date: Date;
+  }

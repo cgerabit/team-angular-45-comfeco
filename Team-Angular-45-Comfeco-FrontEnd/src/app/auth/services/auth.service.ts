@@ -1,15 +1,14 @@
 import { Injectable } from '@angular/core';
 import {
   HttpClient,
-  HttpErrorResponse,
-  HttpHeaders,
+  HttpErrorResponse
 } from '@angular/common/http';
 
 import { catchError, tap,map } from 'rxjs/operators';
 import { of, Observable, Subject } from 'rxjs';
 import * as shajs from 'sha.js';
 import { environment } from '../../../environments/environment';
-import { TokenResponse, Usuario, UserProfile, UserBadges, UserGroup, GroupJoinResult, changeUsernameDTO, changeEmailDTO, changePasswordDTO, updateProfileDTO, socialNetworkCreationDTO, UserEventInscriptionDTO } from '../interfaces/interfaces';
+import { TokenResponse, Usuario, UserProfile, UserBadges, UserGroup, GroupJoinResult, changeUsernameDTO, changeEmailDTO, changePasswordDTO, updateProfileDTO, socialNetworkCreationDTO, UserEventInscriptionDTO, UserActivityDTO } from '../interfaces/interfaces';
 import { claimAuthCodeDTO } from '../DTOs/claimAuthCodeDTO';
 
 import {
@@ -17,14 +16,10 @@ import {
   setOrDeleteFromStorage,
 } from '../../../utils/Utilities';
 import { userInfo } from '../interfaces/userInfo';
-import { Router } from '@angular/router';
 
-import { identifierModuleUrl } from '@angular/compiler';
 import { applicationUserSocalNetworks } from 'src/app/protected/interfaces/interfaces';
-import { Technologies, Area } from '../../protected/interfaces/interfaces';
+import {  Area } from '../../protected/interfaces/interfaces';
 import { HomepageService } from 'src/app/protected/services/homepage.service';
-import { timeStamp } from 'console';
-import { HttpParams } from '@angular/common/http';
 
 
 
@@ -243,6 +238,28 @@ export class AuthService {
         resolve(r);
       },()=>resolve(null))
 
+
+    })
+  }
+
+  private _userActivityChanged:Subject<UserActivityDTO[]>= new Subject<UserActivityDTO[]>();
+  userActivityChanged:Observable<UserActivityDTO[]> = this._userActivityChanged.asObservable();
+
+  private _userActivity:UserActivityDTO[];
+  get userActivity():Promise<UserActivityDTO[]>{
+    return new Promise<UserActivityDTO[]>((resolve)=> {
+      if(!this.isLoggedIn){
+        return resolve(null);
+      }
+
+      if(this._userActivity){
+        return resolve(this._userActivity);
+      }
+      this.http.get<UserActivityDTO[]>(`${this.baseUrl}/users/profile/${this.userInfo.userId}/activity`).subscribe(r=> {
+        this._userActivity = r;
+        resolve(r);
+
+      },()=>resolve(null));
 
     })
   }
@@ -584,6 +601,10 @@ export class AuthService {
 
       this.http.delete(`${this.baseUrl}/groups/members/${this.userInfo.userId}`)
       .subscribe(() => {
+        this._userActivity=null;
+        this.userActivity.then(r=>{
+          this._userActivityChanged.next(r);
+        })
           resolve(true);
 
       },()=>resolve(false))
@@ -606,12 +627,17 @@ export class AuthService {
 
       this.http.post<GroupJoinResult>(`${this.baseUrl}/groups/members/${groupId}`,{userId:this.userInfo.userId}).subscribe(r => {
 
+        this._userActivity=null;
+        this.userActivity.then(r=>{
+          this._userActivityChanged.next(r);
+        })
+
           resolve(r);
           return;
 
       }, ()=>{
           return resolve(failureResult);
-      })
+      });
 
     })
   }
@@ -696,9 +722,13 @@ export class AuthService {
     return this.http.post(`${this.baseUrl}/events/${eventId}/adduser`,addUserDTO)
     .pipe(map(r =>{
       this._userEvents=null;
+      this._userActivity=null;
       this.userEvents.then(r=>{
 
         this._userEventsChanged.next(r);
+      })
+      this.userActivity.then(r=>{
+        this._userActivityChanged.next(r);
       })
 
       return r;
@@ -711,9 +741,13 @@ export class AuthService {
     .delete(`${this.baseUrl}/events/${eventId}/removeuser/${userId}`)
     .pipe(map(r =>{
       this._userEvents=null;
+      this._userActivity=null;
       this.userEvents.then(r=>{
 
         this._userEventsChanged.next(r);
+      })
+      this.userActivity.then(r=>{
+        this._userActivityChanged.next(r);
       })
 
       return r;
