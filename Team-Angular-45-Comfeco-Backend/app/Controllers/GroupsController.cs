@@ -159,9 +159,17 @@ namespace BackendComfeco.Controllers
             bool isLeader = !group.Users.Any(u => u.IsGroupLeader);
 
             applicationDbContext.Attach(user);
+
             user.IsGroupLeader = isLeader;
             user.GroupId = groupId;
-           
+
+            var groupActivity = new UserActivity
+            {
+                Text = $"Te has unido al grupo {group.Name}",
+                UserId = addGroupMemberDTO.UserId
+            };
+
+            applicationDbContext.Add(groupActivity);
 
             bool haveBadge = await applicationDbContext.ApplicationUserBadges.AnyAsync(b => b.UserId == user.Id && b.BadgeId == 3);
             if (!haveBadge)
@@ -186,7 +194,7 @@ namespace BackendComfeco.Controllers
         [HttpDelete("members/{userId}")]
         public async Task<ActionResult> RemoveUserFromGroup(string userId)
         {
-            var user = await applicationDbContext.Users.FirstOrDefaultAsync(x => x.Id == userId);
+            var user = await applicationDbContext.Users.Include(x => x.Group).FirstOrDefaultAsync(x => x.Id == userId);
             if (user == null)
             {
                 return NotFound();
@@ -208,6 +216,14 @@ namespace BackendComfeco.Controllers
             }
 
             user.GroupId = null;
+
+            var groupActivity = new UserActivity
+            {
+                Text = $"Has abandonado el grupo {user.Group.Name}",
+                UserId = userId
+            };
+
+            applicationDbContext.Add(groupActivity);
 
             await applicationDbContext.SaveChangesAsync();
             return NoContent();

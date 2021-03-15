@@ -132,8 +132,8 @@ namespace BackendComfeco.Controllers
             {
                 return NotFound();
             }
-            var eventExist = await context.Events.AnyAsync(e => e.Id == eventId);
-            if (!eventExist )
+            var actualEvent = await context.Events.FirstOrDefaultAsync(e => e.Id == eventId);
+            if (actualEvent == null )
             {
                 return NotFound();
             }
@@ -147,8 +147,7 @@ namespace BackendComfeco.Controllers
             };
 
             context.Add(userInscription);
-<<<<<<< Updated upstream
-=======
+
 
             var eventActivity = new UserActivity
             { 
@@ -157,6 +156,7 @@ namespace BackendComfeco.Controllers
             };
 
             context.Add(eventActivity);
+
 
             bool haveBadge = await context.ApplicationUserBadges.AnyAsync(b => b.UserId == addUserToEventDTO.UserId && b.BadgeId == 2);
             if (!haveBadge)
@@ -169,7 +169,7 @@ namespace BackendComfeco.Controllers
                 context.Add(userBadge);
             }
 
->>>>>>> Stashed changes
+
             await context.SaveChangesAsync();
 
 
@@ -183,14 +183,28 @@ namespace BackendComfeco.Controllers
         [HttpDelete("{eventId:int}/removeuser/{userId}")]
         public async Task<ActionResult> RemoveUserFromEvent(int eventId, string userId)
         {
-            var eventInscription = await context.ApplicationUserEvents.FirstOrDefaultAsync(ei => ei.EventId == eventId && ei.UserId == userId);
+            var eventInscription = await context.ApplicationUserEvents
+                .Include(ei => ei.Event)
+                .FirstOrDefaultAsync(ei => ei.EventId == eventId && ei.UserId == userId);
             if (eventInscription == null)
             {
                 return NotFound();
             }
+            if(!eventInscription.IsActive)
+            {
+                return BadRequest();
+            }
 
             context.Attach(eventInscription);
             eventInscription.IsActive = false;
+
+            var eventActivity = new UserActivity
+            {
+                Text = $"Has abandonado el evento {eventInscription.Event.Name}",
+                UserId = userId
+            };
+
+            context.Add(eventActivity);
 
             await context.SaveChangesAsync();
 

@@ -18,8 +18,6 @@ using BackendComfeco.DTOs.WorkShop;
 using BackendComfeco.Models;
 
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Mvc.Diagnostics;
-using Microsoft.Extensions.Options;
 
 using System.Linq;
 
@@ -69,7 +67,7 @@ namespace BackendComfeco.Mapper
 
             CreateMap<SocialNetwork, SocialNetworkDTO>().ReverseMap();
             CreateMap<SocialNetworkCreationDTO, SocialNetwork>()
-                .ForMember(m => m.SocialNetworkIcon,options => options.Ignore());
+                .ForMember(m => m.SocialNetworkIcon, options => options.Ignore());
 
             // =========================================================
             //                          Workshop
@@ -93,7 +91,7 @@ namespace BackendComfeco.Mapper
 
             CreateMap<WorkShopCreationDTO, Workshop>();
 
-         
+
 
 
             // =========================================================
@@ -103,22 +101,22 @@ namespace BackendComfeco.Mapper
                 .ForMember(u => u.ApplicationUserTechnology, options => options.Ignore())
                 .ForMember(u => u.UserId, options => options.MapFrom(x => x.Id))
                 .ReverseMap();
-        // =========================================================
-        //                          Users
-        // =========================================================
-        CreateMap<ApplicationUserSocialNetwork, ApplicationUserSocialNetworkDTO>()
-                .ForMember(s => s.SocialNetworkName,options => options.MapFrom(x=>x.SocialNetwork.Name))
-                .ForMember(s=> s.SocialNetworkIcon , options => options.MapFrom(x=>x.SocialNetwork.SocialNetworkIcon))
-                .ReverseMap();
+            // =========================================================
+            //                          Users
+            // =========================================================
+            CreateMap<ApplicationUserSocialNetwork, ApplicationUserSocialNetworkDTO>()
+                    .ForMember(s => s.SocialNetworkName, options => options.MapFrom(x => x.SocialNetwork.Name))
+                    .ForMember(s => s.SocialNetworkIcon, options => options.MapFrom(x => x.SocialNetwork.SocialNetworkIcon))
+                    .ReverseMap();
 
-        CreateMap<UpdateUserProfileDTO, ApplicationUser>().ForMember(u => u.ProfilePicture, options => options.Ignore());
+            CreateMap<UpdateUserProfileDTO, ApplicationUser>().ForMember(u => u.ProfilePicture, options => options.Ignore());
 
 
-        CreateMap<ApplicationUserTechnology, UserTechnologyDTO>()
-                .ForMember(m => m.Id, options => options.MapFrom(m => m.Technology.Id))
-                .ForMember(m => m.Name, options => options.MapFrom(m => m.Technology.Name))
-                .ForMember(m => m.AreaId, options => options.MapFrom(m => m.Technology.AreaId))
-                .ForMember(m => m.TechnologyIcon, options => options.MapFrom(m => m.Technology.TechnologyIcon));
+            CreateMap<ApplicationUserTechnology, UserTechnologyDTO>()
+                    .ForMember(m => m.Id, options => options.MapFrom(m => m.Technology.Id))
+                    .ForMember(m => m.Name, options => options.MapFrom(m => m.Technology.Name))
+                    .ForMember(m => m.AreaId, options => options.MapFrom(m => m.Technology.AreaId))
+                    .ForMember(m => m.TechnologyIcon, options => options.MapFrom(m => m.Technology.TechnologyIcon));
             CreateMap<ApplicationUser, UserProfileDTO>().ForMember(u => u.UserId, options => options.MapFrom(u => u.Id));
 
             CreateMap<Technology, UserTechnologyDTO>();
@@ -127,8 +125,8 @@ namespace BackendComfeco.Mapper
             CreateMap<UserSocialNetworkCreateDTO, ApplicationUserSocialNetwork>()
                 .ReverseMap();
 
-        CreateMap<UserTechnologyCreationDTO, ApplicationUserTechnology>()
-                .ReverseMap();
+            CreateMap<UserTechnologyCreationDTO, ApplicationUserTechnology>()
+                    .ReverseMap();
 
 
 
@@ -163,8 +161,8 @@ namespace BackendComfeco.Mapper
             CreateMap<ApplicationUserBadges, UserBadgeDTO>()
                 .ForMember(x => x.BadgeIcon, options => options.MapFrom(y => y.Badge.BadgeIcon))
                 .ForMember(x => x.BadgeName, options => options.MapFrom(y => y.Badge.Name))
-                .ForMember(x=>x.Instructions , options => options.MapFrom(y=> y.Badge.Instructions))
-                .ForMember(x=>x.Description , options => options.MapFrom(y=> y.Badge.Description));
+                .ForMember(x => x.Instructions, options => options.MapFrom(y => y.Badge.Instructions))
+                .ForMember(x => x.Description, options => options.MapFrom(y => y.Badge.Description));
 
             // =========================================================
             //                          Groups
@@ -172,7 +170,7 @@ namespace BackendComfeco.Mapper
 
 
             CreateMap<Group, GroupDTO>()
-                .ForMember(x=>x.TechnologyName, options => options.MapFrom(x=>x.Technology.Name))
+                .ForMember(x => x.TechnologyName, options => options.MapFrom(x => x.Technology.Name))
                 .ReverseMap();
             CreateMap<GroupCreationDTO, Group>()
                 .ForMember(m => m.GroupImage, options => options.Ignore());
@@ -185,6 +183,11 @@ namespace BackendComfeco.Mapper
                     ProfilePicture = u.ProfilePicture,
                     IsGroupLeader = u.IsGroupLeader
                 })));
+            // =========================================================
+            //                          User Activity 
+            // =========================================================
+
+            CreateMap<UserActivity, UserActivityDTO>();
 
         }
 

@@ -4,14 +4,16 @@ using BackendComfeco;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BackendComfeco.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210315140838_user-activities")]
+    partial class useractivities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -257,13 +259,6 @@ namespace BackendComfeco.Migrations
                             Description = "Esta persona es muy competitiva",
                             Instructions = "Inscribete en tu primer evento",
                             Name = "Concursante"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Description = "Esta persona le encanta compartir en comunidad",
-                            Instructions = "Unete a tu primer grupo",
-                            Name = "Grupero"
                         });
                 });
 
@@ -604,9 +599,7 @@ namespace BackendComfeco.Migrations
                         new
                         {
                             Id = "6a8af04b-0405-4cd2-bc20-d59433235153",
-
-                            ConcurrencyStamp = "aba8fac7-d38a-4593-811e-6e71edfd8d9b",
-
+                            ConcurrencyStamp = "a3ff4e8e-9d64-4f84-81dd-ff66e1dff2ad",
                             Name = "ContentCreator",
                             NormalizedName = "ContentCreator"
                         });
