@@ -80,8 +80,15 @@ namespace BackendComfeco
                 Instructions="Inscribete en tu primer evento"
 
             });
+            builder.Entity<Badge>().HasData(new Badge
+            {
+                Name = "Grupero",
+                Id = 3,
+                Description = "Esta persona le encanta compartir en comunidad",
+                Instructions = "Unete a tu primer grupo"
 
-            
+            });
+
             //-----------------------ONLY DEBUG------------------------------
 
             builder.Entity<ExternalLoginValidRedirectUrl>()

@@ -171,6 +171,17 @@ namespace BackendComfeco.Controllers
 
             applicationDbContext.Add(groupActivity);
 
+            bool haveBadge = await applicationDbContext.ApplicationUserBadges.AnyAsync(b => b.UserId == user.Id && b.BadgeId == 3);
+            if (!haveBadge)
+            {
+                var userBadge = new ApplicationUserBadges
+                {
+                    BadgeId=3,
+                    UserId=user.Id,
+                    GetDate=DateTime.UtcNow
+                };
+                applicationDbContext.Add(userBadge);
+            }
             await applicationDbContext.SaveChangesAsync();
 
             return new GroupJoinResult
