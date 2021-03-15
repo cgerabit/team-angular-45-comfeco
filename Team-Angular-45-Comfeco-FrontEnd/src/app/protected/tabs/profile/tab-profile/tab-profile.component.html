@@ -1,7 +1,25 @@
 <app-navbar></app-navbar>
 <div class="app-layout animate__animated animate__fadeIn" *ngIf="!updateState">
 
-    <div class="eventos shadow">
+    <div class="eventos shadow card">
+        <div class="eventos-header">
+            <h4>Eventos de tu interes:</h4>
+            <a (click)="moveToEvents()">Ver mas</a>
+        </div>
+        <div class="card-body eventos-container">
+            <div *ngFor="let event of userEvents" class="eventos-item">
+                <h5>{{event.eventName}}</h5>
+                <div class="eventos-item-buttons">
+                    <button (click)="leaveFromEvent(event)" *ngIf="event.isActive;else leave" class="btn-custom red-btn">Abandonar</button>
+                    <ng-template #leave>
+                        <small>Has abandonado</small>
+                    </ng-template>
+                    <button (click)="moveToEvents()" class="btn-custom">Mas informacion</button>
+                </div>
+            </div>
+
+
+        </div>
     </div>
 
 

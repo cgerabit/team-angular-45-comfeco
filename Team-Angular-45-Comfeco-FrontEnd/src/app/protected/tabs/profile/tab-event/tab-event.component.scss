@@ -1,0 +1,91 @@
+@import "../../../../../utils/theme.scss";
+.event-container {
+    h1 {
+        color: $primary;
+        margin-bottom: 80px;
+        margin-top: 25px;
+        font-size: 1.8rem;
+    }
+    max-width: 1980px;
+    margin: 150px auto 0;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    .events-container-inner {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(280px, 400px));
+        @media screen and (max-width: 1340px) {
+            grid-template-columns: repeat(3, minmax(280px, 400px));
+        }
+        @media screen and (max-width: 1000px) {
+            grid-template-columns: repeat(2, minmax(280px, 400px));
+        }
+        @media screen and (max-width: 650px) {
+            grid-template-columns: minmax(280px, 400px);
+        }
+        grid-auto-flow: row;
+        row-gap: 100px;
+        justify-content: center;
+        column-gap: 50px;
+        width: 92%;
+        .event-card {
+            color: White;
+            background: $primary;
+            padding: 0px 0px 20px 0px;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            h2 {
+                font-size: 1.5rem;
+                text-transform: uppercase;
+                text-align: center;
+                color: $white;
+                background: $dark-gray;
+                margin: 0;
+                padding: 0;
+                width: 100%;
+            }
+            p {
+                font-size: 0.75rem;
+                text-align: center;
+                margin: 10px 0;
+                padding: 0;
+                margin: 30px 0;
+                width: 90%;
+            }
+            img {
+                width: 100%;
+            }
+            .event-footer {
+                display: flex;
+                justify-content: space-between;
+                width: 90%;
+            }
+            a {
+                color: $secondary;
+            }
+            .btn-custom {
+                background-color: white;
+                outline: none;
+                border: none;
+                color: black;
+                padding: 5px 10px;
+                border-radius: 10px;
+                font-size: 14px;
+                font-weight: 500;
+                letter-spacing: 1px;
+                transition: all 200ms ease-in-out;
+                &:hover {
+                    background-color: $accent;
+                    color: rgba($color: $white, $alpha: 0.95);
+                }
+            }
+            .red {
+                background: $secondary;
+            }
+        }
+    }
+}

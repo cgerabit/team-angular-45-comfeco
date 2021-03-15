@@ -12,5 +12,7 @@ namespace BackendComfeco.Models
         public Event Event { get; set; }
 
         public DateTime InscriptionDate { get; set; } = DateTime.UtcNow;
+
+        public bool IsActive { get; set; } = true;
     }
 }

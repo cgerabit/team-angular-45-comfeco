@@ -42,6 +42,8 @@ namespace BackendComfeco
             });
 
             builder.Entity<UserAuthenticationCode>().HasKey(x => x.Token);
+            
+            builder.Entity<Event>().HasQueryFilter(e => e.IsActive);
 
             builder.Entity<ApplicationUser>()
                 .HasMany(x =>x.ApplicationUserEvents)

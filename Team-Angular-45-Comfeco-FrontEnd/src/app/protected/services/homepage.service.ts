@@ -3,8 +3,9 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { Comunity, Sponsor, ContentCreator, Technologies, Area, Country, Gender, SocialNetwork, GroupFilter, Group } from '../interfaces/interfaces';
+import { Comunity, Sponsor, ContentCreator, Technologies, Area, Country, Gender, SocialNetwork, GroupFilter, Group, ActiveEvent } from '../interfaces/interfaces';
 import { Pagination } from '../../auth/interfaces/interfaces';
+import { AuthService } from '../../auth/services/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -136,11 +137,17 @@ export class HomepageService {
 
     }
 
-    return this.http.get<Group[]>(`${this.baseUrl}/groups`,{params})
-
-
-
+    return this.http.get<Group[]>(`${this.baseUrl}/groups`,{params});
   }
+
+  getEvents()
+  {
+    return this.http.get<ActiveEvent[]>(`${this.baseUrl}/events`);
+  }
+  
+
+
+
 }
 
 

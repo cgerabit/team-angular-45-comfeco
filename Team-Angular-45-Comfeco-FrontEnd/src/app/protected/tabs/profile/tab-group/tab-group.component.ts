@@ -4,7 +4,6 @@ import { Group, GroupFilter, Technologies } from '../../../interfaces/interfaces
 import { AuthService } from '../../../../auth/services/auth.service';
 import { UserGroup, GroupJoinResult } from '../../../../auth/interfaces/interfaces';
 import Swal from 'sweetalert2';
-import { title } from 'process';
 @Component({
   selector: 'app-tab-group',
   templateUrl: './tab-group.component.html',

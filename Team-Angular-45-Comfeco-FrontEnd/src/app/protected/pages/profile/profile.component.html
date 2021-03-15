@@ -12,7 +12,7 @@
       </span>
         </a>
         <ng-template ngbNavContent>
-            <app-tab-profile></app-tab-profile>
+            <app-tab-profile (eventosEmitter)="navigateToEvents()"></app-tab-profile>
         </ng-template>
     </li>
     <li ngbNavItem>

@@ -101,3 +101,15 @@ export interface Group{
   technologyName:string;
   groupImage:string;
 }
+
+
+export interface ActiveEvent{
+  id:number;
+  name:string;
+  description:string;
+  eventPicture:string;
+  date:Date;
+  isActive:boolean;
+  isTimer:boolean;
+
+}

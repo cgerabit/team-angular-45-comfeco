@@ -106,3 +106,14 @@ export interface changeEmailDTO{
 
     isPrincipal?:boolean;
   }
+
+
+  export interface UserEventInscriptionDTO{
+
+    userId:string;
+    eventId:number;
+    inscriptionDate:Date;
+    isActive:boolean;
+    eventName:String;
+
+  }

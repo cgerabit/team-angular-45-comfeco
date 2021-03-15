@@ -1,1 +1,28 @@
-<p>tab-event works!</p>
+<div class="event-container">
+    <h1>Eventos Activos:</h1>
+
+    <div class="events-container-inner">
+        <div *ngFor="let event of events" class="event-card">
+            <h2>{{event.name}}</h2>
+
+            <img [src]="event.eventPicture">
+
+            <p>{{event.description}}</p>
+            <div class="event-footer">
+                <a>
+          Mas info
+                </a>
+
+                <button *ngIf="!userIsInEvent(event.id);else isInEvent" (click)="addUserToEvent(event)" class="btn-custom">Unirse</button>
+                <ng-template #isInEvent>
+                    <button (click)="leaveFromEvent(event)" *ngIf="!userLeaveFromEvent(event.id);else leaved" class="btn-custom red">
+                        Abandonar
+                    </button>
+                    <ng-template #leaved>
+                        <small style="color:red">Saliste de este evento</small>
+                    </ng-template>
+                </ng-template>
+            </div>
+        </div>
+    </div>
+</div>

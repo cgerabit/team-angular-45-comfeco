@@ -36,6 +36,7 @@
             public const string SocialNetworkIconContainer = "Social_Network";
             public const string GroupImagesContainer = "Group_Img";
             public const string BadgePicturesContainer = "Badge_Icons";
+            public const string EventImagesContainer = "Event_Icons";
         }
 
         public static class Roles
