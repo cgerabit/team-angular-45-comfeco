@@ -147,6 +147,29 @@ namespace BackendComfeco.Controllers
             };
 
             context.Add(userInscription);
+<<<<<<< Updated upstream
+=======
+
+            var eventActivity = new UserActivity
+            { 
+                Text = $"Te has unido al evento {actualEvent.Name}",
+                UserId = addUserToEventDTO.UserId
+            };
+
+            context.Add(eventActivity);
+
+            bool haveBadge = await context.ApplicationUserBadges.AnyAsync(b => b.UserId == addUserToEventDTO.UserId && b.BadgeId == 2);
+            if (!haveBadge)
+            {
+                var userBadge = new ApplicationUserBadges
+                {
+                    BadgeId = 2,
+                    UserId = addUserToEventDTO.UserId
+                };
+                context.Add(userBadge);
+            }
+
+>>>>>>> Stashed changes
             await context.SaveChangesAsync();
 
 
