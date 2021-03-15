@@ -279,6 +279,8 @@ namespace BackendComfeco.Controllers
 
                     socialNetworkUser.UserId = userId;
 
+                    applicationDbContext.Add(socialNetworkUser);
+
                     await applicationDbContext.SaveChangesAsync();
                 }
 
