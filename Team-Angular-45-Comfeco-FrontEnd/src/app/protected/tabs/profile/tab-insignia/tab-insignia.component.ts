@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../../../../auth/services/auth.service';
 import { UserBadges } from '../../../../auth/interfaces/interfaces';
+import { UserService } from '../../../../auth/services/user.service';
 
 @Component({
   selector: 'app-tab-insignia',
@@ -9,11 +9,11 @@ import { UserBadges } from '../../../../auth/interfaces/interfaces';
 })
 export class TabInsigniaComponent implements OnInit {
 
-  constructor(private authService:AuthService) { }
+  constructor(private userService:UserService) { }
 
   userBadges:UserBadges[] =[];
   ngOnInit(): void {
-    this.authService.userBadges.then(b=>{
+    this.userService.userBadges.then(b=>{
       this.userBadges= b;
     })
   }

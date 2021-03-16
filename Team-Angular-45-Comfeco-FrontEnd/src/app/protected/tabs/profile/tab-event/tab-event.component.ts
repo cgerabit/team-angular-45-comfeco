@@ -4,6 +4,7 @@ import { HomepageService } from '../../../services/homepage.service';
 import { AuthService } from '../../../../auth/services/auth.service';
 import Swal from 'sweetalert2';
 import { UserEventInscriptionDTO } from '../../../../auth/interfaces/interfaces';
+import { UserService } from '../../../../auth/services/user.service';
 @Component({
   selector: 'app-tab-event',
   templateUrl: './tab-event.component.html',
@@ -12,6 +13,7 @@ import { UserEventInscriptionDTO } from '../../../../auth/interfaces/interfaces'
 export class TabEventComponent implements OnInit {
 
   constructor( private homeService:HomepageService,
+    private userService:UserService,
     private authService:AuthService) { }
 
   events:ActiveEvent[] = [];
@@ -25,11 +27,11 @@ export class TabEventComponent implements OnInit {
       this.events = e;
     })
 
-    this.authService.userEvents.then(r=> {
+    this.userService.userEvents.then(r=> {
       this.userEvents =r;
     });
 
-    this.authService.userEventsChanged.subscribe(r=>{
+    this.userService.userEventsChanged.subscribe(r=>{
       this.userEvents =r;
     })
   }
@@ -54,7 +56,7 @@ export class TabEventComponent implements OnInit {
     }).then(r=> {
 
         if(r.isConfirmed){
-          this.authService.addUserToEvent(event.id,userId).subscribe(()=> {
+          this.userService.addUserToEvent(event.id,userId).subscribe(()=> {
             Swal.fire({
               title:"Exito!",
               text:"Te has inscrito exitosamente en el evento",
@@ -89,7 +91,7 @@ export class TabEventComponent implements OnInit {
       confirmButtonText: 'Si quiero salir'
     }).then(r =>{
       if(r.isConfirmed){
-        this.authService.
+        this.userService.
         removeUserFromEvent(event.id,this.authService.userInfo.userId).subscribe(()=>{
           Swal.fire({
             title:"Exito!",

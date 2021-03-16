@@ -8,6 +8,7 @@ import { NgbDateStruct, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { UserBadges, socialNetworkCreationDTO, UserEventInscriptionDTO, UserActivityDTO } from '../../../../auth/interfaces/interfaces';
 import { ChangeComponent } from 'src/app/protected/components/change/change.component';
 import Swal from 'sweetalert2';
+import { UserService } from '../../../../auth/services/user.service';
 
 @Component({
   selector: 'app-tab-profile',
@@ -16,12 +17,6 @@ import Swal from 'sweetalert2';
 })
 export class TabProfileComponent implements OnInit {
 
-  public slidesSponsor = [
-    'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Angular_full_color_logo.svg/1200px-Angular_full_color_logo.svg.png',
-    'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/1200px-React-icon.svg.png',
-    'https://www.manejandodatos.es/wp-content/uploads/2018/02/vueJS.png',
-    'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Svelte_Logo.svg/1200px-Svelte_Logo.svg.png',
-  ];
 
   //cambiar componente visualizado
   updateState: boolean = false;
@@ -33,6 +28,7 @@ export class TabProfileComponent implements OnInit {
 
   constructor(private authService:AuthService,
     private fb: FormBuilder,
+    private userService:UserService,
    private homeService:HomepageService,
    private modalService: NgbModal) { }
 
@@ -109,20 +105,20 @@ export class TabProfileComponent implements OnInit {
       }
     );
 
-    this.authService.profileChanged.subscribe(p=> {
+    this.userService.profileChanged.subscribe(p=> {
         this.profile = p;
 
     });
 
-    this.authService.userSpecialtyChanged.subscribe(s => {
+    this.userService.userSpecialtyChanged.subscribe(s => {
       this.userSpecialty = s;
     })
 
-    this.authService.userEventsChanged.subscribe(r=> {
+    this.userService.userEventsChanged.subscribe(r=> {
       this.userEvents = r;
     })
 
-    this.authService.userActivityChanged.subscribe(r=>{
+    this.userService.userActivityChanged.subscribe(r=>{
       this.userActivities= r;
     })
   }
@@ -130,15 +126,15 @@ export class TabProfileComponent implements OnInit {
 
   loadData(){
 
-    this.authService.userEvents.then(r=> {
+    this.userService.userEvents.then(r=> {
       this.userEvents = r;
     })
 
-    this.authService.userActivity.then(resp => {
+    this.userService.userActivity.then(resp => {
       this.userActivities = resp;
     })
 
-    this.authService.userProfile.then(r => {
+    this.userService.userProfile.then(r => {
 
       this.profile =r;
       this.form.get('biography').setValue(this.profile.biography);
@@ -162,7 +158,7 @@ export class TabProfileComponent implements OnInit {
 
 
     } );
-    this.authService.userSocialNetworks.then(r=> {
+    this.userService.userSocialNetworks.then(r=> {
       this.userSocialNetworks = r;
 
       let facebookO = r.find(s => s.socialNetworkName.toLowerCase()=="facebook")
@@ -185,9 +181,9 @@ export class TabProfileComponent implements OnInit {
 
 
     } );
-    this.authService.userSpecialty.then(r => this.userSpecialty = r );
+    this.userService.userSpecialty.then(r => this.userSpecialty = r );
 
-    this.authService.userBadges.then(r=> this.badges = r);
+    this.userService.userBadges.then(r=> this.badges = r);
 
     this.homeService.getAreas({Page:1,RecordsPerPage:150})
     .subscribe(resp => {
@@ -235,7 +231,7 @@ export class TabProfileComponent implements OnInit {
     }
     let date:NgbDateStruct =this.form.get('bornDate').value;
 
-    this.authService.updateProfile({
+    this.userService.updateProfile({
      genderId:this.form.get('genderId').value,
      biography:this.form.get('biography').value,
      bornDate:`${date.year}-${date.month}-${date.day}`,
@@ -277,7 +273,7 @@ export class TabProfileComponent implements OnInit {
       });
     }
     if(socialNetworkArray.length>0){
-      this.authService.updateSocialNetworks(socialNetworkArray).subscribe(()=>{},()=>{})
+      this.userService.updateSocialNetworks(socialNetworkArray).subscribe(()=>{},()=>{})
     }
 
     //this.authService.updateSocialNetworks()
@@ -327,7 +323,7 @@ export class TabProfileComponent implements OnInit {
       confirmButtonText: 'Si quiero salir'
     }).then(r =>{
       if(r.isConfirmed){
-        this.authService.
+        this.userService.
         removeUserFromEvent(event.eventId,this.authService.userInfo.userId).subscribe(()=>{
           Swal.fire({
             title:"Exito!",
