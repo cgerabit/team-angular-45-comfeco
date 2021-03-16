@@ -17,7 +17,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 
 using System;
@@ -78,7 +77,7 @@ namespace BackendComfeco.Controllers
             var user = await GetUserFromContext();
 
             if (user == null) { return Unauthorized(); }
-            
+
             return await BuildLoginToken(user.Email, false);
         }
 
@@ -185,34 +184,20 @@ namespace BackendComfeco.Controllers
             {
                 return BadRequest("Your account is locked");
             }
-            else if (result.RequiresTwoFactor)
-            {
-                //TODO:
-                //Build two factor fluid
-            }
             else if (result.Succeeded)
             {
                 if (loginDTO.PersistLogin)
                 {
                     var principal = await signInManager.CreateUserPrincipalAsync(user);
-
-
                     var properties = new AuthenticationProperties
                     {
                         IsPersistent = true
                     };
                     await HttpContext.SignInAsync(ApplicationConstants.PersistLoginSchemeName, principal, properties);
-
                 }
 
                 return await BuildLoginToken(user.Email, loginDTO.PersistLogin);
 
-
-            }
-
-            if (!user.EmailConfirmed)
-            {
-                return BadRequest("Please confirm your email");
 
             }
 
@@ -224,20 +209,20 @@ namespace BackendComfeco.Controllers
         public async Task<ActionResult> ChangeUsername(ChangeUsernameDTO changeUsernameDTO)
         {
 
-            
+
             var user = await userManager.FindByIdAsync(changeUsernameDTO.UserId);
-            if (user==null)
+            if (user == null)
             {
                 return NotFound();
             }
 
-            bool inUse = await applicationDbContext.Users.AnyAsync(u=> u.UserName.ToLower() == changeUsernameDTO.newUsername.ToLower());
+            bool inUse = await applicationDbContext.Users.AnyAsync(u => u.UserName.ToLower() == changeUsernameDTO.newUsername.ToLower());
             if (inUse)
             {
                 return BadRequest("El nombre de usuario esta en uso");
             }
 
-            var result = await signInManager.CheckPasswordSignInAsync(user, changeUsernameDTO.Password,false);
+            var result = await signInManager.CheckPasswordSignInAsync(user, changeUsernameDTO.Password, false);
 
             if (result.Succeeded)
             {
@@ -258,26 +243,21 @@ namespace BackendComfeco.Controllers
 
                     await applicationDbContext.SaveChangesAsync();
 
-                    return Ok(new {needConfirm =false });
+                    return Ok(new { needConfirm = false });
 
                 }
             }
-            
-           
-
-            
-            
 
             return BadRequest("Credenciales invalidas");
 
         }
 
         [HttpGet("confirmchangeusername")]
-        public async Task<ActionResult> ConfirmChangeUsername([FromQuery]ConfirmChangeUsername confirmChangeUsername)
+        public async Task<ActionResult> ConfirmChangeUsername([FromQuery] ConfirmChangeUsername confirmChangeUsername)
         {
             var user = await userManager.FindByIdAsync(confirmChangeUsername.UserId);
 
-            if (user==null)
+            if (user == null)
             {
                 return NotFound();
             }
@@ -340,9 +320,6 @@ namespace BackendComfeco.Controllers
         [HttpGet("confirmaccount")]
         public async Task<ActionResult> ConfirmAccount([FromQuery] ConfirmEmailDTO confirmEmailDTO)
         {
-
-            //confirmEmailDTO.Token = HttpUtility.UrlDecode(confirmEmailDTO.Token);
-            //confirmEmailDTO.UserId = HttpUtility.UrlDecode(confirmEmailDTO.UserId);
             var badResult = Redirect($"{ApplicationConstants.LoginFrontendDefaultEndpoint}?msg=El enlace es incorrecto o ha expirado");
 
             var user = await userManager.FindByIdAsync(confirmEmailDTO.UserId);
@@ -404,7 +381,7 @@ namespace BackendComfeco.Controllers
 
                     var currentUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}";
 
-                      string url = $"{currentUrl}/api/account/confirmaccount?UserId={HttpUtility.UrlEncode(user.Id)}&Token={HttpUtility.UrlEncode(token)}";
+                    string url = $"{currentUrl}/api/account/confirmaccount?UserId={HttpUtility.UrlEncode(user.Id)}&Token={HttpUtility.UrlEncode(token)}";
 
 
                     string body = System.IO.File.ReadAllText(Path.Combine(env.WebRootPath, "templates", "index.htm"));
@@ -466,9 +443,9 @@ namespace BackendComfeco.Controllers
         [HttpPost("changepwd")]
         public async Task<ActionResult> ChangePassword(ChangePasswordDTO changePasswordDTO)
         {
-           
+
             var user = await userManager.FindByIdAsync(changePasswordDTO.UserId);
-            if (user==null)
+            if (user == null)
             {
                 return NotFound();
             }
@@ -508,14 +485,14 @@ namespace BackendComfeco.Controllers
         [HttpPost("changeemail")]
         public async Task<ActionResult> ChangeEmail(ChangeEmailDTO changeEmailDTO)
         {
-            var user =await  userManager.FindByIdAsync(changeEmailDTO.UserId);
-            if (user==null)
+            var user = await userManager.FindByIdAsync(changeEmailDTO.UserId);
+            if (user == null)
             {
                 return NotFound();
             }
-            
-            
-            if(changeEmailDTO.NewEmail == user.Email)
+
+
+            if (changeEmailDTO.NewEmail == user.Email)
             {
                 return BadRequest("No puedes introducir el mismo email");
             }
@@ -534,7 +511,7 @@ namespace BackendComfeco.Controllers
                 {
                     // Send email to change the email
                     await SendChangeEmail(user, changeEmailDTO.NewEmail);
-                    return Ok(new { needConfirm = true});
+                    return Ok(new { needConfirm = true });
                 }
                 else
                 {
@@ -559,19 +536,19 @@ namespace BackendComfeco.Controllers
         }
 
         [HttpGet("comfirmemailchange")]
-        public async Task<ActionResult> ConfirmChangeEmail([FromQuery]ConfirmEmailChangeDTO confirmEmailDTO)
+        public async Task<ActionResult> ConfirmChangeEmail([FromQuery] ConfirmEmailChangeDTO confirmEmailDTO)
         {
             var user = await userManager.FindByIdAsync(confirmEmailDTO.UserId);
-            if (user!=null)
+            if (user != null)
             {
                 var result = await userManager.ChangeEmailAsync(user, confirmEmailDTO.newEmail, confirmEmailDTO.Token);
                 if (result.Succeeded)
                 {
 
                     applicationDbContext.Attach(user);
-                    
+
                     user.EmailConfirmed = false;
-                    
+
                     await applicationDbContext.SaveChangesAsync();
 
                     await SendEmailConfirmation(user);
@@ -613,8 +590,6 @@ namespace BackendComfeco.Controllers
                          Secure = true,
                          SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax
                      });
-
-
 
             var properties = signInManager.ConfigureExternalAuthenticationProperties(externalLoginDTO.Provider, redirectUrl, externalLoginDTO.SecurityKeyHash);
 
@@ -828,16 +803,16 @@ namespace BackendComfeco.Controllers
 
         private async Task SendChangeEmail(ApplicationUser user, string newEmail)
         {
-                if(user == null)
-                {
-                    return;
-                }
+            if (user == null)
+            {
+                return;
+            }
 
-                var token = await userManager.GenerateChangeEmailTokenAsync(user,newEmail);
+            var token = await userManager.GenerateChangeEmailTokenAsync(user, newEmail);
 
-                var currentUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}";
+            var currentUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}";
 
-             string url = $"{currentUrl}/api/account/comfirmemailchange?UserId={HttpUtility.UrlEncode(user.Id)}&Token={HttpUtility.UrlEncode(token)}&newEmail={HttpUtility.UrlEncode(newEmail)}";
+            string url = $"{currentUrl}/api/account/comfirmemailchange?UserId={HttpUtility.UrlEncode(user.Id)}&Token={HttpUtility.UrlEncode(token)}&newEmail={HttpUtility.UrlEncode(newEmail)}";
 
 
 
@@ -845,17 +820,17 @@ namespace BackendComfeco.Controllers
             string body = System.IO.File.ReadAllText(Path.Combine(env.WebRootPath, "templates", "index.htm"));
 
 
-                var logoSrc = $"{currentUrl}/LogoEmail756x244.png";
+            var logoSrc = $"{currentUrl}/LogoEmail756x244.png";
 
-                await mailService.SendEmailAsync(new MailRequest
-                {
+            await mailService.SendEmailAsync(new MailRequest
+            {
 
-                    Body = $"{body.Replace("TEXTOCONFIRMAR", $"Cambio de email").Replace("_URL_", url).Replace("_SALUDO_", $"Hola, {user.UserName} has solicitado un cambio de email por favor has click en el enlace para confirmar este cambio").Replace("SRCLOGO", $"{logoSrc}").Replace("BIENVENIDO", "CAMBIO DE EMAIL")}",
-                    Subject = $"Hola {user.UserName} Cambia to email aqui",
-                    ToEmail = user.Email,
-                });
+                Body = $"{body.Replace("TEXTOCONFIRMAR", $"Cambio de email").Replace("_URL_", url).Replace("_SALUDO_", $"Hola, {user.UserName} has solicitado un cambio de email por favor has click en el enlace para confirmar este cambio").Replace("SRCLOGO", $"{logoSrc}").Replace("BIENVENIDO", "CAMBIO DE EMAIL")}",
+                Subject = $"Hola {user.UserName} Cambia to email aqui",
+                ToEmail = user.Email,
+            });
 
-            
+
 
         }
 
@@ -880,10 +855,9 @@ namespace BackendComfeco.Controllers
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["auth:key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            // Si necesitamos mantener al usuario logueado generamos un token con 3 dias de antiguedad, 
             var expiration = DateTime.UtcNow.AddMinutes(60);
 
-            JwtSecurityToken token = new JwtSecurityToken(
+            JwtSecurityToken token = new(
                issuer: null,
                audience: null,
                claims: claims,

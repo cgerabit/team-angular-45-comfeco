@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../auth/services/auth.service';
 import { UserProfile } from '../../../auth/interfaces/interfaces';
+import { UserService } from '../../../auth/services/user.service';
 
 @Component({
   selector: 'app-navbar',
@@ -11,7 +12,8 @@ import { UserProfile } from '../../../auth/interfaces/interfaces';
 export class NavbarComponent implements OnInit {
 
   constructor(  private router: Router,
-          public authService: AuthService) { }
+          public authService: AuthService,
+          private userService:UserService) { }
 
 
 
@@ -29,13 +31,13 @@ export class NavbarComponent implements OnInit {
   Profile:UserProfile
   ngOnInit(): void {
 
-    this.authService.userProfile.then(resp => {
+    this.userService.userProfile.then(resp => {
       if(resp){
         this.Profile = resp;
       }
     })
 
-    this.authService.profileChanged.subscribe( p => {
+    this.userService.profileChanged.subscribe( p => {
       this.Profile = p;
     })
   }

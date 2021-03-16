@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { HomepageService } from '../../../services/homepage.service';
 import { Group, GroupFilter, Technologies } from '../../../interfaces/interfaces';
-import { AuthService } from '../../../../auth/services/auth.service';
-import { UserGroup, GroupJoinResult } from '../../../../auth/interfaces/interfaces';
+import { UserGroup } from '../../../../auth/interfaces/interfaces';
 import Swal from 'sweetalert2';
+import { UserService } from '../../../../auth/services/user.service';
 @Component({
   selector: 'app-tab-group',
   templateUrl: './tab-group.component.html',
@@ -12,7 +12,7 @@ import Swal from 'sweetalert2';
 export class TabGroupComponent implements OnInit {
 
   constructor( private homepageService:HomepageService,
-    private authService:AuthService) { }
+    private userService:UserService) { }
 
   groupFilter:GroupFilter = {
     TechnologyId : -1
@@ -84,7 +84,7 @@ export class TabGroupComponent implements OnInit {
 
   loadMyGroup(){
 
-    this.authService
+    this.userService
     .getUserGroup(false)
     .then(resp => {
       this.userGroup = resp;
@@ -103,7 +103,7 @@ export class TabGroupComponent implements OnInit {
     }).then(result => {
         if(result.isConfirmed){
 
-          this.authService.leaveUserFromGroup()
+          this.userService.leaveUserFromGroup()
           .then(result => {
             if(result){
                 this.loadMyGroup();
@@ -127,7 +127,7 @@ export class TabGroupComponent implements OnInit {
   }
 
   joinInGroup(groupId:number){
-    this.authService.addUserInAGroup(groupId)
+    this.userService.addUserInAGroup(groupId)
     .then(resp=> {
 
       if(resp.success){
