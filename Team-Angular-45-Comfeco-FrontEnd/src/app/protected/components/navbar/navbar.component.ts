@@ -50,7 +50,6 @@ export class NavbarComponent implements OnInit {
   //abrir el menu al presionar sobre el boton
   togleResponsiveNavbar(): void {
     this.sideNavIsOpen = !this.sideNavIsOpen;
-    console.log(this.sideNavIsOpen)
   }
 
 }

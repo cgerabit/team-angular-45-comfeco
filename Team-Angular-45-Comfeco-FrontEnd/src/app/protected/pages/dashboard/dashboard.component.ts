@@ -11,6 +11,7 @@ import SwiperCore, {
 } from 'swiper/core';
 import { Event, Technologies, Comunity, Sponsor, ContentCreator } from '../../interfaces/interfaces';
 import { HomepageService } from '../../services/homepage.service';
+import { LoadingOverlayService } from '../../services/loading-overlay.service';
 // install Swiper modules
 SwiperCore.use([Navigation, Pagination, Scrollbar, A11y, Autoplay]);
 
@@ -49,16 +50,6 @@ export class DashboardComponent implements OnInit {
 
 
 
-  public slides = [
-    'https://www.comfeco.com/images/leaders/leader-bezael_perez.webp',
-    'https://www.comfeco.com/images/leaders/leader-manuel_ojeda.webp',
-    'https://www.comfeco.com/images/leaders/leader-ignacio_anaya.webp',
-    'https://www.comfeco.com/images/leaders/leader-marcos_rivas.webp',
-    'https://www.comfeco.com/images/leaders/leader-diego_montoya.webp',
-    'https://www.comfeco.com/images/leaders/leader-Martin_Bavio.webp',
-    'https://www.comfeco.com/images/leaders/leader-fernando_de_la_rosa.webp',
-    'https://www.comfeco.com/images/leaders/leader-manuel_mu%C3%B1os.webp',
-  ];
 
   public config: SwiperOptions = {
     a11y: { enabled: true },
@@ -135,7 +126,8 @@ export class DashboardComponent implements OnInit {
 
 
 
-  constructor(private hs:HomepageService) {
+  constructor(private hs:HomepageService,
+    private loadingOverlay:LoadingOverlayService) {
 
    }
 
@@ -147,39 +139,37 @@ export class DashboardComponent implements OnInit {
   }
 
   loadData(){
-    this.hs.getTecnologias().subscribe((resp:Technologies[])=>{
+
+    this.loadingOverlay.setTimerWith(this.hs.getTecnologias()).then((resp:Technologies[])=>{
       this.areas = resp;
-  });
+  }).catch();
 
   //Comunidades
-  this.hs.getComunidades({
+  this.loadingOverlay.setTimerWith(this.hs.getComunidades({
     Page:1,
     RecordsPerPage:4
-  })
-  .subscribe(resp => {
+  }))
+  .then(resp => {
     this.comunidades=resp;
-  },err => {
-    console.log("Ha ocurrido un error",err);
-  })
+  }).catch();
 
-  this.hs.getContentCreators({
+  this.loadingOverlay.setTimerWith(this.hs.getContentCreators({
     Page:1,
     RecordsPerPage:100
-  })
-  .subscribe(resp => {
+  }))
+  .then(resp => {
 
     this.contentCreators = resp;
 
-  },err=> console.log(err))
+  }).catch()
   //Sponsors
-  this.hs.getSponsors({
+  this.loadingOverlay.setTimerWith(this.hs.getSponsors({
     Page:1,
     RecordsPerPage:100
-  })
-  .subscribe(resp => {
+  }))
+  .then(resp => {
     this.sponsors = resp;
-  },
-  err => console.log(err))
+  }).catch()
 
 
 

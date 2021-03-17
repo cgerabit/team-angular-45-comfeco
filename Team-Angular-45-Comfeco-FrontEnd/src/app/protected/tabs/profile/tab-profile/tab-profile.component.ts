@@ -9,6 +9,7 @@ import { UserBadges, socialNetworkCreationDTO, UserEventInscriptionDTO, UserActi
 import { ChangeComponent } from 'src/app/protected/components/change/change.component';
 import Swal from 'sweetalert2';
 import { UserService } from '../../../../auth/services/user.service';
+import { LoadingOverlayService } from '../../../services/loading-overlay.service';
 
 @Component({
   selector: 'app-tab-profile',
@@ -30,7 +31,8 @@ export class TabProfileComponent implements OnInit {
     private fb: FormBuilder,
     private userService:UserService,
    private homeService:HomepageService,
-   private modalService: NgbModal) { }
+   private modalService: NgbModal,
+   private loadingOverlay:LoadingOverlayService) { }
 
   profile:UserProfile;
   userSpecialty:Area;
@@ -126,39 +128,35 @@ export class TabProfileComponent implements OnInit {
 
   loadData(){
 
-    this.userService.userEvents.then(r=> {
-      this.userEvents = r;
+
+    this.loadingOverlay
+    .setTimerWith(this.userService.userEvents).then(r=>{
+      this.userEvents =r ;
     })
 
-    this.userService.userActivity.then(resp => {
-      this.userActivities = resp;
-    })
+    this.loadingOverlay
+    .setTimerWith(this.userService.userActivity).then(resp=> {
+      this.userActivities =resp;
+    });
 
-    this.userService.userProfile.then(r => {
+
+    this.loadingOverlay.setTimerWith(this.userService.userProfile).then(r => {
 
       this.profile =r;
       this.form.get('biography').setValue(this.profile.biography);
       this.form.get('specialtyId').setValue(this.profile.specialtyId);
       this.form.get('countryId').setValue(this.profile.countryId);
       this.form.get('genderId').setValue(this.profile.genderId);
-
-
      if(r.bornDate){
         let day = r.bornDateParsed.getDate();
         let month = r.bornDateParsed.getMonth()+1;
         let year = r.bornDateParsed.getFullYear();
-
-
-
-
         this.model = {day,month,year};
         this.form.get('bornDate').setValue(this.model);
       }
-
-
-
     } );
-    this.userService.userSocialNetworks.then(r=> {
+
+    this.loadingOverlay.setTimerWith(this.userService.userSocialNetworks).then(r=> {
       this.userSocialNetworks = r;
 
       let facebookO = r.find(s => s.socialNetworkName.toLowerCase()=="facebook")
@@ -180,10 +178,15 @@ export class TabProfileComponent implements OnInit {
       }
 
 
-    } );
-    this.userService.userSpecialty.then(r => this.userSpecialty = r );
+    } )
 
-    this.userService.userBadges.then(r=> this.badges = r);
+
+    this.loadingOverlay.setTimerWith(this.userService.userSpecialty).then(r => this.userSpecialty = r );
+
+
+    this.loadingOverlay.setTimerWith(this.userService.userBadges.then(r=> this.badges = r));
+
+
 
     this.homeService.getAreas({Page:1,RecordsPerPage:150})
     .subscribe(resp => {
@@ -323,19 +326,19 @@ export class TabProfileComponent implements OnInit {
       confirmButtonText: 'Si quiero salir'
     }).then(r =>{
       if(r.isConfirmed){
-        this.userService.
-        removeUserFromEvent(event.eventId,this.authService.userInfo.userId).subscribe(()=>{
+        this.loadingOverlay.setTimerWith(this.userService.
+        removeUserFromEvent(event.eventId,this.authService.userInfo.userId)).then(()=>{
           Swal.fire({
             title:"Exito!",
             text:"Has abandonado correctamente el evento",
             icon:"success"
           })
-        },()=>{
-          Swal.fire({
-            title:"Error!",
-            text:"Ha ocurrido un error inesperado",
-            icon:"error"
-          })
+        }).catch(()=>{
+            Swal.fire({
+              title:"Error!",
+              text:"Ha ocurrido un error inesperado",
+              icon:"error"
+            })
         });
       }
     })
