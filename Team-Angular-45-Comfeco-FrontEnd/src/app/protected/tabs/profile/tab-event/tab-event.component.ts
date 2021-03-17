@@ -5,6 +5,7 @@ import { AuthService } from '../../../../auth/services/auth.service';
 import Swal from 'sweetalert2';
 import { UserEventInscriptionDTO } from '../../../../auth/interfaces/interfaces';
 import { UserService } from '../../../../auth/services/user.service';
+import { LoadingOverlayService } from '../../../services/loading-overlay.service';
 @Component({
   selector: 'app-tab-event',
   templateUrl: './tab-event.component.html',
@@ -14,7 +15,8 @@ export class TabEventComponent implements OnInit {
 
   constructor( private homeService:HomepageService,
     private userService:UserService,
-    private authService:AuthService) { }
+    private authService:AuthService,
+    private loadingOverlay:LoadingOverlayService) { }
 
   events:ActiveEvent[] = [];
 
@@ -22,12 +24,12 @@ export class TabEventComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.homeService.getEvents().subscribe(e=> {
+    this.loadingOverlay.setTimerWith(this.homeService.getEvents()).then(e=> {
 
       this.events = e;
-    })
+    }).catch()
 
-    this.userService.userEvents.then(r=> {
+    this.loadingOverlay.setTimerWith(this.userService.userEvents).then(r=> {
       this.userEvents =r;
     });
 
@@ -56,13 +58,15 @@ export class TabEventComponent implements OnInit {
     }).then(r=> {
 
         if(r.isConfirmed){
-          this.userService.addUserToEvent(event.id,userId).subscribe(()=> {
+
+          this.loadingOverlay.setTimerWith(this.userService.addUserToEvent(event.id,userId))
+          .then(()=> {
             Swal.fire({
               title:"Exito!",
               text:"Te has inscrito exitosamente en el evento",
               icon:"success"
             })
-        }, ()=>{
+        }).catch( ()=>{
           Swal.fire({
             title:"Error!",
             text:"Este evento esta cerrado o ya estas inscrito",
@@ -91,14 +95,15 @@ export class TabEventComponent implements OnInit {
       confirmButtonText: 'Si quiero salir'
     }).then(r =>{
       if(r.isConfirmed){
-        this.userService.
-        removeUserFromEvent(event.id,this.authService.userInfo.userId).subscribe(()=>{
+
+        this.loadingOverlay.setTimerWith(this.userService.
+        removeUserFromEvent(event.id,this.authService.userInfo.userId)).then(()=>{
           Swal.fire({
             title:"Exito!",
             text:"Has abandonado correctamente el evento",
             icon:"success"
           })
-        },()=>{
+        }).catch(()=>{
           Swal.fire({
             title:"Error!",
             text:"Ha ocurrido un error inesperado",

@@ -1,0 +1,53 @@
+@import "../../../../utils/theme.scss";
+.overlay {
+    left: 0 !important;
+    top: 0 !important;
+    z-index: 10000 !important;
+    width: 100% !important;
+    height: 100% !important;
+    position: fixed !important;
+    background-color: $light-gray !important;
+    transition: visibility 0s, opacity 0.35s linear !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: wait !important;
+    @keyframes rotation {
+        0% {
+            transform: rotate(0deg)
+        }
+        50% {
+            transform: rotate(180deg)
+        }
+        100% {
+            transform: rotate(360deg)
+        }
+    }
+    .loadingio-spinner-eclipse {
+        width: 200px;
+        height: 200px;
+        display: inline-block;
+        overflow: hidden;
+        background: none;
+        .loadingio-spinner-eclipse-inner {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform: translateZ(0) scale(1);
+            backface-visibility: hidden;
+            transform-origin: 0 0;
+            div {
+                box-sizing: content-box;
+                position: absolute;
+                animation: rotation 0.8s linear infinite;
+                width: 160px;
+                height: 160px;
+                top: 20px;
+                left: 20px;
+                border-radius: 50%;
+                box-shadow: 0 9px 0 0 $accent;
+                transform-origin: 80px 82px;
+            }
+        }
+    }
+}

@@ -4,6 +4,7 @@ import { Group, GroupFilter, Technologies } from '../../../interfaces/interfaces
 import { UserGroup } from '../../../../auth/interfaces/interfaces';
 import Swal from 'sweetalert2';
 import { UserService } from '../../../../auth/services/user.service';
+import { LoadingOverlayService } from '../../../services/loading-overlay.service';
 @Component({
   selector: 'app-tab-group',
   templateUrl: './tab-group.component.html',
@@ -12,7 +13,8 @@ import { UserService } from '../../../../auth/services/user.service';
 export class TabGroupComponent implements OnInit {
 
   constructor( private homepageService:HomepageService,
-    private userService:UserService) { }
+    private userService:UserService,
+    private loadingOverlay:LoadingOverlayService) { }
 
   groupFilter:GroupFilter = {
     TechnologyId : -1
@@ -34,7 +36,7 @@ export class TabGroupComponent implements OnInit {
 
     this.groupTimeout = setTimeout(() => {
       this.loadGroups()
-    }, (300));
+    }, (320));
 
   }
 
@@ -53,7 +55,7 @@ export class TabGroupComponent implements OnInit {
 
     this.groupTimeout = setTimeout(() => {
       this.loadGroups()
-    }, (300));
+    }, (320));
 
   }
 
@@ -77,21 +79,26 @@ export class TabGroupComponent implements OnInit {
 
 
   loadGroups(){
-    this.homepageService.getGroups(this.groupFilter).subscribe(resp => {
+
+    this.loadingOverlay.setTimerWith(this.homepageService.getGroups(this.groupFilter)).then(resp => {
       this.groups =resp;
-    }, err => console.log(err))
+    }).catch(()=>{})
   }
 
   loadMyGroup(){
 
-    this.userService
-    .getUserGroup(false)
+    this.loadingOverlay.setTimerWith(this.userService
+    .getUserGroup(false))
     .then(resp => {
       this.userGroup = resp;
     })
 
   }
   leaveMeFromGroup(){
+    if(this.loadingOverlay.loadingOverlayVisible){
+      return;
+    }
+
     Swal.fire({
       title: '¿Estas seguro que quieres salir del grupo?',
       text: "No podras revertir esta accion",
@@ -103,7 +110,7 @@ export class TabGroupComponent implements OnInit {
     }).then(result => {
         if(result.isConfirmed){
 
-          this.userService.leaveUserFromGroup()
+          this.loadingOverlay.setTimerWith(this.userService.leaveUserFromGroup())
           .then(result => {
             if(result){
                 this.loadMyGroup();
@@ -127,9 +134,12 @@ export class TabGroupComponent implements OnInit {
   }
 
   joinInGroup(groupId:number){
-    this.userService.addUserInAGroup(groupId)
-    .then(resp=> {
+    if(this.loadingOverlay.loadingOverlayVisible){
+      return;
+    }
 
+    this.loadingOverlay.setTimerWith(this.userService.addUserInAGroup(groupId))
+    .then(resp=> {
       if(resp.success){
         this.loadMyGroup();
         Swal.fire({
@@ -162,7 +172,6 @@ export class TabGroupComponent implements OnInit {
           icon:"success"
         })
       }
-
     })
   }
 
