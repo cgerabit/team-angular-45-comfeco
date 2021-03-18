@@ -16,7 +16,7 @@ namespace BackendComfeco.DTOs.WorkShop
 
         public List<int> TechnologyIds { get; set; }
 
-        public DateTime AfterThan { get; set; } = DateTime.UtcNow.AddDays(-30);
+        public DateTime AfterThan { get; set; }
 
         public DateTime BeforeThan { get; set; }
 

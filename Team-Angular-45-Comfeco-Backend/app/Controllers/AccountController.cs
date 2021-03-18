@@ -464,8 +464,6 @@ namespace BackendComfeco.Controllers
                 {
                     return Ok();
                 }
-
-
             }
             else
             {
@@ -520,6 +518,9 @@ namespace BackendComfeco.Controllers
 
                     var changeResult = await userManager.ChangeEmailAsync(user, changeEmailDTO.NewEmail, token);
 
+                    applicationDbContext.Attach(user);
+                    user.EmailConfirmed = false;
+                    await applicationDbContext.SaveChangesAsync();
 
                     if (changeResult.Succeeded)
                     {

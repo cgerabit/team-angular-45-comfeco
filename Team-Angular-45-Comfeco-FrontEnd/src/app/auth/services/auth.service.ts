@@ -144,6 +144,9 @@ export class AuthService {
         );
       }
     }
+    else{
+      this.tryRenewToken(true);
+    }
   }
 
   public async checkSessionRecover(pathname?: string) {
@@ -333,7 +336,7 @@ export class AuthService {
       );
   }
 
-  tryRenewToken(): Promise<boolean> {
+  tryRenewToken(overrideTimer:boolean=false): Promise<boolean> {
     return new Promise<boolean>((resolve) => {
       if (!this.isLoggedIn) {
         resolve(false);
@@ -342,10 +345,9 @@ export class AuthService {
       let renovationTime = new Date();
       //Si el token le quedan menos de 35 minutos de vida
       renovationTime.setMinutes(renovationTime.getMinutes() + 35);
-      if (renovationTime > this.tokenExpiration) {
+      if ( !overrideTimer && renovationTime > this.tokenExpiration) {
         //No necesitamos renovar todavia
-        resolve(false);
-        return;
+        return resolve(false);
       }
       this.http
         .get<TokenResponse>(`${this.baseUrl}/account/refreshtoken`)
