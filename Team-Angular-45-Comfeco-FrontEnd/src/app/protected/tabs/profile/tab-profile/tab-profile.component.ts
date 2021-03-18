@@ -93,7 +93,7 @@ export class TabProfileComponent implements OnInit {
     this.loadData();
     this.form = this.fb.group(
       {
-        biography:['',{validators:[Validators.required]}],
+        biography:['',{validators:[Validators.required,Validators.maxLength(140)]}],
         specialtyId:[1,{Validators:[Validators.required]}],
         genderId:[1,{Validators:[Validators.required]}],
         countryId:[1,{Validators:[Validators.required]}],

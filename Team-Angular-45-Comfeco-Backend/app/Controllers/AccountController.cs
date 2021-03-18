@@ -881,15 +881,28 @@ namespace BackendComfeco.Controllers
 
             }
 
-            string email = HttpContext.User.Identity.Name;
+          
+            var userIdClaim = HttpContext.User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier);
 
-            if (string.IsNullOrEmpty(email))
+            if(userIdClaim!=null)
+            {
+                string userId = userIdClaim.Value;
+
+                var userById = await userManager.FindByIdAsync(userId);
+
+                return userById;
+            }
+
+
+            string username = HttpContext.User.Identity.Name;
+
+            if (string.IsNullOrEmpty(username))
             {
                 return null;
             }
 
 
-            var user = await userManager.FindByNameAsync(email);
+            var user = await userManager.FindByNameAsync(username);
 
 
             return user;

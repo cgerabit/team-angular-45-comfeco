@@ -1,3 +1,4 @@
+import { ValueConverter } from '@angular/compiler/src/render3/view/template';
 import { Component, OnInit } from '@angular/core';
 import * as countdown from 'countdown';
 
@@ -9,7 +10,7 @@ import SwiperCore, {
   Autoplay,
   SwiperOptions,
 } from 'swiper/core';
-import { Event, Technologies, Comunity, Sponsor, ContentCreator } from '../../interfaces/interfaces';
+import { Event, Technologies, Comunity, Sponsor, ContentCreator, WorkShop, Area } from '../../interfaces/interfaces';
 import { HomepageService } from '../../services/homepage.service';
 import { LoadingOverlayService } from '../../services/loading-overlay.service';
 // install Swiper modules
@@ -34,7 +35,7 @@ interface Time {
 
 export class DashboardComponent implements OnInit {
 
-  areas:  any = [];
+  areas:  Area[] = [];
   comunidades :Comunity[]=[];
   sponsors:Sponsor[] = [];
 
@@ -48,8 +49,19 @@ export class DashboardComponent implements OnInit {
   desc:string;
   finalizado:boolean = false;
 
+  workshopFilter=
+  {
+    id:-1
+  }
 
 
+  IsGreaterThanCurrentDate(date:Date){
+
+    if ( typeof date == "string"){
+      date = new Date(date);
+    }
+    return date.getTime() > new Date().getTime();
+  }
 
   public config: SwiperOptions = {
     a11y: { enabled: true },
@@ -124,7 +136,7 @@ export class DashboardComponent implements OnInit {
     //console.log('Swiper event: ', event);
   }
 
-
+workshops:WorkShop[] = [];
 
   constructor(private hs:HomepageService,
     private loadingOverlay:LoadingOverlayService) {
@@ -140,7 +152,7 @@ export class DashboardComponent implements OnInit {
 
   loadData(){
 
-    this.loadingOverlay.setTimerWith(this.hs.getTecnologias()).then((resp:Technologies[])=>{
+    this.loadingOverlay.setTimerWith(this.hs.getAreas({Page:1,RecordsPerPage:150})).then((resp:Area[])=>{
       this.areas = resp;
   }).catch();
 
@@ -172,6 +184,7 @@ export class DashboardComponent implements OnInit {
   }).catch()
 
 
+this.loadWorkShops();
 
 
   this.hs.eventInfo().subscribe((resp:Event[])=>{
@@ -185,6 +198,30 @@ export class DashboardComponent implements OnInit {
   });
   }
 
+
+
+  loadWorkShops(selectedArea?:number ){
+
+
+    if(selectedArea ==-1){
+        selectedArea=null;
+    }
+
+
+    this.loadingOverlay.setTimerWith(this.hs.getWorshops(selectedArea))
+    .then( w => this.workshops = w).catch();
+  }
+
+  loadWorkShopsWithEvent(selectedArea:any){
+
+    if(selectedArea.target && selectedArea.target.value ){
+      let value = selectedArea.target.value;
+
+
+      this.loadWorkShops(value);
+    }
+
+  }
   //funcionalidad del contador
   contador(date:Date):void{
      //Comprobar si la fecha del evento ya fue vencida

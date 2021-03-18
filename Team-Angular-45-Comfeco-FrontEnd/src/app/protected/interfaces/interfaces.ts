@@ -120,6 +120,7 @@ export interface WorkShop{
     userName: string,
     title: string,
     principalSocialNetwork: applicationUserSocalNetworks;
-
-    
+    technology:Technologies;
+    area:Area;
+    workShopDate:Date;
 }
