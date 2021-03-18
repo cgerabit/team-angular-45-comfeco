@@ -1,84 +1,84 @@
 <div class="group-container">
 
-    <h1 class="title-group">Groups:</h1>
+  <h1 class="title-group">Grupos de Tecnología:</h1>
 
-    <div class="group-filters">
-        <select [(ngModel)]="technologiesFilter" class="filter-input-select input">
-          <option selected value="-1">Seleccione una tecnologia</option>
-          <option [value]="technologie.id" *ngFor="let technologie of technologies">
-            {{technologie.name}}
-          </option>
+  <div class="group-filters">
+      <select [(ngModel)]="technologiesFilter" class="filter-input-select input">
+        <option selected value="-1">Seleccione una tecnologia</option>
+        <option [value]="technologie.id" *ngFor="let technologie of technologies">
+          {{technologie.name}}
+        </option>
 
-        </select>
-        <input [(ngModel)]="nameFilter" class="filter-input-input input" placeholder="Filtrar por nombre">
+      </select>
+      <input [(ngModel)]="nameFilter" class="filter-input-input input" placeholder="Filtrar por nombre">
 
-    </div>
-    <div *ngIf="userGroup; else nogroup" class="actual-group">
-        <div class="actual-group-inner">
-            <div class="header-actual-group">
-                <h3>Mi grupo</h3>
-                <a>Ir al grupo</a>
-            </div>
-            <div class="second-header">
-                <h3>{{userGroup.groupName}}</h3>
-                <img [src]="userGroup.groupImage">
-            </div>
-            <div class="actual-group-members">
-                <div *ngFor="let member of userGroup.members" class="member">
+  </div>
+  <div *ngIf="userGroup; else nogroup" class="actual-group">
+      <div class="actual-group-inner">
+          <div class="header-actual-group">
+              <h3>Mi grupo</h3>
+              <a>Ir al grupo</a>
+          </div>
+          <div class="second-header">
+              <h3>{{userGroup.groupName}}</h3>
+              <img [src]="userGroup.groupImage">
+          </div>
+          <div class="actual-group-members">
+              <div *ngFor="let member of userGroup.members" class="member">
 
-                    <div class="identifier">
-                        <div class="identifier-img">
-                            <img [src]="member.profilePicture">
-                        </div>
-                        <div class="identifier-text ">
-                            <p>
-                                {{member.name}}
-                            </p>
-                            <p class="subtitle ">
-                                Novato
-                            </p>
-                        </div>
+                  <div class="identifier">
+                      <div class="identifier-img">
+                          <img [src]="member.profilePicture">
+                      </div>
+                      <div class="identifier-text ">
+                          <p>
+                              {{member.name}}
+                          </p>
+                          <p class="subtitle ">
+                              Novato
+                          </p>
+                      </div>
 
-                    </div>
-                    <div class="role ">
-                        <p>
-                            {{member.isGroupLeader ?"Lider":"Member"}}
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <div class="actual-group-footer ">
-                <button (click)="leaveMeFromGroup()" class="btn-custom warning-action ">Abandonar</button>
-                <button class="btn-custom ">Ir al chat</button>
-            </div>
-        </div>
+                  </div>
+                  <div class="role ">
+                      <p>
+                          {{member.isGroupLeader ?"Lider":"Member"}}
+                      </p>
+                  </div>
+              </div>
+          </div>
+          <div class="actual-group-footer ">
+              <button (click)="leaveMeFromGroup()" class="btn-custom warning-action ">Abandonar</button>
+              <button class="btn-custom ">Ir al chat</button>
+          </div>
+      </div>
 
-    </div>
-    <ng-template #nogroup>
-        <div class="actual-group">
-            <div class="no-group-inner">
+  </div>
+  <ng-template #nogroup>
+      <div class="actual-group">
+          <div class="no-group-inner">
 
-                <h1 class="no-group-tittle">
-                    Actualmente no formas parte de ningun grupo
-                </h1>
-            </div>
-        </div>
-    </ng-template>
-    <div class="group-container-inner ">
-        <div class="group-card " *ngFor="let group of groups ">
-            <div class="card-header ">
-                <img [src]="group.groupImage ">
-                <p>{{group.technologyName}}</p>
-            </div>
-            <div class="group-card-body ">
-                <h2>{{group.name}}</h2>
-                <p>{{group.description}}</p>
-            </div>
-            <footer>
-                <button (click)="joinInGroup(group.id)" class="card-join-button ">Unirse</button>
-            </footer>
+              <h2 class="no-group-tittle">
+                  Actualmente no formas parte de ningun grupo
+              </h2>
+          </div>
+      </div>
+  </ng-template>
+  <div class="group-container-inner ">
+      <div class="group-card " *ngFor="let group of groups ">
+          <div class="card-header ">
+              <img [src]="group.groupImage ">
+              <p>{{group.technologyName}}</p>
+          </div>
+          <div class="group-card-body ">
+              <h2>{{group.name}}</h2>
+              <p>{{group.description}}</p>
+          </div>
+          <footer>
+              <button (click)="joinInGroup(group.id)" class="card-join-button ">Unirse</button>
+          </footer>
 
-        </div>
+      </div>
 
-    </div>
+  </div>
 </div>

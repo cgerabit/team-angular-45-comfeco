@@ -1,25 +1,26 @@
 import { Component, OnInit } from '@angular/core';
+import { HomepageService } from 'src/app/protected/services/homepage.service';
 import { UserBadges } from '../../../../auth/interfaces/interfaces';
-import { UserService } from '../../../../auth/services/user.service';
 import { LoadingOverlayService } from '../../../services/loading-overlay.service';
 
 @Component({
   selector: 'app-tab-insignia',
   templateUrl: './tab-insignia.component.html',
-  styleUrls: ['./tab-insignia.component.scss']
+  styleUrls: ['./tab-insignia.component.scss'],
 })
 export class TabInsigniaComponent implements OnInit {
+  constructor(
+    private homepageServices: HomepageService,
+    private loadingOverlay: LoadingOverlayService
+  ) {}
 
-  constructor(private userService:UserService,
-    private loadingOverlay:LoadingOverlayService) { }
-
-  userBadges:UserBadges[] =[];
+  badges: any[] = [];
   ngOnInit(): void {
-
     this.loadingOverlay
-    .setTimerWith(this.userService.userBadges).then(b=>{
-      this.userBadges= b;
-    })
+      .setTimerWith(this.homepageServices.getBadges())
+      .then((resp) => {
+        this.badges = resp;
+      })
+      .catch(() => {});
   }
-
 }

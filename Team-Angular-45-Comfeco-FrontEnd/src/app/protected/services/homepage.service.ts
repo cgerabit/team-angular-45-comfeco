@@ -4,7 +4,7 @@ import { environment } from 'src/environments/environment';
 import { catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { Comunity, Sponsor, ContentCreator,  Area, Country, Gender, SocialNetwork, GroupFilter, Group, ActiveEvent } from '../interfaces/interfaces';
-import { Pagination } from '../../auth/interfaces/interfaces';
+import { Pagination, UserBadges } from '../../auth/interfaces/interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -88,13 +88,6 @@ export class HomepageService {
 
   }
 
-
-  updateSocialNetworks(){
-
-
-
-  }
-
   getCountries(){
     const url =`${this.baseUrl}/countries`
 
@@ -144,8 +137,9 @@ export class HomepageService {
     return this.http.get<ActiveEvent[]>(`${this.baseUrl}/events`);
   }
 
-  getWorshops(){
-    //return this.http.get
+  getBadges()
+  {
+    return this.http.get<UserBadges[]>(`${this.baseUrl}/badges`)
   }
 
 
