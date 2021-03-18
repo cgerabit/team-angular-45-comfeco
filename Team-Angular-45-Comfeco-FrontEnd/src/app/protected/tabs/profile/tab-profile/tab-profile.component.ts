@@ -244,7 +244,14 @@ export class TabProfileComponent implements OnInit {
      specialtyId:this.form.get('specialtyId').value,
      profilePicture:this.form.get('profilePicture').value
 
-    })).then().catch();
+    })).then(()=>{
+      Swal.fire({
+        title:"Has actualizado tus datos",
+        text:"Has actualizado tus datos exitosamente",
+        icon:"success"
+      })
+      this.update();
+    }).catch();
 
 
     let socialNetworkArray:socialNetworkCreationDTO[] = [];
@@ -281,7 +288,6 @@ export class TabProfileComponent implements OnInit {
       this.loadingOverlay.setTimerWith(this.userService.updateSocialNetworks(socialNetworkArray)).then().catch()
     }
 
-    //this.authService.updateSocialNetworks()
 
   }
 

@@ -68,7 +68,9 @@ export class ChangeComponent {
             })
             .finally(()=>{
               this.activeModal.close();
+              this.authService.tryRenewToken(true);
             })
+            break;
 
           }
         case "Email":
@@ -104,7 +106,9 @@ export class ChangeComponent {
                 }
               }).finally(()=>{
                 this.activeModal.close();
+                this.authService.tryRenewToken(true)
               })
+              break;
           }
         case "Contraseña":{
 
@@ -134,6 +138,7 @@ export class ChangeComponent {
 
             }
           }).finally(()=>this.activeModal.close())
+          break;
           }
 
 
