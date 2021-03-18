@@ -113,3 +113,13 @@ export interface ActiveEvent{
   isTimer:boolean;
 
 }
+
+
+export interface WorkShop{
+  userId: string,
+    userName: string,
+    title: string,
+    principalSocialNetwork: applicationUserSocalNetworks;
+
+    
+}

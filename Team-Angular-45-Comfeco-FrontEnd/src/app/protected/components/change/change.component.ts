@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from '../../../auth/services/auth.service';
 import Swal from 'sweetalert2';
+import { LoadingOverlayService } from '../../services/loading-overlay.service';
 
 
 interface DataModal {
@@ -19,7 +20,8 @@ export class ChangeComponent {
   @Input() dataModal: DataModal;
 
   constructor(public activeModal: NgbActiveModal,
-    private authService:AuthService) {}
+    private authService:AuthService,
+    private loadingOverlay:LoadingOverlayService) {}
 
     currentPassword:string;
     changedValue:string;
@@ -32,10 +34,10 @@ export class ChangeComponent {
     switch(this.dataModal.label){
         case "Username":
           {
-            this.authService.changeUsername({
+            this.loadingOverlay.setTimerWith(this.authService.changeUsername({
               password:this.currentPassword,
               newUsername:this.changedValue
-            }).subscribe(resp => {
+            })).then(resp => {
 
               if(resp["needConfirm"]){
                   Swal.fire(
@@ -53,24 +55,28 @@ export class ChangeComponent {
               }
 
               )
-            },()=> {
+            }).catch(()=>{
+              ()=> {
 
-              Swal.fire(
-                {title:"Error!",
-               text:"Ha ocurrido un error actualizando el username ",
-               icon:"error"
+                Swal.fire(
+                  {title:"Error!",
+                 text:"Ha ocurrido un error actualizando el username ",
+                 icon:"error"
+                }
+                )
               }
-              )
+            })
+            .finally(()=>{
               this.activeModal.close();
             })
-            this.activeModal.close();
+
           }
         case "Email":
           {
-              this.authService.changeEmail({
+              this.loadingOverlay.setTimerWith(this.authService.changeEmail({
                 password:this.currentPassword,
                 newEmail:this.changedValue
-              }).subscribe(resp => {
+              })).then(resp => {
                 if(resp["needConfirm"]){
                   Swal.fire(
                     {title:"Exitoso!",
@@ -86,43 +92,48 @@ export class ChangeComponent {
                icon:"success"
               }
               )
-              this.activeModal.close();
-              },()=> {
-                Swal.fire(
-                  {title:"Error!",
-                 text:"ha ocurrido un error actualizando el username",
-                 icon:"error"
+              }).catch(()=>{
+                ()=> {
+                  Swal.fire(
+                    {title:"Error!",
+                   text:"ha ocurrido un error actualizando el username",
+                   icon:"error"
+                  }
+                  )
+
                 }
-                )
+              }).finally(()=>{
                 this.activeModal.close();
               })
           }
         case "Contraseña":{
 
-          this.authService.changePassword(
+          this.loadingOverlay.setTimerWith(this.authService.changePassword(
            {
             currentPassword:this.currentPassword,
             newPassword:this.changedValue
            }
-          )
-          .subscribe(()=> {
+          ))
+          .then(()=> {
             Swal.fire(
               {title:"Exitoso!",
              text:"Has cambiado tu contraseña con exito",
              icon:"success"
             }
             )
-            this.activeModal.close();
-          },()=>{
 
-            Swal.fire(
-              {title:"Error!",
-             text:"La nueva contraseña no cumple con los requisitos o tu contraseña actual es invalida",
-             icon:"error"
+          }).catch(()=>{
+            ()=>{
+
+              Swal.fire(
+                {title:"Error!",
+               text:"La nueva contraseña no cumple con los requisitos o tu contraseña actual es invalida",
+               icon:"error"
+              }
+              )
+
             }
-            )
-            this.activeModal.close();
-          })
+          }).finally(()=>this.activeModal.close())
           }
 
 

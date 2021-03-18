@@ -144,7 +144,9 @@ export class HomepageService {
     return this.http.get<ActiveEvent[]>(`${this.baseUrl}/events`);
   }
 
-
+  getWorshops(){
+    //return this.http.get
+  }
 
 
 }

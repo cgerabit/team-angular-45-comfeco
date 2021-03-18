@@ -36,7 +36,7 @@ constructor(private authService:AuthService,
     this.authService.checkSessionRecover(location.pathname);
     this.renovationTokenInterval = setInterval(()=>{
 
-      this.authService.tryRenewToken().then(result => console.log(result));
+      this.authService.tryRenewToken().then();
 
     },300000)
   }

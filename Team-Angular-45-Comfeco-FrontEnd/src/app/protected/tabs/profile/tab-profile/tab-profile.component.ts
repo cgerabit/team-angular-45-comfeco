@@ -227,14 +227,16 @@ export class TabProfileComponent implements OnInit {
   // Submit Form
   submit() {
 
+
     this.form.markAllAsTouched();
 
-    if(!this.form.valid){
+
+    if(!this.form.valid || this.loadingOverlay.loadingOverlayVisible){
         return;
     }
     let date:NgbDateStruct =this.form.get('bornDate').value;
 
-    this.userService.updateProfile({
+    this.loadingOverlay.setTimerWith(this.userService.updateProfile({
      genderId:this.form.get('genderId').value,
      biography:this.form.get('biography').value,
      bornDate:`${date.year}-${date.month}-${date.day}`,
@@ -242,7 +244,7 @@ export class TabProfileComponent implements OnInit {
      specialtyId:this.form.get('specialtyId').value,
      profilePicture:this.form.get('profilePicture').value
 
-    }).subscribe(() => {},()=>{});
+    })).then().catch();
 
 
     let socialNetworkArray:socialNetworkCreationDTO[] = [];
@@ -276,7 +278,7 @@ export class TabProfileComponent implements OnInit {
       });
     }
     if(socialNetworkArray.length>0){
-      this.userService.updateSocialNetworks(socialNetworkArray).subscribe(()=>{},()=>{})
+      this.loadingOverlay.setTimerWith(this.userService.updateSocialNetworks(socialNetworkArray)).then().catch()
     }
 
     //this.authService.updateSocialNetworks()
