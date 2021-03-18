@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { Comunity, Sponsor, ContentCreator,  Area, Country, Gender, SocialNetwork, GroupFilter, Group, ActiveEvent } from '../interfaces/interfaces';
+import { Comunity, Sponsor, ContentCreator, Area, Country, Gender, SocialNetwork, GroupFilter, Group, ActiveEvent, WorkShop } from '../interfaces/interfaces';
 import { Pagination } from '../../auth/interfaces/interfaces';
 
 @Injectable({
@@ -144,8 +144,14 @@ export class HomepageService {
     return this.http.get<ActiveEvent[]>(`${this.baseUrl}/events`);
   }
 
-  getWorshops(){
-    //return this.http.get
+  getWorshops(areaId?:number){
+
+    let params = new HttpParams();
+    if(areaId){
+      params = params.append('AreaIds',areaId.toString());
+    }
+
+    return this.http.get<WorkShop[]>(`${this.baseUrl}/workshops`,{params})
   }
 
 

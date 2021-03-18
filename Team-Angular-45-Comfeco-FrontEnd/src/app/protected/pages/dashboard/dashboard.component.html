@@ -5,22 +5,38 @@
         <p class="taller-izquierda">Talleres</p>
         <a class="taller-derecha" href="#">Ver mas</a>
         <div class="form-group">
-            <label for="power"></label>
-            <select class="form-control" id="power" required>
-        <option>Talleres por area de conocimiento</option>
-        <option value="" *ngFor="let area of areas">
+            <select (change)="loadWorkShopsWithEvent($event)" class="form-control">
+        <option  value="-1">Talleres por area de conocimiento</option>
+        <option [value]="area.id" *ngFor="let area of areas">
           {{area.name}}
         </option>
       </select>
         </div>
-        <div class="taller-separador">
-            Hoy
-        </div>
-        <div>
-            <strong style="color: white;">Entrenamiento Angular</strong><br>
-            <samp style="color: darkgray; ">04:00 PM</samp><br>
-            <span style="color: whitesmoke;">By</span> <span style="color: blue;"> Diego Viveros</span>
-            <hr>
+
+
+        <div class="card-body">
+
+            <div *ngFor="let workshop of workshops">
+                <div class="workshop-single-container">
+
+                    <div>
+                        <strong style="color: white;">{{workshop.title}}</strong><br>
+                        <samp style="color: darkgray; ">{{workshop.workShopDate | date:'MMM d, y, h:mm a'}}</samp><br>
+                        <span style="color: whitesmoke;">By </span> <span style="color: blue;">
+                          <a *ngIf="workshop.principalSocialNetwork" [href]="workshop.principalSocialNetwork.url">{{workshop.userName}}</a>
+                          <a *ngIf="!workshop.principalSocialNetwork">{{workshop.userName}}</a>
+                        </span>
+                    </div>
+                    <div>
+                        <img *ngIf="!IsGreaterThanCurrentDate(workshop.workShopDate);else nextworkshop" src="assets/images/check.svg">
+                        <ng-template #nextworkshop>
+                            <img src="assets/images/more.svg">
+                        </ng-template>
+
+                    </div>
+                </div>
+                <hr>
+            </div>
         </div>
     </div>
 

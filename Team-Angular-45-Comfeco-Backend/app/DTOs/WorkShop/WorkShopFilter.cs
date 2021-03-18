@@ -1,10 +1,6 @@
-﻿using BackendComfeco.DTOs.Shared;
-
-using Microsoft.EntityFrameworkCore.Query;
-
+﻿
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BackendComfeco.DTOs.WorkShop
 {
@@ -20,7 +16,7 @@ namespace BackendComfeco.DTOs.WorkShop
 
         public List<int> TechnologyIds { get; set; }
 
-        public DateTime AfterThan { get; set; } = DateTime.UtcNow.AddDays(-1);
+        public DateTime AfterThan { get; set; } = DateTime.UtcNow.AddDays(-30);
 
         public DateTime BeforeThan { get; set; }
 

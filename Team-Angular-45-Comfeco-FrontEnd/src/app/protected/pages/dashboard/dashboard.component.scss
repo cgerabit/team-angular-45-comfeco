@@ -20,12 +20,41 @@
     .comunidades,
     .talleres {
         width: 100%;
-        height: 320px;
+        height: 350px;
         background-color: $primary;
         border-radius: 20px;
         padding: 10px;
         @media screen and (min-width: 70em) {
             margin-top: 100px;
+        }
+        .card-body {
+            width: 100%;
+            height: 200px;
+            overflow: auto;
+            &::-webkit-scrollbar {
+                width: 10px;
+            }
+            &::-webkit-scrollbar-track {
+                box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+                -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+                border-radius: 10px;
+                padding: 0 2px;
+            }
+            &::-webkit-scrollbar-thumb {
+                border-radius: 10px;
+                box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+                -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+                background-color: $secondary;
+            }
+        }
+        .workshop-single-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            img {
+                width: 24px;
+            }
         }
     }
     .component {
@@ -60,6 +89,7 @@
     padding-left: 5px;
     border: solid darkgrey 1px;
     background-color: darkgrey;
+    margin-bottom: 5px;
 }
 
 hr {
@@ -278,18 +308,18 @@ hr {
 
 .swiper-button-prev,
 .swiper-button-next {
-  z-index: 1;
-  color: $white;
-  background-color:  rgba($primary, .8);
-  padding: 30px 20px;
-  border-radius: 10px;
-  outline: none;
-  transition: all 300ms ease-in-out;
-  transform: scale(0.8);
-  &:hover {
-    background-color: rgba($primary, .6);
-    transform: scale(0.9);
-  }
+    z-index: 1;
+    color: $white;
+    background-color: rgba($primary, .8);
+    padding: 30px 20px;
+    border-radius: 10px;
+    outline: none;
+    transition: all 300ms ease-in-out;
+    transform: scale(0.8);
+    &:hover {
+        background-color: rgba($primary, .6);
+        transform: scale(0.9);
+    }
 }
 
 .swiper-pagination {

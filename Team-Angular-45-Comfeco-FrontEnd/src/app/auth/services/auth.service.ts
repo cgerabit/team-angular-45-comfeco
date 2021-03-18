@@ -323,6 +323,7 @@ export class AuthService {
 
     this._userInfo = null;
 
+
     //eliminar persistent login
     this.http
       .get(`${this.baseUrl}/account/logout`, { withCredentials: true })

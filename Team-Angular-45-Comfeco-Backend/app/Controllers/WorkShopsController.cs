@@ -10,8 +10,10 @@ using BackendComfeco.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BackendComfeco.Controllers
@@ -94,11 +96,16 @@ namespace BackendComfeco.Controllers
 
             principalSocialNetworks.ForEach(s =>
             {
-                var entity = dtos.FirstOrDefault(x => x.UserId == s.UserId);
+                var entity = dtos.Where(x => x.UserId == s.UserId).ToList();
 
-                if (entity != null)
+                if (entity.Count>0)
                 {
-                    entity.PrincipalSocialNetwork = mapper.Map<ApplicationUserSocialNetworkDTO>(s);
+                    var sdto = mapper.Map<ApplicationUserSocialNetworkDTO>(s);
+
+                    for(int i = 0; i < entity.Count; i++)
+                    {
+                        entity[i].PrincipalSocialNetwork = sdto;
+                    }
 
                 }
 
@@ -106,6 +113,7 @@ namespace BackendComfeco.Controllers
           
             return dtos;
 
+            
 
         } 
 
