@@ -56,7 +56,7 @@ export class ChangeComponent {
 
               )
             }).catch(()=>{
-              ()=> {
+
 
                 Swal.fire(
                   {title:"Error!",
@@ -64,7 +64,7 @@ export class ChangeComponent {
                  icon:"error"
                 }
                 )
-              }
+
             })
             .finally(()=>{
               this.activeModal.close();
@@ -95,7 +95,7 @@ export class ChangeComponent {
               }
               )
               }).catch(()=>{
-                ()=> {
+
                   Swal.fire(
                     {title:"Error!",
                    text:"ha ocurrido un error actualizando el username",
@@ -103,7 +103,7 @@ export class ChangeComponent {
                   }
                   )
 
-                }
+
               }).finally(()=>{
                 this.activeModal.close();
                 this.authService.tryRenewToken(true)
@@ -127,7 +127,7 @@ export class ChangeComponent {
             )
 
           }).catch(()=>{
-            ()=>{
+
 
               Swal.fire(
                 {title:"Error!",
@@ -137,7 +137,7 @@ export class ChangeComponent {
               )
 
             }
-          }).finally(()=>this.activeModal.close())
+          ).finally(()=>this.activeModal.close())
           break;
           }
 

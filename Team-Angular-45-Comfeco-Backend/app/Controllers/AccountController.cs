@@ -655,6 +655,41 @@ namespace BackendComfeco.Controllers
             return await BuildLoginToken(user.Email, authCodeClaimDTO.Purpose == ApplicationConstants.PersistentLoginTokenPurposeName);
 
         }
+        [HttpDelete("externalLogin/{ProviderName}")]
+        [Authorize(AuthenticationSchemes =JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<ActionResult> RemoveExternalProvider(string ProviderName)
+        {
+            var user =await GetUserFromContext();
+            if (user==null)
+            {
+                return BadRequest();
+            }
+
+            bool hasPassword = await userManager.HasPasswordAsync(user);
+            if (!hasPassword)
+            {
+                return BadRequest(new
+                {
+                    noPassword = true
+
+                });
+            }
+
+            var loginLink = await applicationDbContext.UserLogins
+                .FirstOrDefaultAsync(x=> x.UserId == user.Id && x.ProviderDisplayName == ProviderName);
+
+            if (loginLink == null)
+            {
+                return BadRequest();
+            }
+
+            applicationDbContext.Entry(loginLink).State = EntityState.Deleted;
+            await applicationDbContext.SaveChangesAsync();
+
+            return NoContent();
+            
+        }
+
         [HttpGet("initexternalloginlink")]
         [Authorize(AuthenticationSchemes =JwtBearerDefaults.AuthenticationScheme)]
         public ActionResult InitExternalLoginLink([FromQuery] string ProviderName)
@@ -698,23 +733,32 @@ namespace BackendComfeco.Controllers
             
         }
 
+
+
         [HttpGet("externallogincallback")]
         public async Task<ActionResult> ExternalLoginCallback([FromQuery] string returnUrl)
         {
             var info = await signInManager.GetExternalLoginInfoAsync();
 
+            bool containsIdCookie = HttpContext.Request.Cookies.ContainsKey(ApplicationConstants.IdCookieName);
+            bool containsKeyHashCookie = HttpContext.Request.Cookies.ContainsKey(ApplicationConstants.KeyHashCookieName);
 
-            if (info == null || !HttpContext.Request.Cookies.ContainsKey(ApplicationConstants.KeyHashCookieName))
+            if (info == null || (!containsKeyHashCookie && !containsIdCookie))
             {
+
                 return Redirect($"{ApplicationConstants.LoginFrontendDefaultEndpoint}?msg=La session ha expirado por favor intentalo de nuevo");
             }
 
+            var loginExist = await applicationDbContext.UserLogins.AnyAsync(l => l.ProviderKey == info.ProviderKey);
+            
+            
 
-            string keyHash = HttpContext.Request.Cookies[ApplicationConstants.KeyHashCookieName];
+            string keyHash =containsKeyHashCookie? HttpContext.Request.Cookies[ApplicationConstants.KeyHashCookieName]:string.Empty;
 
-            var result = await signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, false);
 
-            if (result.Succeeded)
+            var result =!string.IsNullOrEmpty(keyHash) && loginExist ? ( await signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, false)):null;
+
+            if (result !=null && result.Succeeded)
             {
 
                 var userIdentifier = info.Principal.FindFirst(ClaimTypes.NameIdentifier);
@@ -747,16 +791,21 @@ namespace BackendComfeco.Controllers
 
 
             }
-            else if (result.IsNotAllowed)
+            else if (result != null && result.IsNotAllowed)
             {
                 return Redirect($"{ApplicationConstants.LoginFrontendDefaultEndpoint}?msg=Tu cuenta no se encuentra activa aun, por favor verifica tu email");
             }
-            else if (result.IsLockedOut)
+            else if (result != null && result.IsLockedOut)
             {
                 return Redirect($"{ApplicationConstants.LoginFrontendDefaultEndpoint}?msg=Tu cuenta se encuentra bloqueada temporalmente intentalo de nuevo mas tarde");
             }
             else
             {
+                if (loginExist)
+                {
+                    return Redirect($"{ApplicationConstants.LoginFrontendDefaultEndpoint}?msg=Red social ya utilizada");
+                }
+
                 var containsUserId = HttpContext.Request.Cookies.ContainsKey(ApplicationConstants.IdCookieName);
 
                 if (containsUserId)
