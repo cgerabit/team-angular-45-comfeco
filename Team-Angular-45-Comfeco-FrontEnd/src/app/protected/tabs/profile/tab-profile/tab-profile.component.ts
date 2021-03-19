@@ -10,6 +10,7 @@ import { ChangeComponent } from 'src/app/protected/components/change/change.comp
 import Swal from 'sweetalert2';
 import { UserService } from '../../../../auth/services/user.service';
 import { LoadingOverlayService } from '../../../services/loading-overlay.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-tab-profile',
@@ -360,6 +361,70 @@ export class TabProfileComponent implements OnInit {
   }
 
 
+  initExternalProviderLink(providerName:string){
+    let obs:Observable<object>;
+    if(providerName == "Facebook"){
 
+      if(this.userProviders.haveFacebook){
+          obs = this.authService.removeExternalProviderLink(providerName);
+      }
+      else{
+       this.authService.initExternalProviderLink(providerName);
+      }
+    }
+    else if(providerName=="Google"){
+      if(this.userProviders.haveGoogle){
+         obs = this.authService.removeExternalProviderLink(providerName);
+      }
+      else{
+        this.authService.initExternalProviderLink(providerName);
+      }
+    }
+
+    if(obs){
+      Swal.fire({
+        title:'Atencion!',
+        text:`Vas a desvincular el proveedor ${providerName} de tu cuenta, esta accion es irreversible ¿Estas Seguro?`,
+        icon:'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si, quiero desvincularlo'
+      }).then( resp => {
+        if(resp){
+        this.loadingOverlay.setTimerWith(obs).then(()=>{
+          this.loadingOverlay.setTimerWith(this.authService.userProviders()).then(r =>{
+            this.userProviders = r;
+          } ).catch().finally(()=> {
+            Swal.fire({
+              title:'Exito!',
+              text:`Has desvinculado el proveedor ${providerName} de tu cuenta`,
+              icon:'success'
+            })
+          })
+        })
+        .catch((err)=>{
+          let text;
+
+          if(err.error.noPassword){
+            text= "Necesitas establecer una contraseña antes de hacer eso";
+
+          }else{
+            text = "Ha ocurrido un error inesperado intentalo mas tarde";
+          }
+          Swal.fire({
+            title:'Error!',
+            text:text,
+            icon:'error'
+          })
+
+        })
+        }
+      })
+
+
+    }
+
+  }
 
 }
