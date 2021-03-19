@@ -692,17 +692,22 @@ namespace BackendComfeco.Controllers
 
         [HttpGet("initexternalloginlink")]
         [Authorize(AuthenticationSchemes =JwtBearerDefaults.AuthenticationScheme)]
-        public ActionResult InitExternalLoginLink([FromQuery] string ProviderName)
+        public async Task<ActionResult> InitExternalLoginLink([FromQuery] string ProviderName)
         {
 
-            var userIdClaim = HttpContext.User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier);
 
-            if (userIdClaim == null)
+            var user = await GetUserFromContext();
+
+            if (user == null)
             {
                 return BadRequest();
             }
 
-            HttpContext.Response.Cookies.Append(ApplicationConstants.IdCookieName, userIdClaim.Value,
+            var token = await userManager.GenerateUserTokenAsync(user, ApplicationConstants.AuthCodeTokenProviderName, user.Id);
+
+
+
+            HttpContext.Response.Cookies.Append(ApplicationConstants.IdCookieName, user.Id,
 
                     new Microsoft.AspNetCore.Http.CookieOptions()
                     {
@@ -711,6 +716,17 @@ namespace BackendComfeco.Controllers
                         Secure = true,
                         SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax
                     });
+            HttpContext.Response.Cookies.Append(ApplicationConstants.IdCookieVerifier, token,
+
+              new Microsoft.AspNetCore.Http.CookieOptions()
+              {
+                  HttpOnly = true,
+                  MaxAge = TimeSpan.FromMinutes(5),
+                  Secure = true,
+                  SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax
+              });
+
+
 
             var redirectUrl = Url.Action(nameof(ExternalLoginCallback), "Account");
             var properties = signInManager.ConfigureExternalAuthenticationProperties(ProviderName,redirectUrl);
@@ -807,27 +823,41 @@ namespace BackendComfeco.Controllers
                 }
 
                 var containsUserId = HttpContext.Request.Cookies.ContainsKey(ApplicationConstants.IdCookieName);
-
-                if (containsUserId)
+                var containsVerifierId = HttpContext.Request.Cookies.ContainsKey(ApplicationConstants.IdCookieVerifier);
+                if (containsUserId && containsVerifierId)
                 {
-
+               
                     string userId = HttpContext.Request.Cookies[ApplicationConstants.IdCookieName];
+                    string token = HttpContext.Request.Cookies[ApplicationConstants.IdCookieVerifier];
+
+                  
+
 
                     bool alreadyHaveProvider = await applicationDbContext.UserLogins.AnyAsync(y => y.ProviderDisplayName == info.ProviderDisplayName && y.UserId == userId);
 
                     if (!alreadyHaveProvider)
                     {
+                       
+
                         var currentUser = await applicationDbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+
                         if (currentUser != null)
                         {
+
+                            var tokenResult = await userManager.VerifyUserTokenAsync(currentUser, ApplicationConstants.AuthCodeTokenProviderName, userId, token);
+                            if (!tokenResult)
+                            {
+                                return Redirect($"{ApplicationConstants.ProfileFrontendDefaultEndpoint}?msg=Ha ocurrido un error enlazando el metodo de autenticacion intentalo mas tarde");
+                            }
+
                             var externLoginAddResult = await userManager.AddLoginAsync(currentUser, info);
                             if (externLoginAddResult.Succeeded)
                             {
-                                return Redirect($"{ApplicationConstants.LoginFrontendDefaultEndpoint}?msg=Has enlazado tu cuenta exitosamente");
+                                return Redirect($"{ApplicationConstants.ProfileFrontendDefaultEndpoint}?msg=Has enlazado tu cuenta exitosamente");
                             }
                             else
                             {
-                                return Redirect($"{ApplicationConstants.LoginFrontendDefaultEndpoint}?msg=Ha ocurrido un error enlazando el metodo de autenticacion");
+                                return Redirect($"{ApplicationConstants.ProfileFrontendDefaultEndpoint}?msg=Ha ocurrido un error enlazando el metodo de autenticacion intentalo mas tarde");
                             }
                         }
                     }

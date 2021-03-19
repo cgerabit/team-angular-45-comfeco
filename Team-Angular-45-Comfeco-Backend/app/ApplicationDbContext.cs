@@ -96,13 +96,22 @@ namespace BackendComfeco
             builder.Entity<ExternalLoginValidRedirectUrl>()
                 .HasData(new ExternalLoginValidRedirectUrl { Id = 2, Url = "https://localhost:4200/auth/external-signin-callback" });
 
+            builder.Entity<ExternalLoginValidRedirectUrl>()
+                .HasData(new ExternalLoginValidRedirectUrl{ Id =3 ,Url= "http://team45.comfeco.cristiangerani.com/auth/external-signin-callback" });
+
+            builder.Entity<ExternalLoginValidRedirectUrl>()
+               .HasData(new ExternalLoginValidRedirectUrl { Id = 4, Url = "https://team45.comfeco.cristiangerani.com/auth/external-signin-callback" });
+
 
             builder.Entity<PersistentLoginValidRedirectUrl>()
                 .HasData(new PersistentLoginValidRedirectUrl { Id = 1, Url = "https://localhost:4200/auth/persistent-signin-callback" });
             builder.Entity<PersistentLoginValidRedirectUrl>()
               .HasData(new PersistentLoginValidRedirectUrl { Id = 2, Url = "http://localhost:4200/auth/persistent-signin-callback" });
 
-
+            builder.Entity<PersistentLoginValidRedirectUrl>()
+               .HasData(new PersistentLoginValidRedirectUrl { Id = 3, Url = "https://team45.comfeco.cristiangerani.com/auth/external-signin-callback" });
+            builder.Entity<PersistentLoginValidRedirectUrl>()
+              .HasData(new PersistentLoginValidRedirectUrl { Id = 4, Url = "http://team45.comfeco.cristiangerani.com/auth/external-signin-callback" });
 
             //----------------------------------------------------------
 

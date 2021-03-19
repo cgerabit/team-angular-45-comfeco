@@ -1,41 +1,48 @@
 /* You can add global styles to this file, and also import other style files */
+
+
 /*//////////////////////////////////////////////////////////////////
 [ FONT ]*/
+
+
 /*Swiper*/
+
 @import '~swiper/swiper-bundle';
-
 @font-face {
-  font-family: Poppins-Regular;
-  src: url("./assets/fonts/poppins/Poppins-Regular.ttf");
+    font-family: Poppins-Regular;
+    src: url("./assets/fonts/poppins/Poppins-Regular.ttf");
 }
 
 @font-face {
-  font-family: Poppins-Medium;
-  src: url("./assets/fonts/poppins/Poppins-Medium.ttf");
+    font-family: Poppins-Medium;
+    src: url("./assets/fonts/poppins/Poppins-Medium.ttf");
 }
 
 @font-face {
-  font-family: Poppins-Bold;
-  src: url("./assets/fonts/poppins/Poppins-Bold.ttf");
+    font-family: Poppins-Bold;
+    src: url("./assets/fonts/poppins/Poppins-Bold.ttf");
 }
 
 @font-face {
-  font-family: Poppins-SemiBold;
-  src: url("./assets/fonts/poppins/Poppins-SemiBold.ttf");
+    font-family: Poppins-SemiBold;
+    src: url("./assets/fonts/poppins/Poppins-SemiBold.ttf");
 }
+
 
 /* Importing Bootstrap SCSS file. */
+
 @import "~bootstrap/scss/bootstrap";
+
 /*//////////////////////////////////////////////////////////////////
 [ RESTYLE TAG ]*/
+
 * {
-  margin: 0px;
-  padding: 0px;
-  box-sizing: border-box;
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
 }
 
 body,
 html {
-  height: 100vh;
-  font-family: Poppins-Regular, sans-serif;
+    font-family: Poppins-Regular, sans-serif;
 }

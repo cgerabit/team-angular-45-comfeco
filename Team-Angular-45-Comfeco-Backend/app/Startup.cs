@@ -123,7 +123,8 @@ namespace BackendComfeco
             {
                 options.AddPolicy(ApplicationConstants.DevelopmentPolicyName,
                     new CorsPolicyBuilder()
-                    .WithOrigins("http://localhost:4200","https://localhost:4200")
+                    .WithOrigins("http://localhost:4200","https://localhost:4200",
+                    "http://team45.comfeco.cristiangerani.com", "https://team45.comfeco.cristiangerani.com")
                     .WithExposedHeaders(ApplicationConstants.CountOfRecordsHeaderName)
                     .AllowAnyHeader()
                     .AllowAnyMethod()
