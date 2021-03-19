@@ -5,7 +5,7 @@ import {
 } from '@angular/common/http';
 
 import { catchError, tap} from 'rxjs/operators';
-import { of, Observable } from 'rxjs';
+import { of, Observable, Subject } from 'rxjs';
 import * as shajs from 'sha.js';
 import { environment } from '../../../environments/environment';
 import { TokenResponse, Usuario, UserGroup, changeUsernameDTO, changeEmailDTO, changePasswordDTO, UserProviders } from '../interfaces/interfaces';
@@ -105,6 +105,8 @@ export class AuthService {
   //---------------------------------------- END GETTERS ----------------------------
 
   constructor(private http: HttpClient) {}
+  private _OnLogout:Subject<boolean> = new Subject<boolean>();
+  public  OnLogout:Observable<boolean> = this._OnLogout;
 
   private _userHavePersistLogin: number;
   private async checkPersistLogin(){
@@ -226,6 +228,7 @@ export class AuthService {
     }
 
     if (tokenResp.responseType == environment.bearertokenResponseTypeName) {
+      this._OnLogout.next(true);
       this.token = tokenResp.token;
       this.tokenExpiration = tokenResp.expiration;
       let persistentStorageValue = tokenResp.isPersistent ? 1 : 0;
@@ -323,6 +326,7 @@ export class AuthService {
     this.token = null;
     this.tokenExpiration = null;
     this._userHavePersistLogin = 0;
+    this._OnLogout.next(false);
 
     this._userInfo = null;
 
