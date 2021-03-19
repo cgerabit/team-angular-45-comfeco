@@ -1,26 +1,28 @@
 ﻿using AutoMapper;
 
 using BackendComfeco.DTOs.Area;
-using BackendComfeco.DTOs.SocialNetwork;
 using BackendComfeco.DTOs.UserRelations;
 using BackendComfeco.DTOs.WorkShop;
 using BackendComfeco.ExtensionMethods;
 using BackendComfeco.Models;
+using BackendComfeco.Settings;
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace BackendComfeco.Controllers
 {
     [ApiController]
     [Route("api/workshops")]
-
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
+        Policy = ApplicationConstants.Roles.AdminRoleName)]
     public class WorkShopsController : ExtendedBaseController
     {
         private readonly ApplicationDbContext context;
@@ -33,7 +35,8 @@ namespace BackendComfeco.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<WorkShopDTO>>> Get ([FromQuery]WorkShopFilter workShopFilter)
+        [AllowAnonymous]
+        public async Task<ActionResult<List<WorkShopDTO>>> Get([FromQuery] WorkShopFilter workShopFilter)
         {
             var queryable = context.Workshops.AsQueryable();
 
@@ -48,7 +51,7 @@ namespace BackendComfeco.Controllers
 
             if (!string.IsNullOrEmpty(workShopFilter.UserNameContains))
             {
-                queryable = queryable.Where(w =>w.User.RealName.Contains(workShopFilter.UserNameContains));
+                queryable = queryable.Where(w => w.User.RealName.Contains(workShopFilter.UserNameContains));
 
             }
             if (!string.IsNullOrEmpty(workShopFilter.UserId))
@@ -57,17 +60,17 @@ namespace BackendComfeco.Controllers
 
 
             }
-            if(workShopFilter.AreaIds!=null && workShopFilter.AreaIds.Count > 0)
+            if (workShopFilter.AreaIds != null && workShopFilter.AreaIds.Count > 0)
             {
                 queryable = queryable.Where(w => workShopFilter.AreaIds.Contains(w.Technology.AreaId));
-            } 
+            }
 
-            if(workShopFilter.TechnologyIds !=null && workShopFilter.TechnologyIds.Count > 0)
+            if (workShopFilter.TechnologyIds != null && workShopFilter.TechnologyIds.Count > 0)
             {
                 queryable = queryable.Where(w => workShopFilter.TechnologyIds.Contains(w.TechnologyId));
             }
 
-            if(workShopFilter.AfterThan != default)
+            if (workShopFilter.AfterThan != default)
             {
                 queryable = queryable.Where(w => w.WorkShopDate > workShopFilter.AfterThan);
             }
@@ -80,9 +83,9 @@ namespace BackendComfeco.Controllers
 
             queryable = queryable.Paginate(new DTOs.Shared.PaginationDTO
             {
-                Page=workShopFilter.Page,
+                Page = workShopFilter.Page,
                 RecordsPerPage = workShopFilter.RecordsPerPage
-            }).OrderByDescending(x=>x.WorkShopDate);
+            }).OrderByDescending(x => x.WorkShopDate);
 
 
             var entities = await queryable.ToListAsync();
@@ -98,11 +101,11 @@ namespace BackendComfeco.Controllers
             {
                 var entity = dtos.Where(x => x.UserId == s.UserId).ToList();
 
-                if (entity.Count>0)
+                if (entity.Count > 0)
                 {
                     var sdto = mapper.Map<ApplicationUserSocialNetworkDTO>(s);
 
-                    for(int i = 0; i < entity.Count; i++)
+                    for (int i = 0; i < entity.Count; i++)
                     {
                         entity[i].PrincipalSocialNetwork = sdto;
                     }
@@ -110,26 +113,27 @@ namespace BackendComfeco.Controllers
                 }
 
             });
-          
+
             return dtos;
 
-            
 
-        } 
 
-        [HttpGet("{id:int}",Name = "GetWorkshop")]
+        }
+
+        [HttpGet("{id:int}", Name = "GetWorkshop")]
+        [AllowAnonymous]
         public async Task<ActionResult<WorkShopDTO>> Get(int id)
         {
             var entity = await context.Workshops.Include(x => x.Technology)
                 .ThenInclude(x => x.Area)
-                .Include(x => x.User).FirstOrDefaultAsync(x=>x.Id==id);
+                .Include(x => x.User).FirstOrDefaultAsync(x => x.Id == id);
 
-            if(entity == null)
+            if (entity == null)
             {
                 return NotFound();
             }
 
-            var dto =  mapper.Map<WorkShopDTO>(entity);
+            var dto = mapper.Map<WorkShopDTO>(entity);
 
             var principalSocialNetwork = await context.ApplicationUserSocialNetworks.FirstOrDefaultAsync(x => x.IsPrincipal && x.UserId == entity.UserId);
 
@@ -145,14 +149,14 @@ namespace BackendComfeco.Controllers
 
         public async Task<ActionResult<WorkShopDTO>> Post(WorkShopCreationDTO workShopCreationDTO)
         {
-            return await Post<WorkShopCreationDTO,Workshop,WorkShopDTO>(workShopCreationDTO, "GetWorkshop");
+            return await Post<WorkShopCreationDTO, Workshop, WorkShopDTO>(workShopCreationDTO, "GetWorkshop");
         }
 
         [HttpPut("{id:int}")]
 
         public async Task<ActionResult<WorkShopDTO>> Put(int id, WorkShopCreationDTO workShopCreationDTO)
         {
-            return await Put<WorkShopCreationDTO,Workshop>(id,workShopCreationDTO);
+            return await Put<WorkShopCreationDTO, Workshop>(id, workShopCreationDTO);
         }
 
         [HttpDelete("{id:int}")]

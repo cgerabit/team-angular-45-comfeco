@@ -6,6 +6,8 @@ using BackendComfeco.Helpers;
 using BackendComfeco.Models;
 using BackendComfeco.Settings;
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +21,8 @@ namespace BackendComfeco.Controllers
 {
     [ApiController]
     [Route("api/badges")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
+        Policy = ApplicationConstants.Roles.AdminRoleName)]
     public class BadgesController : ExtendedBaseController
     {
         private readonly IMapper mapper;
@@ -35,12 +39,14 @@ namespace BackendComfeco.Controllers
             this.fileStorage = fileStorage;
         }
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<List<BadgeDTO>>> Get()
         {
             return await Get<Badge, BadgeDTO>();
         }
 
         [HttpGet("{id:int}", Name = "GetBadge")]
+        [AllowAnonymous]
         public async Task<ActionResult<BadgeDTO>> Get(int id)
         {
             return await Get<Badge, BadgeDTO>(id);

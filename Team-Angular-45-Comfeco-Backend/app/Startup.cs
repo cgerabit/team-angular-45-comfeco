@@ -6,6 +6,7 @@ using BackendComfeco.Settings;
 using BackendComfeco.Shared.Settings;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
@@ -93,6 +94,14 @@ namespace BackendComfeco
                     
                 });
 
+            services.AddAuthorization(options =>
+            {
+                var adminPolicyBuilder = new AuthorizationPolicyBuilder()
+                .RequireAuthenticatedUser().RequireRole(ApplicationConstants.Roles.AdminRoleName);
+
+                options.AddPolicy(ApplicationConstants.Roles.AdminRoleName, adminPolicyBuilder.Build());
+
+            });
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
                 options.SignIn.RequireConfirmedEmail = false;

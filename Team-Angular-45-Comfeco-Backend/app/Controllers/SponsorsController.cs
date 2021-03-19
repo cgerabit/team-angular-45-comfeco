@@ -7,6 +7,8 @@ using BackendComfeco.Helpers;
 using BackendComfeco.Models;
 using BackendComfeco.Settings;
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +22,8 @@ namespace BackendComfeco.Controllers
 {
     [ApiController]
     [Route("api/sponsors")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
+        Policy = ApplicationConstants.Roles.AdminRoleName)]
     public class SponsorsController : ExtendedBaseController
     {
         private readonly ApplicationDbContext applicationDbContext;
@@ -37,16 +41,18 @@ namespace BackendComfeco.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<List<SponsorDTO>>> Get([FromQuery] PaginationDTO paginationDTO)
         {
-            return await Get<Sponsor,SponsorDTO>(paginationDTO);
+            return await Get<Sponsor, SponsorDTO>(paginationDTO);
 
         }
 
         [HttpGet("{id:int}", Name = "GetSponsor")]
+        [AllowAnonymous]
         public async Task<ActionResult<SponsorDTO>> Get(int Id)
         {
-            return await Get<Sponsor,SponsorDTO>(Id);
+            return await Get<Sponsor, SponsorDTO>(Id);
         }
 
         [HttpPost]
@@ -99,7 +105,7 @@ namespace BackendComfeco.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        public async Task<ActionResult>Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
             return await Delete<Sponsor>(id);
 

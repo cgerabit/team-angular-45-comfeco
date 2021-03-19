@@ -7,6 +7,8 @@ using BackendComfeco.Helpers;
 using BackendComfeco.Models;
 using BackendComfeco.Settings;
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,12 +16,15 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace BackendComfeco.Controllers
 {
     [ApiController]
     [Route("api/technologies")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
+        Policy = ApplicationConstants.Roles.AdminRoleName)]
     public class TechnologiesController : ExtendedBaseController
     {
         private readonly ApplicationDbContext context;
@@ -35,12 +40,14 @@ namespace BackendComfeco.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<List<TechnologyDTO>>> Get([FromQuery] PaginationDTO paginationDTO)
         {
             return await Get<Technology, TechnologyDTO>(paginationDTO);
         }
 
         [HttpGet("{id:int}", Name = "GetTechnology")]
+        [AllowAnonymous]
 
         public async Task<ActionResult<TechnologyDTO>> Get(int id)
         {

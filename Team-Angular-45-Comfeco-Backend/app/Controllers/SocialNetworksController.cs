@@ -7,6 +7,8 @@ using BackendComfeco.Helpers;
 using BackendComfeco.Models;
 using BackendComfeco.Settings;
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +23,8 @@ namespace BackendComfeco.Controllers
 {
     [ApiController]
     [Route("api/socialnetworks")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
+        Policy =ApplicationConstants.Roles.AdminRoleName)]
     public class SocialNetworksController : ExtendedBaseController
     {
         private readonly ApplicationDbContext context;
@@ -36,12 +40,14 @@ namespace BackendComfeco.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<List<SocialNetworkDTO>>> Get([FromQuery] PaginationDTO paginationDTO)
         {
             return await Get<SocialNetwork, SocialNetworkDTO>(paginationDTO);
         }
 
         [HttpGet("{id:int}", Name = "GetSocialNetwork")]
+        [AllowAnonymous]
         public async Task<ActionResult<SocialNetworkDTO>> Get(int id)
         {
 

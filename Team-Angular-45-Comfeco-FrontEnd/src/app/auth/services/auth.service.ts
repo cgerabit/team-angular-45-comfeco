@@ -203,6 +203,10 @@ export class AuthService {
   }
 
   login(email: string, password: string, persistLogin: boolean) {
+
+    if(persistLogin ==null){
+      persistLogin=false;
+    }
     const url = `${this.baseUrl}/Account/login`;
     const body = {
       userName: email,

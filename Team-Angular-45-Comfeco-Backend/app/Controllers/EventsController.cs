@@ -7,6 +7,8 @@ using BackendComfeco.Helpers;
 using BackendComfeco.Models;
 using BackendComfeco.Settings;
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,12 +18,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace BackendComfeco.Controllers
 {
     [Route("api/events")]
     [ApiController]
+   
     public class EventsController : ExtendedBaseController
     {
         private readonly ApplicationDbContext context;
@@ -37,11 +41,12 @@ namespace BackendComfeco.Controllers
         }
 
         [HttpGet]
+
         public async Task<ActionResult<List<EventDTO>>> GetEvents([FromQuery]PaginationDTO paginationDTO)
         {
             return await Get<Event, EventDTO>(paginationDTO);
         }
-
+      
         [HttpGet("{id:int}", Name = "GetEvent")]
         public async Task<ActionResult<EventDTO>> GetEvent(int id)
         {
@@ -49,6 +54,7 @@ namespace BackendComfeco.Controllers
         }
 
         [HttpGet("active")]
+
         public async Task<ActionResult<EventDTO>> GetActiveEvent()
         {
             var model = await context.Events.FirstOrDefaultAsync(e => e.IsTimer);
@@ -62,6 +68,8 @@ namespace BackendComfeco.Controllers
         }
 
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
+        Policy = ApplicationConstants.Roles.AdminRoleName)]
         public async Task<ActionResult> Post([FromForm]EventCreationDTO eventCreationDTO)
         {
             if (eventCreationDTO.IsTimer)
@@ -87,6 +95,8 @@ namespace BackendComfeco.Controllers
 
 
         [HttpPut("{id:int}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
+        Policy = ApplicationConstants.Roles.AdminRoleName)]
         public async Task<ActionResult> Put(int id, [FromForm]EventCreationDTO eventCreationDTO)
         {
 
@@ -118,14 +128,23 @@ namespace BackendComfeco.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
+        Policy = ApplicationConstants.Roles.AdminRoleName)]
         public async Task<ActionResult> Delete(int id)
         {
             return await Delete<Event>(id);
         }
 
         [HttpPost("{eventId:int}/adduser")]
+        [Authorize(AuthenticationSchemes =JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult> AddUserToEvent(int eventId , AddUserToEventDTO addUserToEventDTO)
         {
+
+            var userId = HttpContext.User.Claims.FirstOrDefault(y => y.Type == ClaimTypes.NameIdentifier);
+            if(userId == null || userId.Value != addUserToEventDTO.UserId)
+            {
+                return Forbid();
+            }
             var userExist = await context.Users.AnyAsync(u => u.Id == addUserToEventDTO.UserId);
 
             if (!userExist)
@@ -181,8 +200,15 @@ namespace BackendComfeco.Controllers
 
 
         [HttpDelete("{eventId:int}/removeuser/{userId}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult> RemoveUserFromEvent(int eventId, string userId)
         {
+            var userIdC = HttpContext.User.Claims.FirstOrDefault(y => y.Type == ClaimTypes.NameIdentifier);
+            if (userId == null || userIdC.Value != userId)
+            {
+                return Forbid();
+            }
+
             var eventInscription = await context.ApplicationUserEvents
                 .Include(ei => ei.Event)
                 .FirstOrDefaultAsync(ei => ei.EventId == eventId && ei.UserId == userId);
@@ -213,8 +239,15 @@ namespace BackendComfeco.Controllers
         } 
 
         [HttpGet("userEvents/{userId}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<List<UserEventInscriptionDTO>>> GetUserEvents(string userId)
         {
+            var userIdC = HttpContext.User.Claims.FirstOrDefault(y => y.Type == ClaimTypes.NameIdentifier);
+            if (userId == null || userIdC.Value != userId)
+            {
+                return Forbid();
+            }
+
             var userEvents = await context.ApplicationUserEvents.Include(x => x.Event)
                 .Where(ei => ei.UserId == userId && ei.Event.IsActive).OrderByDescending(ei => ei.InscriptionDate).ToListAsync();
 

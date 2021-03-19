@@ -206,9 +206,15 @@ namespace BackendComfeco.Controllers
         }
 
         [HttpPost("changeusername")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult> ChangeUsername(ChangeUsernameDTO changeUsernameDTO)
         {
 
+            var userIdC = HttpContext.User.Claims.FirstOrDefault(y => y.Type == ClaimTypes.NameIdentifier);
+            if (userIdC == null || userIdC.Value != changeUsernameDTO.UserId)
+            {
+                return Forbid();
+            }
 
             var user = await userManager.FindByIdAsync(changeUsernameDTO.UserId);
             if (user == null)
@@ -441,8 +447,15 @@ namespace BackendComfeco.Controllers
         }
 
         [HttpPost("changepwd")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult> ChangePassword(ChangePasswordDTO changePasswordDTO)
         {
+
+            var userIdC = HttpContext.User.Claims.FirstOrDefault(y => y.Type == ClaimTypes.NameIdentifier);
+            if (userIdC == null || userIdC.Value != changePasswordDTO.UserId)
+            {
+                return Forbid();
+            }
 
             var user = await userManager.FindByIdAsync(changePasswordDTO.UserId);
             if (user == null)
@@ -481,8 +494,15 @@ namespace BackendComfeco.Controllers
         }
 
         [HttpPost("changeemail")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult> ChangeEmail(ChangeEmailDTO changeEmailDTO)
         {
+            var userIdC = HttpContext.User.Claims.FirstOrDefault(y => y.Type == ClaimTypes.NameIdentifier);
+            if (userIdC == null || userIdC.Value != changeEmailDTO.UserId)
+            {
+                return Forbid();
+            }
+
             var user = await userManager.FindByIdAsync(changeEmailDTO.UserId);
             if (user == null)
             {
@@ -736,8 +756,15 @@ namespace BackendComfeco.Controllers
 
         }
         [HttpGet("getUserLogins/{userId}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+
         public async Task<ActionResult<UserLoginsDTO>> GetUserLogins(string userId)
         {
+            var userIdC = HttpContext.User.Claims.FirstOrDefault(y => y.Type == ClaimTypes.NameIdentifier);
+            if (userIdC == null || userIdC.Value != userId)
+            {
+                return Forbid();
+            }
             var logins = await applicationDbContext.UserLogins.Where(y => y.UserId == userId).ToListAsync();
 
 

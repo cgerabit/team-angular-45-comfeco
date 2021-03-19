@@ -47,6 +47,9 @@
         {
             public const string ContentCreatorRoleId = "6a8af04b-0405-4cd2-bc20-d59433235153";
             public const string ContentCreatorRoleName = "ContentCreator";
+
+            public const string AdminRoleId = "88d3be36-a8aa-422c-b6a2-99b98a042fed";
+            public const string AdminRoleName = "Admin";
         }
     }
 }
