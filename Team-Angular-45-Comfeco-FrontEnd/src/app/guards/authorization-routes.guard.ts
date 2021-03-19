@@ -18,7 +18,7 @@ export class AuthorizationRoutesGuard implements CanActivate ,CanActivateChild {
 
       if(!result){
 
-        this.router.navigate(['/protected'])
+        this.router.navigate(['/home'])
       }
 
       return result;
@@ -31,7 +31,7 @@ export class AuthorizationRoutesGuard implements CanActivate ,CanActivateChild {
 
       if(!result){
 
-        this.router.navigate(['/protected'])
+        this.router.navigate(['/home'])
       }
 
       return result;

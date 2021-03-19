@@ -2,11 +2,11 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { ProtectedRoutingModule } from './protected-routing.module';
-import { DashboardComponent } from './pages/dashboard/dashboard.component';
+
 
 import { SwiperModule } from 'swiper/angular';
 import { ProfileComponent } from './pages/profile/profile.component';
-import { NavbarComponent } from './components/navbar/navbar.component';
+
 
 //import { SwiperModule } from 'ngx-swiper-wrapper';
 //mport { SWIPER_CONFIG } from 'ngx-swiper-wrapper';
@@ -23,18 +23,21 @@ import { TabEventComponent } from './tabs/profile/tab-event/tab-event.component'
 };*/
 import { ReactiveFormsModule,FormsModule } from '@angular/forms';
 import { ChangeComponent } from './components/change/change.component';
-import { FooterComponent } from './components/footer/footer.component';
+import { SharedModule as SharedModule } from '../shared/shared.module';
 
 
 @NgModule({
-  declarations: [DashboardComponent, ProfileComponent, NavbarComponent, TabProfileComponent, TabInsigniaComponent, TabGroupComponent, TabEventComponent, ChangeComponent, FooterComponent],
+  declarations: [ ProfileComponent,
+    TabProfileComponent,
+    TabInsigniaComponent, TabGroupComponent, TabEventComponent, ChangeComponent],
   imports: [
     CommonModule,
     ProtectedRoutingModule,
     SwiperModule,
     NgbModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    SharedModule
   ],
   /*providers: [
     {

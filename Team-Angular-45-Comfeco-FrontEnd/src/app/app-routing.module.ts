@@ -18,6 +18,10 @@ const routes: Routes = [
     canActivateChild: [ValidarTokenGuard]
   },
   {
+    path:'home',
+    loadChildren: () => import('./Home/Home.module').then( m => m.HomeModule)
+  },
+  {
     path: '**',
     redirectTo:'auth'
   }

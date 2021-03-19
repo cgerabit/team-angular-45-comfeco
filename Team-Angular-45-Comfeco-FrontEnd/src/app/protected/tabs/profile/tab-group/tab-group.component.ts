@@ -4,7 +4,7 @@ import { Group, GroupFilter, Technologies } from '../../../interfaces/interfaces
 import { UserGroup } from '../../../../auth/interfaces/interfaces';
 import Swal from 'sweetalert2';
 import { UserService } from '../../../../auth/services/user.service';
-import { LoadingOverlayService } from '../../../services/loading-overlay.service';
+import { LoadingOverlayService } from '../../../../shared/services/loading-overlay.service';
 
 @Component({
   selector: 'app-tab-group',

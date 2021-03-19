@@ -3,7 +3,7 @@ import { textChangeRangeIsUnchanged } from 'typescript';
 import { AuthService } from './auth/services/auth.service';
 import { environment } from '../environments/environment';
 import { RouterEvent, Router, NavigationStart, NavigationEnd, NavigationCancel, NavigationError } from '@angular/router';
-import { LoadingOverlayService } from './protected/services/loading-overlay.service';
+import { LoadingOverlayService } from './shared/services/loading-overlay.service';
 
 @Component({
   selector: 'app-root',

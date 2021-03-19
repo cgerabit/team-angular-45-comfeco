@@ -9,7 +9,7 @@ import { UserBadges, socialNetworkCreationDTO, UserEventInscriptionDTO, UserActi
 import { ChangeComponent } from 'src/app/protected/components/change/change.component';
 import Swal from 'sweetalert2';
 import { UserService } from '../../../../auth/services/user.service';
-import { LoadingOverlayService } from '../../../services/loading-overlay.service';
+import { LoadingOverlayService } from '../../../../shared/services/loading-overlay.service';
 import { Observable,merge} from 'rxjs';
 import { Router } from '@angular/router';
 

@@ -10,9 +10,9 @@ import SwiperCore, {
   Autoplay,
   SwiperOptions,
 } from 'swiper/core';
-import { Event, Technologies, Comunity, Sponsor, ContentCreator, WorkShop, Area } from '../../interfaces/interfaces';
-import { HomepageService } from '../../services/homepage.service';
-import { LoadingOverlayService } from '../../services/loading-overlay.service';
+import { Event, Technologies, Comunity, Sponsor, ContentCreator, WorkShop, Area } from '../../../protected/interfaces/interfaces';
+import { HomepageService } from '../../../protected/services/homepage.service';
+import { LoadingOverlayService } from '../../../shared/services/loading-overlay.service';
 // install Swiper modules
 SwiperCore.use([Navigation, Pagination, Scrollbar, A11y, Autoplay]);
 

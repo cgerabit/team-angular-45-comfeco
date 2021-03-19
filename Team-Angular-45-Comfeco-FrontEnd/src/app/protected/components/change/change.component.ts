@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from '../../../auth/services/auth.service';
 import Swal from 'sweetalert2';
-import { LoadingOverlayService } from '../../services/loading-overlay.service';
+import { LoadingOverlayService } from '../../../shared/services/loading-overlay.service';
 
 
 interface DataModal {

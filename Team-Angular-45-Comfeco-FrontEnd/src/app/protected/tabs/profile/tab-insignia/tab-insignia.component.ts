@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HomepageService } from 'src/app/protected/services/homepage.service';
 import { UserBadges } from '../../../../auth/interfaces/interfaces';
-import { LoadingOverlayService } from '../../../services/loading-overlay.service';
+import { LoadingOverlayService } from '../../../../shared/services/loading-overlay.service';
 
 @Component({
   selector: 'app-tab-insignia',
