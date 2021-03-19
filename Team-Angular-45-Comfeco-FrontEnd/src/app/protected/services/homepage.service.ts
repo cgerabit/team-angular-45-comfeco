@@ -23,13 +23,9 @@ export class HomepageService {
   }
 
   eventInfo() {
-    const url = `${this.baseUrl}/events`;
-    return this.http.get(url).pipe(
-      tap((resp) => {
-        console.log(resp);
-      }),
-      catchError((err) => of(err.error))
-    );
+    const url = `${this.baseUrl}/events/active`;
+    return this.http.get(url);
+
   }
 
   getTecnologias() {
