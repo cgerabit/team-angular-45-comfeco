@@ -19,15 +19,18 @@
         public const string PersistLoginSchemeName = "PersistLogin";
         public const string PersistLoginCookieName = "PersistLogin";
 
-        public const string LoginFrontendDefaultEndpoint = "http://localhost:4200/auth/login";
+        public const string LoginFrontendDefaultEndpoint = "https://team45.comfeco.cristiangerani.com/auth/login";
 
-        public const string ConfirmEmailFrontendDefaultEndpoint = "http://localhost:4200/auth/confirm";
+        public const string ConfirmEmailFrontendDefaultEndpoint = "https://team45.comfeco.cristiangerani.com/auth/confirm";
 
-        public const string PasswordRecoveryFrontendDefaultEndpoint = "http://localhost:4200/auth/recover";
+        public const string PasswordRecoveryFrontendDefaultEndpoint = "https://team45.comfeco.cristiangerani.com/auth/recover";
+
+        public const string ProfileFrontendDefaultEndpoint = "https://team45.comfeco.cristiangerani.com/protected/profile";
 
         public const string CountOfRecordsHeaderName = "CountOfRecords";
 
         public const string IdCookieName = "IdCookie";
+        public const string IdCookieVerifier = "IdCookieVerifier";
         public static class ImageContainerNames
         {
             public const string AreaContainer = "Area_Icons";

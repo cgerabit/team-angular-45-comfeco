@@ -1,41 +1,35 @@
 @import "../../../../utils/theme.scss";
-
 .app-layout {
-  min-height: 75vh;
-}
-.nav-pills{
-  margin: 65px auto 0;
-  display: flex;
-  justify-content: space-evenly;
-  padding: 20px;
-  span{
-    @media screen and (min-width: 40em) {
-      margin-left: 5px;
-    }
-  }
-  a{
-    color: $primary;
-    p{
-      display: none;
-      @media screen and (min-width: 40em) {
-        display: inline
-      }
-    }
-    svg {
-      fill: $primary;
-    }
-  }
-
-
-
-  .active{
-    background-color: $accent;
-      color: $white;
-      svg {
-        fill: $white;
-      }
-  }
+    min-height: calc(100vh - 230px);
 }
 
-
-
+.nav-pills {
+    margin: 65px auto 0;
+    display: flex;
+    justify-content: space-evenly;
+    padding: 20px;
+    span {
+        @media screen and (min-width: 40em) {
+            margin-left: 5px;
+        }
+    }
+    a {
+        color: $primary;
+        p {
+            display: none;
+            @media screen and (min-width: 40em) {
+                display: inline
+            }
+        }
+        svg {
+            fill: $primary;
+        }
+    }
+    .active {
+        background-color: $accent;
+        color: $white;
+        svg {
+            fill: $white;
+        }
+    }
+}

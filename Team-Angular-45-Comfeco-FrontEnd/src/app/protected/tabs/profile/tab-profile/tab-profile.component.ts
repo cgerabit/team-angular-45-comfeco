@@ -10,7 +10,8 @@ import { ChangeComponent } from 'src/app/protected/components/change/change.comp
 import Swal from 'sweetalert2';
 import { UserService } from '../../../../auth/services/user.service';
 import { LoadingOverlayService } from '../../../services/loading-overlay.service';
-import { Observable } from 'rxjs';
+import { Observable,merge} from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-tab-profile',
@@ -33,7 +34,13 @@ export class TabProfileComponent implements OnInit {
     private userService:UserService,
    private homeService:HomepageService,
    private modalService: NgbModal,
-   private loadingOverlay:LoadingOverlayService) { }
+   private loadingOverlay:LoadingOverlayService,
+) {
+
+  userService.socialNetworkChanged.subscribe(r=>{
+      this.userSocialNetworks = r;
+  })
+ }
 
   profile:UserProfile;
   userSpecialty:Area;
@@ -172,7 +179,8 @@ export class TabProfileComponent implements OnInit {
       }
       let linkedin = r.find(s => s.socialNetworkName.toLowerCase() == "linkedin");
       if(linkedin){
-        this.form.get('linkedin').setValue(linkedin.url.replace("https://www.linkedin.com/",""));
+        this.form.get('linkedin').setValue(linkedin.url.replace("https://www.linkedin.com/","")
+        .replace("in/","").replace("/",""));
       }
       let twitter = r.find(s=> s.socialNetworkName.toLowerCase() == "twitter");
       if(twitter){
@@ -241,20 +249,22 @@ export class TabProfileComponent implements OnInit {
 
     this.form.markAllAsTouched();
 
-    if(!this.form.valid){
+    if(!this.form.valid || this.loadingOverlay.loadingOverlayVisible){
         return;
     }
     let date:NgbDateStruct =this.form.get('bornDate').value;
 
-    this.userService.updateProfile({
-     genderId:this.form.get('genderId').value,
-     biography:this.form.get('biography').value,
-     bornDate:`${date.year}-${date.month}-${date.day}`,
-     countryId:this.form.get('countryId').value,
-     specialtyId:this.form.get('specialtyId').value,
-     profilePicture:this.form.get('profilePicture').value
+    let updateProfileObs =this.userService.updateProfile({
+      genderId:this.form.get('genderId').value,
+      biography:this.form.get('biography').value,
+      bornDate:`${date.year}-${date.month}-${date.day}`,
+      countryId:this.form.get('countryId').value,
+      specialtyId:this.form.get('specialtyId').value,
+      profilePicture:this.form.get('profilePicture').value
 
-    }).subscribe(() => {},()=>{});
+     });
+
+
 
 
     let socialNetworkArray:socialNetworkCreationDTO[] = [];
@@ -269,7 +279,7 @@ export class TabProfileComponent implements OnInit {
     let linkedinField= this.form.get('linkedin')
     if(linkedinField.dirty && linkedinField.value){
       socialNetworkArray.push({
-        url:`https://www.linkedin.com/ln/${linkedinField.value}`,
+        url:`https://www.linkedin.com/in/${linkedinField.value}`,
         socialNetworkId:this.getLinkedinData().id
       })
     }
@@ -288,8 +298,29 @@ export class TabProfileComponent implements OnInit {
       });
     }
     if(socialNetworkArray.length>0){
-      this.userService.updateSocialNetworks(socialNetworkArray).subscribe(()=>{},()=>{})
+       this.userService.updateSocialNetworks(socialNetworkArray).subscribe(()=>{
+
+      },()=>{
+
+      })
     }
+
+
+
+    this.loadingOverlay.setTimerWith(updateProfileObs).then(()=>{
+      Swal.fire({
+        title:'Exito!',
+        text:'Has actualizado tus datos exitosamente',
+        icon:'success'
+      })
+      this.update();
+    }).catch(()=>{
+      Swal.fire({
+        title:'Error!',
+        text:'Ha ocurrido un error actualizando los datos',
+        icon:'error'
+      })
+    })
 
     //this.authService.updateSocialNetworks()
 
@@ -384,21 +415,21 @@ export class TabProfileComponent implements OnInit {
     if(obs){
       Swal.fire({
         title:'Atencion!',
-        text:`Vas a desvincular el proveedor ${providerName} de tu cuenta, esta accion es irreversible ¿Estas Seguro?`,
+        text:`Vas a desvincular el proveedor de identidad ${providerName} de tu cuenta, esta accion es irreversible ¿Estas Seguro?`,
         icon:'question',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
         confirmButtonText: 'Si, quiero desvincularlo'
       }).then( resp => {
-        if(resp){
+        if(resp.isConfirmed){
         this.loadingOverlay.setTimerWith(obs).then(()=>{
           this.loadingOverlay.setTimerWith(this.authService.userProviders()).then(r =>{
             this.userProviders = r;
           } ).catch().finally(()=> {
             Swal.fire({
               title:'Exito!',
-              text:`Has desvinculado el proveedor ${providerName} de tu cuenta`,
+              text:`Has desvinculado el proveedor de identidad ${providerName} de tu cuenta`,
               icon:'success'
             })
           })
@@ -414,7 +445,7 @@ export class TabProfileComponent implements OnInit {
           }
           Swal.fire({
             title:'Error!',
-            text:text,
+            text,
             icon:'error'
           })
 

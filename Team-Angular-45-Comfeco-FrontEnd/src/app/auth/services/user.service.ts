@@ -71,6 +71,8 @@ export class UserService {
     })
   }
 
+  private _socialNetworkChanged:Subject<applicationUserSocalNetworks[]> =new Subject<applicationUserSocalNetworks[]>();
+  public socialNetworkChanged:Observable<applicationUserSocalNetworks[]> = this._socialNetworkChanged.asObservable();
   private _userSocialNetworks: applicationUserSocalNetworks[];
 
   get userSocialNetworks():Promise<applicationUserSocalNetworks[]>
@@ -87,6 +89,7 @@ export class UserService {
         }
 
         this.getUserSocialNetworks().subscribe(resp => {
+
 
           this._userSocialNetworks =resp;
           resolve(resp);
@@ -127,7 +130,7 @@ export class UserService {
     })
   }
 
-  private _userBadges:UserBadges[];
+
   get userBadges():Promise<UserBadges[]>{
     return new Promise((resolve)=>{
       if(!this.authService.isLoggedIn){
@@ -135,14 +138,9 @@ export class UserService {
         return;
       }
 
-      if(this._userBadges){
-        resolve(this._userBadges);
-        return;
-      }
        this.http.get<UserBadges[]>(`${this.baseUrl}/users/profile/${this.authService.userInfo.userId}/badges`).subscribe(
         resp=>{
 
-          this._userBadges=resp;
           resolve(resp);
 
         },()=>resolve(null))
@@ -315,6 +313,10 @@ export class UserService {
        .pipe(map(r=>{
          //delete cache
          this._userSocialNetworks=null;
+         this.userSocialNetworks.then(r=> {
+          this._socialNetworkChanged.next(r);
+         }).catch();
+
          return r;
        }));
 

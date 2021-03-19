@@ -60,7 +60,7 @@ export class ChangeComponent {
 
                 Swal.fire(
                   {title:"Error!",
-                 text:"Ha ocurrido un error actualizando el username ",
+                 text:"Contraseña invalida",
                  icon:"error"
                 }
                 )
@@ -98,7 +98,7 @@ export class ChangeComponent {
 
                   Swal.fire(
                     {title:"Error!",
-                   text:"ha ocurrido un error actualizando el username",
+                   text:"Contraseña invalida",
                    icon:"error"
                   }
                   )

@@ -18,6 +18,7 @@ export class LoginComponent implements OnInit {
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
     remember: [false],
+    saveSession:[false]
   });
 
   constructor(
@@ -74,9 +75,9 @@ export class LoginComponent implements OnInit {
 
     this.isLoading = true;
 
-    const { email, password, remember } = this.miFormulario.value;
+    const { email, password, saveSession } = this.miFormulario.value;
     this.authService
-      .login(email, password, remember)
+      .login(email, password, saveSession)
       .subscribe((resp: TokenResponse) => {
         console.log(typeof resp);
         if (typeof resp != 'string') {
