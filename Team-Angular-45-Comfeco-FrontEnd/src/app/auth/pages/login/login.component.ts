@@ -87,6 +87,8 @@ export class LoginComponent implements OnInit {
           Swal.fire('Error', resp, 'error');
         }
         this.isLoading = false;
+      },()=>{
+        Swal.fire('Error', "Credenciales invalidas", 'error');
       });
   }
 

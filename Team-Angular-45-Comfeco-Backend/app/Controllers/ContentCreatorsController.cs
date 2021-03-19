@@ -2,12 +2,13 @@
 
 using BackendComfeco.DTOs.ContentCreators;
 using BackendComfeco.DTOs.Shared;
-using BackendComfeco.DTOs.Technology;
 using BackendComfeco.DTOs.Users;
 using BackendComfeco.ExtensionMethods;
 using BackendComfeco.Models;
 using BackendComfeco.Settings;
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +21,8 @@ namespace BackendComfeco.Controllers
 {
     [ApiController]
     [Route("api/users/contentcreators")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
+        Policy = ApplicationConstants.Roles.AdminRoleName)]
     public class ContentCreatorsController : ControllerBase
     {
         private readonly ApplicationDbContext applicationDbContext;
@@ -36,6 +39,7 @@ namespace BackendComfeco.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<List<ContentCreatorDTO>>> Get([FromQuery] PaginationDTO paginationDTO,
             [FromQuery] ContentCreatorFilters contentCreatorFilters)
         {
@@ -92,7 +96,7 @@ namespace BackendComfeco.Controllers
                 {
                     creator.ApplicationUserTechnology[principalIndex].IsPrincipal = true;
                 }
-                
+
 
             });
 
@@ -105,13 +109,13 @@ namespace BackendComfeco.Controllers
         {
             var user = await applicationDbContext.Users.FirstOrDefaultAsync(u => u.Id == contentCreatorCreationDTO.UserId);
 
-            if (user==null)
+            if (user == null)
             {
                 return NotFound();
             }
 
 
-            var result=  await userManager.AddToRoleAsync(user, ApplicationConstants.Roles.ContentCreatorRoleName);
+            var result = await userManager.AddToRoleAsync(user, ApplicationConstants.Roles.ContentCreatorRoleName);
 
             if (result.Succeeded)
             {
@@ -123,13 +127,14 @@ namespace BackendComfeco.Controllers
 
 
         [HttpGet("{userId}")]
+        [AllowAnonymous]
 
-        public async Task<ActionResult<ContentCreatorDTO>> GetContentCreator(string userId) 
+        public async Task<ActionResult<ContentCreatorDTO>> GetContentCreator(string userId)
         {
             var queryable = GetContentCreatorQueryable();
 
             var user = await queryable.FirstOrDefaultAsync(u => u.Id == userId);
-            if (user ==null)
+            if (user == null)
             {
                 return NotFound();
             }
@@ -139,8 +144,8 @@ namespace BackendComfeco.Controllers
 
             var userTechnologiesIds = user.ApplicationUserTechnology.Select(x => x.TechnologyId);
 
-            var technologies =await applicationDbContext.Technologies
-                .Where(t =>  userTechnologiesIds.Contains(t.Id))
+            var technologies = await applicationDbContext.Technologies
+                .Where(t => userTechnologiesIds.Contains(t.Id))
                 .ToListAsync();
 
             dto.ApplicationUserTechnology = mapper.Map<List<UserTechnologyDTO>>(technologies);
@@ -150,10 +155,10 @@ namespace BackendComfeco.Controllers
             {
                 dto.ApplicationUserTechnology[principalIndex].IsPrincipal = true;
             }
-         
+
 
             return dto;
-        
+
         }
 
 
@@ -163,7 +168,7 @@ namespace BackendComfeco.Controllers
             var queryable = GetContentCreatorQueryable();
             var user = await queryable.FirstOrDefaultAsync(u => u.Id == userId);
 
-            if (user==null)
+            if (user == null)
             {
                 return NotFound();
             }
@@ -177,8 +182,8 @@ namespace BackendComfeco.Controllers
             return BadRequest(result);
         }
 
-        
-        
+
+
 
 
 

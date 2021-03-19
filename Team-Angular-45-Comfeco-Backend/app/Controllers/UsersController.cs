@@ -8,6 +8,8 @@ using BackendComfeco.Helpers;
 using BackendComfeco.Models;
 using BackendComfeco.Settings;
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace BackendComfeco.Controllers
@@ -37,10 +40,17 @@ namespace BackendComfeco.Controllers
         }
 
         [HttpPut("profile/{userId}")]
+        [Authorize(AuthenticationSchemes =JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult> UpdateUserProfile(string userId, [FromForm] UpdateUserProfileDTO updateUserProfileDTO)
         {
             //TODO
             //Chequear el role de administrador o que el usuario este editando su propio perfil
+
+            var userIdC = HttpContext.User.Claims.FirstOrDefault(y => y.Type == ClaimTypes.NameIdentifier);
+            if (userIdC == null || userIdC.Value != userId)
+            {
+                return Forbid();
+            }
 
             var user = await applicationDbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
 
@@ -90,6 +100,7 @@ namespace BackendComfeco.Controllers
         }
 
         [HttpGet("profile")]
+        [Authorize(AuthenticationSchemes =JwtBearerDefaults.AuthenticationScheme,Policy =ApplicationConstants.Roles.AdminRoleName)]
         public async Task<ActionResult<List<UserProfileDTO>>> GetUsers([FromQuery] PaginationDTO paginationDTO,
             [FromQuery] UserFilter userFilter)
         {
@@ -114,8 +125,14 @@ namespace BackendComfeco.Controllers
         }
 
         [HttpGet("profile/{userId}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<UserProfileDTO>> GetUser(string userId)
         {
+            var userIdC = HttpContext.User.Claims.FirstOrDefault(y => y.Type == ClaimTypes.NameIdentifier);
+            if (userIdC == null || userIdC.Value != userId)
+            {
+                return Forbid();
+            }
             var user = await applicationDbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
 
             if (user == null)
@@ -127,8 +144,14 @@ namespace BackendComfeco.Controllers
         }
 
         [HttpGet("profile/{userId}/badges")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<List<UserBadgeDTO>>> GetUserBadges(string userId)
         {
+            var userIdC = HttpContext.User.Claims.FirstOrDefault(y => y.Type == ClaimTypes.NameIdentifier);
+            if (userIdC == null || userIdC.Value != userId)
+            {
+                return Forbid();
+            }
 
             var badges = await applicationDbContext.ApplicationUserBadges
                 .Include(b => b.Badge).Where(x => x.UserId == userId).OrderBy(y => y.GetDate).ToListAsync();
@@ -140,8 +163,14 @@ namespace BackendComfeco.Controllers
         }
 
         [HttpGet("profile/{userId}/socialnetworks")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<List<ApplicationUserSocialNetworkDTO>>> GetSocialNetWork(string userId)
         {
+            var userIdC = HttpContext.User.Claims.FirstOrDefault(y => y.Type == ClaimTypes.NameIdentifier);
+            if (userIdC == null || userIdC.Value != userId)
+            {
+                return Forbid();
+            }
             var socialNetworks = await applicationDbContext.Users
                 .Include(x => x.ApplicationUserSocialNetworks)
                 .ThenInclude(x => x.SocialNetwork)
@@ -163,8 +192,14 @@ namespace BackendComfeco.Controllers
 
         }
         [HttpDelete("profile/{userId}/socialnetworks/{socialNetworkId:int}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult> DeleteUserSocialNetwork(string userId, int socialNetworkId)
         {
+            var userIdC = HttpContext.User.Claims.FirstOrDefault(y => y.Type == ClaimTypes.NameIdentifier);
+            if (userIdC == null || userIdC.Value != userId)
+            {
+                return Forbid();
+            }
             var socialNetwork = await applicationDbContext.ApplicationUserSocialNetworks.FindAsync(userId, socialNetworkId);
 
             if (socialNetwork == null)
@@ -192,8 +227,15 @@ namespace BackendComfeco.Controllers
         }
 
         [HttpPost("profile/{userId}/socialnetworks")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult> CreateOrReplaceSocialNetwork(string userId, UserSocialNetworkCreateDTO socialNetworkCreationDTO)
         {
+            var userIdC = HttpContext.User.Claims.FirstOrDefault(y => y.Type == ClaimTypes.NameIdentifier);
+            if (userIdC == null || userIdC.Value != userId)
+            {
+                return Forbid();
+            }
+
             var userExist = await applicationDbContext.Users.AnyAsync(x => x.Id == userId);
             if (!userExist)
             {
@@ -252,9 +294,14 @@ namespace BackendComfeco.Controllers
         }
 
         [HttpPost("profile/{userId}/fillsocialnetworks")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult> CreateOrReplaceSocialNetworks(string userId, List<UserSocialNetworkCreateDTO> socialNetworkCreationDTO)
         {
-
+            var userIdC = HttpContext.User.Claims.FirstOrDefault(y => y.Type == ClaimTypes.NameIdentifier);
+            if (userIdC == null || userIdC.Value != userId)
+            {
+                return Forbid();
+            }
             var user = await applicationDbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
             if (user==null)
             {
@@ -290,9 +337,14 @@ namespace BackendComfeco.Controllers
         }
 
         [HttpGet("profile/{userId}/technologies")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<List<UserTechnologyDTO>>> GetUserTechnologies(string userId)
         {
-
+            var userIdC = HttpContext.User.Claims.FirstOrDefault(y => y.Type == ClaimTypes.NameIdentifier);
+            if (userIdC == null || userIdC.Value != userId)
+            {
+                return Forbid();
+            }
             bool userExist = await applicationDbContext.Users.AnyAsync(u => u.Id == userId);
 
             if (!userExist)
@@ -314,8 +366,14 @@ namespace BackendComfeco.Controllers
         }
 
         [HttpDelete("profile/{userId}/technologies/{technologyId}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult> DeleteTechnology(string userId, int technologyId)
         {
+            var userIdC = HttpContext.User.Claims.FirstOrDefault(y => y.Type == ClaimTypes.NameIdentifier);
+            if (userIdC == null || userIdC.Value != userId)
+            {
+                return Forbid();
+            }
             var technology = await applicationDbContext.ApplicationUserTechnologies.FindAsync(userId, technologyId);
 
             if (technology == null)
@@ -343,8 +401,14 @@ namespace BackendComfeco.Controllers
 
 
         [HttpPost("profile/{userId}/technologies")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult> CreateOrReplaceTechnology(string userId, UserTechnologyCreationDTO userTechnologyCreationDTO)
         {
+            var userIdC = HttpContext.User.Claims.FirstOrDefault(y => y.Type == ClaimTypes.NameIdentifier);
+            if (userIdC == null || userIdC.Value != userId)
+            {
+                return Forbid();
+            }
             bool userExist = await applicationDbContext.Users.AnyAsync(u => u.Id == userId);
             if (!userExist)
             {

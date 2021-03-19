@@ -2,7 +2,10 @@
 
 using BackendComfeco.DTOs.Gender;
 using BackendComfeco.Models;
+using BackendComfeco.Settings;
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,6 +16,8 @@ namespace BackendComfeco.Controllers
 {
     [ApiController]
     [Route("api/genders")]
+    [Authorize(AuthenticationSchemes=JwtBearerDefaults.AuthenticationScheme,
+        Policy = ApplicationConstants.Roles.AdminRoleName)]
     public class GendersController : ExtendedBaseController
     {
 
@@ -25,12 +30,14 @@ namespace BackendComfeco.Controllers
 
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<List<GenderDTO>>> Get()
         {
             return await Get<Gender, GenderDTO>();
         }
 
         [HttpGet("{id:int}", Name = "GetGender")]
+        [AllowAnonymous]
         public async Task<ActionResult<GenderDTO>> Get(int id)
         {
 

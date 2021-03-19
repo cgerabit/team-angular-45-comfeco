@@ -3,7 +3,10 @@
 using BackendComfeco.DTOs.Comunity;
 using BackendComfeco.DTOs.Shared;
 using BackendComfeco.Models;
+using BackendComfeco.Settings;
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,6 +17,8 @@ namespace BackendComfeco.Controllers
 {
     [ApiController]
     [Route("api/communities")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
+        Policy = ApplicationConstants.Roles.AdminRoleName)]
     public class CommunitiesController : ExtendedBaseController
     {
         public CommunitiesController(ApplicationDbContext applicationDbContext,
@@ -24,12 +29,14 @@ namespace BackendComfeco.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<List<ComunityDTO>>> Get([FromQuery] PaginationDTO paginationDTO)
         {
             return await Get<Comunity, ComunityDTO>(paginationDTO);
         }
 
         [HttpGet("{id:int}", Name = "GetComunity")]
+        [AllowAnonymous]
         public async Task<ActionResult<ComunityDTO>> Get(int id)
         {
             return await Get<Comunity, ComunityDTO>(id);

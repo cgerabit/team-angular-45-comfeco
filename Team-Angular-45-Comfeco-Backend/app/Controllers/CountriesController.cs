@@ -2,7 +2,10 @@
 
 using BackendComfeco.DTOs.Country;
 using BackendComfeco.Models;
+using BackendComfeco.Settings;
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,6 +16,8 @@ namespace BackendComfeco.Controllers
 {
     [ApiController]
     [Route("api/countries")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
+        Policy = ApplicationConstants.Roles.AdminRoleName)]
     public class CountriesController : ExtendedBaseController
     {
         public CountriesController(IMapper mapper,
@@ -24,12 +29,14 @@ namespace BackendComfeco.Controllers
 
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<List<CountryDTO>>> Get()
         {
             return await Get<Country, CountryDTO>();
         }
 
         [HttpGet("{id:int}", Name = "GetCountry")]
+        [AllowAnonymous]
         public async Task<ActionResult<CountryDTO>> Get(int id)
         {
 

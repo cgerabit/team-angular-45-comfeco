@@ -23,13 +23,15 @@ namespace BackendComfeco.Controllers
 {
     [ApiController]
     [Route("api/areas")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
+        Policy =ApplicationConstants.Roles.AdminRoleName)]
     public class AreasController : ExtendedBaseController
     {
         private readonly ApplicationDbContext context;
         private readonly IMapper mapper;
         private readonly IFileStorage fileStorage;
 
-        public AreasController(ApplicationDbContext context, IMapper mapper, 
+        public AreasController(ApplicationDbContext context, IMapper mapper,
             IFileStorage fileStorage) : base(context, mapper)
         {
             this.context = context;
@@ -38,12 +40,14 @@ namespace BackendComfeco.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<AreaDTO>>> Get([FromQuery]PaginationDTO paginationDTO)
+        [AllowAnonymous]
+        public async Task<ActionResult<List<AreaDTO>>> Get([FromQuery] PaginationDTO paginationDTO)
         {
             return await Get<Area, AreaDTO>(paginationDTO);
         }
 
-        [HttpGet("{id:int}",Name ="GetArea")]
+        [HttpGet("{id:int}", Name = "GetArea")]
+        [AllowAnonymous]
         public async Task<ActionResult<AreaDTO>> Get(int id)
         {
             return await Get<Area, AreaDTO>(id);
@@ -97,9 +101,9 @@ namespace BackendComfeco.Controllers
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)
         {
-           return await Delete<Area>(id);
+            return await Delete<Area>(id);
         }
-        
+
 
         private async Task<string> SaveIcon(IFormFile sponsorIcon)
         {

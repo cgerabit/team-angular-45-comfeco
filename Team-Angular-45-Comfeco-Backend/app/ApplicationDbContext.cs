@@ -124,6 +124,16 @@ namespace BackendComfeco
                 NormalizedName = ApplicationConstants.Roles.ContentCreatorRoleName
             });
 
+            builder.Entity<IdentityRole>().HasData(new IdentityRole
+            {
+
+                Id=ApplicationConstants.Roles.AdminRoleId,
+                Name=ApplicationConstants.Roles.AdminRoleName,
+                NormalizedName=ApplicationConstants.Roles.AdminRoleName
+            });
+
+
+
         }
         public DbSet<ExternalLoginValidRedirectUrl> ExternalLoginValidRedirectUrls { get; set; }
 

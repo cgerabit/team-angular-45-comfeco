@@ -6,6 +6,8 @@ using BackendComfeco.Helpers;
 using BackendComfeco.Models;
 using BackendComfeco.Settings;
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,12 +16,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace BackendComfeco.Controllers
 {
     [ApiController]
     [Route("api/groups")]
+
     public class GroupsController : ExtendedBaseController
     {
         private readonly IMapper mapper;
@@ -71,6 +75,8 @@ namespace BackendComfeco.Controllers
             return mapper.Map<GroupDTO>(group);
         }
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
+        Policy = ApplicationConstants.Roles.AdminRoleName)]
         public async Task<ActionResult> Post([FromForm] GroupCreationDTO groupCreationDTO)
         {
             var entity = mapper.Map<Group>(groupCreationDTO);
@@ -94,6 +100,8 @@ namespace BackendComfeco.Controllers
 
 
         [HttpPut("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
+        Policy = ApplicationConstants.Roles.AdminRoleName)]
         public async Task<ActionResult> Put(int id, [FromForm] GroupCreationDTO groupCreationDTO)
         {
             var entity = await applicationDbContext.Groups.FirstOrDefaultAsync(g => g.Id == id);
@@ -123,14 +131,22 @@ namespace BackendComfeco.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
+        Policy = ApplicationConstants.Roles.AdminRoleName)]
         public Task<ActionResult> Delete(int id)
         {
             return Delete<Group>(id);
         }
 
         [HttpPost("members/{groupId}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<GroupJoinResult>> AddGroupMember(int groupId, AddGroupMemberDTO addGroupMemberDTO)
         {
+            var userId = HttpContext.User.Claims.FirstOrDefault(y => y.Type == ClaimTypes.NameIdentifier);
+            if (userId == null || userId.Value != addGroupMemberDTO.UserId)
+            {
+                return Forbid();
+            }
             var user = await applicationDbContext.Users.FirstOrDefaultAsync(u => u.Id == addGroupMemberDTO.UserId);
             if (user == null)
             {
@@ -192,8 +208,14 @@ namespace BackendComfeco.Controllers
         }
 
         [HttpDelete("members/{userId}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult> RemoveUserFromGroup(string userId)
         {
+            var userIdC = HttpContext.User.Claims.FirstOrDefault(y => y.Type == ClaimTypes.NameIdentifier);
+            if (userIdC == null || userIdC.Value != userId)
+            {
+                return Forbid();
+            }
             var user = await applicationDbContext.Users.Include(x => x.Group).FirstOrDefaultAsync(x => x.Id == userId);
             if (user == null)
             {
@@ -230,8 +252,15 @@ namespace BackendComfeco.Controllers
         }
 
         [HttpGet("members/usergroup/{userId}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<UserGroupDTO>> GetUserGroup(string userId)
         {
+            var userIdC = HttpContext.User.Claims.FirstOrDefault(y => y.Type == ClaimTypes.NameIdentifier);
+            if (userIdC == null || userIdC.Value != userId)
+            {
+                return Forbid();
+            }
+
             var userGroup = await applicationDbContext
                 .Users
                  .Where(x => x.Id == userId && x.GroupId != null)
