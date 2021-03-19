@@ -11,3 +11,4 @@
 
 * [Frontend](https://team45.comfeco.cristiangerani.com/)
 * [Backend](https://comfeco.cristiangerani.com/swagger/index.html)
+* ID de Huawei quick APP: 104032565
