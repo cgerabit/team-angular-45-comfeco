@@ -142,7 +142,6 @@ export class TabProfileComponent implements OnInit {
 
     this.loadingOverlay
     .setTimerWith(this.userService.userEvents).then(r=>{
-      console.log(r)
       this.userEvents =r ;
     })
 
@@ -199,10 +198,6 @@ export class TabProfileComponent implements OnInit {
 
 
     this.loadingOverlay.setTimerWith(this.userService.userBadges.then(r=> this.badges = r));
-    console.log(this.badges);
-
-
-
 
     this.homeService.getAreas({Page:1,RecordsPerPage:150})
     .subscribe(resp => {
@@ -210,10 +205,7 @@ export class TabProfileComponent implements OnInit {
     },()=>console.log("Error loading areas"));
 
     this.homeService.getGenders().subscribe(genders => {
-      console.log(genders);
         this.genders = genders;
-        console.log(this.genders);
-
     },()=> console.log("Error loading generos"));
 
     this.homeService.getCountries().subscribe(countries => {
