@@ -1,75 +1,76 @@
-    @import "../../../../../utils/theme.scss";
-    .container-insignias {
-        max-width: 1980px;
-        margin: 150px auto 0;
-        justify-content: center;
-        align-items: flex-start;
-        padding: 20px;
-        display: grid;
-        grid-template-rows: 100px 1fr;
-        .container-insignias-inner {
-            display: grid;
-            grid-template-columns: repeat(4, minmax(250px, 400px));
-            grid-auto-flow: row;
-            grid-column-gap: 50px;
-            grid-row-gap: 75px;
-            grid-row: 2/3;
-            max-width: 90vw;
-        }
-        .insignias-title {
-            grid-column: 1/2;
-            text-align: center;
-            font-size: 1.8rem;
-            color: $primary
-        }
-        .insignia-box {
-            background: $primary;
-            color: white;
-            padding: 20px;
-            border-radius: 15px;
-        }
-        h4 {
-            font-size: 1rem;
-            text-align: center;
-        }
-        h3 {
-            font-size: 1.1rem;
-        }
-        p {
-            font-size: 0.80rem;
-            text-align: center;
-        }
-        @media screen and (max-width: 1280px) {
-            .container-insignias-inner {
-                grid-template-columns: repeat(3, minmax(250px, 400px));
-            }
-        }
-        @media screen and (max-width: 910px) {
-            .container-insignias-inner {
-                grid-template-columns: repeat(2, minmax(250px, 400px));
-            }
-        }
-        @media screen and (max-width: 600px) {
-            .container-insignias-inner {
-                grid-template-columns: repeat(1, minmax(250px, 400px));
-            }
-        }
+@import "../../../../../utils/theme.scss";
+.container-insignias {
+  max-width: 1980px;
+  margin: 150px auto 0;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px;
+  display: grid;
+  grid-template-rows: 100px 1fr;
+  .container-insignias-inner {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(250px, 400px));
+    grid-auto-flow: row;
+    grid-column-gap: 50px;
+    grid-row-gap: 75px;
+    grid-row: 2/3;
+    max-width: 90vw;
+  }
+  .insignias-title {
+    grid-column: 1/2;
+    text-align: center;
+    font-size: 1.8rem;
+    color: $primary;
+  }
+  .insignia-box {
+    background: $white;
+    color: $primary;
+    padding: 20px;
+    border-radius: 15px;
+  }
+  h4 {
+    font-size: 1rem;
+    text-align: center;
+  }
+  h3 {
+    font-size: 1.1rem;
+  }
+  p {
+    font-size: 0.8rem;
+    text-align: center;
+  }
+  @media screen and (max-width: 1280px) {
+    .container-insignias-inner {
+      grid-template-columns: repeat(3, minmax(250px, 400px));
     }
-    
-    .insignia-box-header {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        border-bottom: 5px solid gray;
-        margin-bottom: 20px;
+  }
+  @media screen and (max-width: 910px) {
+    .container-insignias-inner {
+      grid-template-columns: repeat(2, minmax(250px, 400px));
     }
-    
-    .insignia-box-body {
-        margin-bottom: 20px;
+  }
+  @media screen and (max-width: 600px) {
+    .container-insignias-inner {
+      grid-template-columns: repeat(1, minmax(250px, 400px));
     }
-    
-    .insignia-box-img {
-        width: 30%;
-        border-radius: 200px;
-        padding: 10% 0;
-    }
+  }
+}
+
+.insignia-box-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-bottom: 5px solid gray;
+  margin-bottom: 20px;
+}
+
+.insignia-box-body {
+  margin-bottom: 20px;
+}
+
+.insignia-box-img {
+  img {
+    height: 120px;
+    width: 120px;
+  }
+}

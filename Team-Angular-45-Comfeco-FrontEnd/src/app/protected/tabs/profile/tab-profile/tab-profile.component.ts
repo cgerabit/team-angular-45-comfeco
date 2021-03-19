@@ -24,7 +24,7 @@ export class TabProfileComponent implements OnInit {
   model: NgbDateStruct;
 
   //imagen del usuario
-  imageURL: string = this.usuario.avatar;
+  imageURL: string = null
 
 
   constructor(private authService:AuthService,
@@ -93,7 +93,7 @@ export class TabProfileComponent implements OnInit {
     this.loadData();
     this.form = this.fb.group(
       {
-        biography:['',{validators:[Validators.required,Validators.maxLength(140)]}],
+        biography:['',{validators:[Validators.required, Validators.maxLength(140)]}],
         specialtyId:[1,{Validators:[Validators.required]}],
         genderId:[1,{Validators:[Validators.required]}],
         countryId:[1,{Validators:[Validators.required]}],
@@ -131,6 +131,7 @@ export class TabProfileComponent implements OnInit {
 
     this.loadingOverlay
     .setTimerWith(this.userService.userEvents).then(r=>{
+      console.log(r)
       this.userEvents =r ;
     })
 
@@ -142,7 +143,8 @@ export class TabProfileComponent implements OnInit {
 
     this.loadingOverlay.setTimerWith(this.userService.userProfile).then(r => {
 
-      this.profile =r;
+      this.profile = r;
+      this.imageURL = r.profilePicture || this.usuario.avatar;
       this.form.get('biography').setValue(this.profile.biography);
       this.form.get('specialtyId').setValue(this.profile.specialtyId);
       this.form.get('countryId').setValue(this.profile.countryId);
@@ -185,6 +187,8 @@ export class TabProfileComponent implements OnInit {
 
 
     this.loadingOverlay.setTimerWith(this.userService.userBadges.then(r=> this.badges = r));
+    console.log(this.badges);
+
 
 
 
@@ -227,16 +231,14 @@ export class TabProfileComponent implements OnInit {
   // Submit Form
   submit() {
 
-
     this.form.markAllAsTouched();
 
-
-    if(!this.form.valid || this.loadingOverlay.loadingOverlayVisible){
+    if(!this.form.valid){
         return;
     }
     let date:NgbDateStruct =this.form.get('bornDate').value;
 
-    this.loadingOverlay.setTimerWith(this.userService.updateProfile({
+    this.userService.updateProfile({
      genderId:this.form.get('genderId').value,
      biography:this.form.get('biography').value,
      bornDate:`${date.year}-${date.month}-${date.day}`,
@@ -244,14 +246,7 @@ export class TabProfileComponent implements OnInit {
      specialtyId:this.form.get('specialtyId').value,
      profilePicture:this.form.get('profilePicture').value
 
-    })).then(()=>{
-      Swal.fire({
-        title:"Has actualizado tus datos",
-        text:"Has actualizado tus datos exitosamente",
-        icon:"success"
-      })
-      this.update();
-    }).catch();
+    }).subscribe(() => {},()=>{});
 
 
     let socialNetworkArray:socialNetworkCreationDTO[] = [];
@@ -266,7 +261,7 @@ export class TabProfileComponent implements OnInit {
     let linkedinField= this.form.get('linkedin')
     if(linkedinField.dirty && linkedinField.value){
       socialNetworkArray.push({
-        url:`https://www.linkedin.com/${linkedinField.value}`,
+        url:`https://www.linkedin.com/ln/${linkedinField.value}`,
         socialNetworkId:this.getLinkedinData().id
       })
     }
@@ -285,9 +280,10 @@ export class TabProfileComponent implements OnInit {
       });
     }
     if(socialNetworkArray.length>0){
-      this.loadingOverlay.setTimerWith(this.userService.updateSocialNetworks(socialNetworkArray)).then().catch()
+      this.userService.updateSocialNetworks(socialNetworkArray).subscribe(()=>{},()=>{})
     }
 
+    //this.authService.updateSocialNetworks()
 
   }
 

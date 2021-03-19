@@ -4,7 +4,7 @@ import { environment } from 'src/environments/environment';
 import { catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { Comunity, Sponsor, ContentCreator, Area, Country, Gender, SocialNetwork, GroupFilter, Group, ActiveEvent, WorkShop } from '../interfaces/interfaces';
-import { Pagination } from '../../auth/interfaces/interfaces';
+import { Pagination, UserBadges } from '../../auth/interfaces/interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -153,6 +153,12 @@ export class HomepageService {
 
     return this.http.get<WorkShop[]>(`${this.baseUrl}/workshops`,{params})
   }
+
+  getBadges()
+  {
+    return this.http.get<UserBadges[]>(`${this.baseUrl}/badges`)
+  }
+
 
 
 }
