@@ -1,4 +1,3 @@
-<app-navbar></app-navbar>
 <div class="app-layout animate__animated animate__fadeIn" *ngIf="!updateState">
 
     <div class="eventos shadow">
@@ -117,6 +116,7 @@
 
 <!--Editar datos-->
 <div *ngIf="updateState" class="update-layout animate__animated animate__fadeIn">
+
   <button (click)="update()" type="button" class="back">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
         <path d="M16.67 0l2.83 2.829-9.339 9.175 9.339 9.167-2.83 2.829-12.17-11.996z" />
@@ -163,12 +163,14 @@
                 Cambiar mi Email
             </button>
               <button type="button" class="list-group-item list-group-item-action btn-list-item" (click)="open('Contraseña', true, '')">
+
                 <span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                         <path
                             d="M12.451 17.337l-2.451 2.663h-2v2h-2v2h-6v-1.293l7.06-7.06c-.214-.26-.413-.533-.599-.815l-6.461 6.461v-2.293l6.865-6.949c1.08 2.424 3.095 4.336 5.586 5.286zm11.549-9.337c0 4.418-3.582 8-8 8s-8-3.582-8-8 3.582-8 8-8 8 3.582 8 8zm-3-3c0-1.104-.896-2-2-2s-2 .896-2 2 .896 2 2 2 2-.896 2-2z" />
                     </svg>
                 </span>
+
                 Cambiar mi Contraseña
             </button>
           </div>
@@ -204,6 +206,7 @@
             </small>
           </div>
       </div>
+
 
       <div class="form-group">
           <div class="form-group_input">

@@ -20,8 +20,10 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 using System;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Channels;
+using System.Threading.Tasks;
 
 namespace BackendComfeco
 {
@@ -58,6 +60,22 @@ namespace BackendComfeco
                     ClockSkew = TimeSpan.Zero,
                     SaveSigninToken = true
 
+                };
+                options.Events = new JwtBearerEvents()
+                {
+                    OnMessageReceived = (msg) =>
+                    {
+                        if (msg.Token == null)
+                        {
+                            bool hasToken = msg.HttpContext.Request.Query.ContainsKey("token");
+                            if (hasToken)
+                            {
+                                msg.Token = msg.HttpContext.Request.Query["token"];
+                            }
+                        }
+
+                        return Task.CompletedTask;
+                    }
                 };
             }).AddFacebook(config => {
                     config.AppId = Configuration["facebookauth:appid"];

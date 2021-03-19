@@ -123,3 +123,8 @@ export interface changeEmailDTO{
     text: string,
     date: Date;
   }
+
+  export interface UserProviders{
+    haveFacebook: boolean,
+  haveGoogle: boolean
+  }

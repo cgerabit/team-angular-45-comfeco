@@ -5,10 +5,10 @@ import {
 } from '@angular/common/http';
 
 import { catchError, tap} from 'rxjs/operators';
-import { of } from 'rxjs';
+import { of, Observable } from 'rxjs';
 import * as shajs from 'sha.js';
 import { environment } from '../../../environments/environment';
-import { TokenResponse, Usuario, UserGroup,  changeUsernameDTO, changeEmailDTO, changePasswordDTO } from '../interfaces/interfaces';
+import { TokenResponse, Usuario, UserGroup, changeUsernameDTO, changeEmailDTO, changePasswordDTO, UserProviders } from '../interfaces/interfaces';
 import { claimAuthCodeDTO } from '../DTOs/claimAuthCodeDTO';
 
 import {
@@ -412,4 +412,15 @@ export class AuthService {
 
   }
 
+
+  initExternalProviderLink(providerName:string){
+    let url = `${this.baseUrl}/account/initexternalloginlink?token=${this.token}&ProviderName=${providerName}`;
+
+    location.href=url;
+  }
+
+  userProviders():Observable<UserProviders>{
+
+    return this.http.get<UserProviders>(`${this.baseUrl}/account/getUserLogins/${this.userInfo.userId}`)
+  }
 }

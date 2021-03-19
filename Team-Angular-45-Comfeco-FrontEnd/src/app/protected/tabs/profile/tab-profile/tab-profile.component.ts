@@ -5,7 +5,7 @@ import { AuthService } from '../../../../auth/services/auth.service';
 import {  Area, applicationUserSocalNetworks, Country, Gender, SocialNetwork, ActiveEvent } from '../../../interfaces/interfaces';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NgbDateStruct, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { UserBadges, socialNetworkCreationDTO, UserEventInscriptionDTO, UserActivityDTO } from '../../../../auth/interfaces/interfaces';
+import { UserBadges, socialNetworkCreationDTO, UserEventInscriptionDTO, UserActivityDTO, UserProviders } from '../../../../auth/interfaces/interfaces';
 import { ChangeComponent } from 'src/app/protected/components/change/change.component';
 import Swal from 'sweetalert2';
 import { UserService } from '../../../../auth/services/user.service';
@@ -27,7 +27,7 @@ export class TabProfileComponent implements OnInit {
   imageURL: string = null
 
 
-  constructor(private authService:AuthService,
+  constructor(public authService:AuthService,
     private fb: FormBuilder,
     private userService:UserService,
    private homeService:HomepageService,
@@ -52,6 +52,10 @@ export class TabProfileComponent implements OnInit {
   socialNetworks:SocialNetwork[] = [];
 
 
+  userProviders:UserProviders={
+    haveFacebook:false,
+    haveGoogle:false
+  };
   userEvents:UserEventInscriptionDTO[] = [];
 
   userActivities:UserActivityDTO[] = [];
@@ -212,6 +216,9 @@ export class TabProfileComponent implements OnInit {
       this.socialNetworks = socialNetworks;
     },()=>console.log("Error cargando social networks") )
 
+    this.authService.userProviders().subscribe(r=> {
+      this.userProviders=r;
+    })
   }
   // Image Preview
   showPreview(event) {

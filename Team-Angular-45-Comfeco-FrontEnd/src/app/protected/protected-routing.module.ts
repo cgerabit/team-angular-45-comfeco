@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { HomeLayoutComponent } from '../layouts/home-layout/home-layout.component';
 import { ProfileComponent } from './pages/profile/profile.component';
+import { ValidarTokenGuard } from '../guards/validar-token.guard';
 
 const routes: Routes = [
   {

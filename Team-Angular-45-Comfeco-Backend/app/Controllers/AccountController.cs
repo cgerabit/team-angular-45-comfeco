@@ -598,6 +598,8 @@ namespace BackendComfeco.Controllers
             return Challenge(properties, externalLoginDTO.Provider);
         }
 
+
+
         private async Task<bool> ExternalRedirectUrlExist(string returnUrl) =>
             await applicationDbContext.ExternalLoginValidRedirectUrls.AnyAsync(url => url.Url == returnUrl);
 
@@ -652,6 +654,48 @@ namespace BackendComfeco.Controllers
 
             return await BuildLoginToken(user.Email, authCodeClaimDTO.Purpose == ApplicationConstants.PersistentLoginTokenPurposeName);
 
+        }
+        [HttpGet("initexternalloginlink")]
+        [Authorize(AuthenticationSchemes =JwtBearerDefaults.AuthenticationScheme)]
+        public ActionResult InitExternalLoginLink([FromQuery] string ProviderName)
+        {
+
+            var userIdClaim = HttpContext.User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier);
+
+            if (userIdClaim == null)
+            {
+                return BadRequest();
+            }
+
+            HttpContext.Response.Cookies.Append(ApplicationConstants.IdCookieName, userIdClaim.Value,
+
+                    new Microsoft.AspNetCore.Http.CookieOptions()
+                    {
+                        HttpOnly = true,
+                        MaxAge = TimeSpan.FromMinutes(5),
+                        Secure = true,
+                        SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax
+                    });
+
+            var redirectUrl = Url.Action(nameof(ExternalLoginCallback), "Account");
+            var properties = signInManager.ConfigureExternalAuthenticationProperties(ProviderName,redirectUrl);
+
+
+            return Challenge(properties, ProviderName);
+
+        }
+        [HttpGet("getUserLogins/{userId}")]
+        public async Task<ActionResult<UserLoginsDTO>> GetUserLogins(string userId)
+        {
+            var logins = await applicationDbContext.UserLogins.Where(y => y.UserId == userId).ToListAsync();
+
+
+            return new UserLoginsDTO
+            {
+                HaveFacebook = logins.Any(l => l.ProviderDisplayName == "Facebook"),
+                HaveGoogle = logins.Any(l=> l.ProviderDisplayName =="Google")
+            };
+            
         }
 
         [HttpGet("externallogincallback")]
@@ -713,18 +757,49 @@ namespace BackendComfeco.Controllers
             }
             else
             {
+                var containsUserId = HttpContext.Request.Cookies.ContainsKey(ApplicationConstants.IdCookieName);
 
-                //Register
-                var email = info.Principal.FindFirst(ClaimTypes.Email);
+                if (containsUserId)
+                {
+
+                    string userId = HttpContext.Request.Cookies[ApplicationConstants.IdCookieName];
+
+                    bool alreadyHaveProvider = await applicationDbContext.UserLogins.AnyAsync(y => y.ProviderDisplayName == info.ProviderDisplayName && y.UserId == userId);
+
+                    if (!alreadyHaveProvider)
+                    {
+                        var currentUser = await applicationDbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+                        if (currentUser != null)
+                        {
+                            var externLoginAddResult = await userManager.AddLoginAsync(currentUser, info);
+                            if (externLoginAddResult.Succeeded)
+                            {
+                                return Redirect($"{ApplicationConstants.LoginFrontendDefaultEndpoint}?msg=Has enlazado tu cuenta exitosamente");
+                            }
+                            else
+                            {
+                                return Redirect($"{ApplicationConstants.LoginFrontendDefaultEndpoint}?msg=Ha ocurrido un error enlazando el metodo de autenticacion");
+                            }
+                        }
+                    }
+
+                }
+                    //Register
+                    var email = info.Principal.FindFirst(ClaimTypes.Email);
                 if (email == null)
                 {
                     return Redirect($"{ApplicationConstants.LoginFrontendDefaultEndpoint}?msg=El proveedor de identidad no envio la informacion necesaria intentalo de nuevo");
 
                 }
+
+               
+
                 var user = await userManager.FindByEmailAsync(email.Value);
                 if (user != null)
                 {
-                    return Redirect($"{ApplicationConstants.LoginFrontendDefaultEndpoint}?msg=Un usuario con ese email ya esta registrado por favor inicia session y enlaza este metodo de autenticacion");
+                  
+                        return Redirect($"{ApplicationConstants.LoginFrontendDefaultEndpoint}?msg=Un usuario con ese email ya esta registrado por favor inicia session y enlaza este metodo de autenticacion");
+                   
                 }
                 string name;
                 var username = info.Principal.FindFirst(ClaimTypes.Name);

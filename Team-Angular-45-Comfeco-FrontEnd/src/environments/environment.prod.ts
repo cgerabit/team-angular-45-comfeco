@@ -1,4 +1,6 @@
 export const environment = {
   production: true,
-  baseUrl: "https://comfeco.cristiangerani.com/api"
+  baseUrl: "https://localhost:44389/api"
 };
+
+
