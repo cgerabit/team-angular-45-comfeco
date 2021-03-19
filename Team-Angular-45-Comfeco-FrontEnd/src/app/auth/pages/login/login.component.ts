@@ -79,7 +79,6 @@ export class LoginComponent implements OnInit {
     this.authService
       .login(email, password, saveSession)
       .subscribe((resp: TokenResponse) => {
-        console.log(typeof resp);
         if (typeof resp != 'string') {
           this.router.navigateByUrl('/protected');
         } else {

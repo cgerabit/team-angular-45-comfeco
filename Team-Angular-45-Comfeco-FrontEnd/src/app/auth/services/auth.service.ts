@@ -164,7 +164,6 @@ export class AuthService {
 
     return this.http.post(url, body).pipe(
       tap((resp) => {
-        console.log(resp);
       }),
       catchError((err) => of(err.error))
     );
@@ -177,7 +176,6 @@ export class AuthService {
     }
     return this.http.post<any>(url, body).pipe(
       tap( (resp) => {
-        console.log("FROM SERVICE", resp)
       }),
       catchError((err: HttpErrorResponse) => of(err.error))
     );
@@ -219,8 +217,6 @@ export class AuthService {
       .pipe(
         tap((resp) => {
           this.authenticateUser(resp);
-          console.log(resp);
-
         }),
         catchError((err: HttpErrorResponse) => of(err.error))
       );
