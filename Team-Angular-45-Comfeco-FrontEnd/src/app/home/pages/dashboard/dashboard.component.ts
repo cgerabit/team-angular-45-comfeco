@@ -156,7 +156,7 @@ workshops:WorkShop[] = [];
   //Comunidades
   this.loadingOverlay.setTimerWith(this.hs.getComunidades({
     Page:1,
-    RecordsPerPage:4
+    RecordsPerPage:8
   }))
   .then(resp => {
     this.comunidades=resp;
@@ -185,14 +185,13 @@ this.loadWorkShops();
 
 
   this.hs.eventInfo().subscribe((resp:Event[])=>{
-    this.date =  new Date(resp[0].date);
+    this.date =  new Date(resp["date"]);
     //fecha pruebas
-    this.date = new Date("2021-02-25 20:58");
-    this.desc = resp[0].name;
+    this.desc = resp["name"];
 
     //funcionalidad del contador
     this.contador(this.date);
-  });
+  },()=>{});
   }
 
 

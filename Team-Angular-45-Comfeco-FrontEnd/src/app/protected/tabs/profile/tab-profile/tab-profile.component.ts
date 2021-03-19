@@ -11,7 +11,6 @@ import Swal from 'sweetalert2';
 import { UserService } from '../../../../auth/services/user.service';
 import { LoadingOverlayService } from '../../../../shared/services/loading-overlay.service';
 import { Observable,merge} from 'rxjs';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-tab-profile',

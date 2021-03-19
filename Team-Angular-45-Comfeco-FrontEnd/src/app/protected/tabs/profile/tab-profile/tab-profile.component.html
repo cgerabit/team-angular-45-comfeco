@@ -310,8 +310,8 @@
                 <label for="biography">Biografia</label>
                 <textarea type="text" formControlName="biography" placeholder="Ingrese su biografia"></textarea>
                 <small *ngIf="!form.get('biography').valid && this.form.get('biography').touched" class="text-danger">
-                <span *ngIf="!form.get('biography').hasError('required')">Ingrese su biografia</span>
-                <span *ngIf="!form.get('biography').hasError('maxlength')">La logitud maxima es de 140 caracteres</span>
+                <span *ngIf="form.get('biography').hasError('required')">Ingrese su biografia</span>
+                <span *ngIf="form.get('biography').hasError('maxlength')">La logitud maxima es de 140 caracteres</span>
             </small>
             </div>
         </div>
