@@ -1,4 +1,3 @@
-import { ValueConverter } from '@angular/compiler/src/render3/view/template';
 import { Component, OnInit } from '@angular/core';
 import * as countdown from 'countdown';
 
@@ -10,7 +9,7 @@ import SwiperCore, {
   Autoplay,
   SwiperOptions,
 } from 'swiper/core';
-import { Event, Technologies, Comunity, Sponsor, ContentCreator, WorkShop, Area } from '../../../protected/interfaces/interfaces';
+import { Event,  Comunity, Sponsor, ContentCreator, WorkShop, Area } from '../../../protected/interfaces/interfaces';
 import { HomepageService } from '../../../protected/services/homepage.service';
 import { LoadingOverlayService } from '../../../shared/services/loading-overlay.service';
 // install Swiper modules

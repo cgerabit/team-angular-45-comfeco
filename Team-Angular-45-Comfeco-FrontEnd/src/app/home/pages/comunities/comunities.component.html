@@ -1,3 +1,18 @@
 <div class="comunities-container">
+    <h1>Comunidades:</h1>
+    <div class="divider"></div>
+    <div class="comunities-container-inner">
+
+        <div *ngFor="let item of comunities" class="comunities-item">
+            <h2>{{item.name}}</h2>
+            <button class="btn-custom">
+                <a [href]="item.url" target="_blank">
+                    Unirse
+                </a>
+          </button>
+        </div>
+
+
+    </div>
 
 </div>
