@@ -9,14 +9,14 @@ import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component
 import { HomeLayoutComponent } from './layouts/home-layout/home-layout.component';
 import { TokenInterceptorService } from './auth/services/token-interceptor.service';
 import { UnauthorizedInterceptorService } from './auth/services/unauthorized-interceptor.service';
-import { LoadingOverlayComponent } from './protected/components/loading-overlay/loading-overlay.component';
+import { LoadingOverlayComponent } from './shared/components/loading-overlay/loading-overlay.component';
+
 
 
 @NgModule({
   declarations: [
     AppComponent,
     AuthLayoutComponent,
-    HomeLayoutComponent,
     LoadingOverlayComponent
     ],
   imports: [

@@ -5,7 +5,7 @@ import { AuthService } from '../../../../auth/services/auth.service';
 import Swal from 'sweetalert2';
 import { UserEventInscriptionDTO } from '../../../../auth/interfaces/interfaces';
 import { UserService } from '../../../../auth/services/user.service';
-import { LoadingOverlayService } from '../../../services/loading-overlay.service';
+import { LoadingOverlayService } from '../../../../shared/services/loading-overlay.service';
 @Component({
   selector: 'app-tab-event',
   templateUrl: './tab-event.component.html',

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LoadingOverlayService } from '../../services/loading-overlay.service';
 
+
 @Component({
   selector: 'app-loading-overlay',
   templateUrl: './loading-overlay.component.html',

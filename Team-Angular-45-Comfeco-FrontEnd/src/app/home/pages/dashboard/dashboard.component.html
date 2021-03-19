@@ -1,12 +1,11 @@
-<app-navbar></app-navbar>
 <div class="app-layout">
 
     <div class="comunidades shadow">
         <div class="taller-header">
-          <h2 class="taller--header__title"><strong>
+            <h2 class="taller--header__title"><strong>
             Talleres:
           </strong></h2>
-          <button class="btn-custom">Ver mas</button>
+            <button routerLink="/home/workshops" class="btn-custom">Ver mas</button>
         </div>
         <div class="form-group">
             <select (change)="loadWorkShopsWithEvent($event)" class="form-control">
@@ -135,25 +134,24 @@
 
     <div class="talleres shadow comunidades-box">
 
-      <div class="card">
-        <div class="card-header">
-          <h2 class="comunidades--header__title"><strong>
+        <div class="card">
+            <div class="card-header">
+                <h2 class="comunidades--header__title"><strong>
             Comunidades:
           </strong></h2>
-            <button class="btn-custom">Ver mas</button>
+                <button routerLink="/home/comunities" class="btn-custom">Ver mas</button>
+            </div>
+            <div class="card-body">
+                <div *ngFor="let comunidad of comunidades" class="comunidades--container__item">
+                    <h3 class="comunidades--container--item__title">
+                        <strong>{{comunidad.name}}</strong>
+                    </h3>
+                    <a [href]="comunidad.url" class="comunidades--container--item__url" style="color: #F2A007;">Unirme</a>
+                    <div class="taller-separador"></div>
+                </div>
+            </div>
+            <div class="card-footer">
+            </div>
         </div>
-        <div class="card-body">
-          <div *ngFor="let comunidad of comunidades" class="comunidades--container__item">
-            <h3 class="comunidades--container--item__title">
-                <strong>{{comunidad.name}}</strong>
-            </h3>
-            <a [href]="comunidad.url" class="comunidades--container--item__url" style="color: #F2A007;">Unirme</a>
-            <div class="taller-separador"></div>
-          </div>
-        </div>
-        <div class="card-footer">
-        </div>
-    </div>
     </div>
 </div>
-<app-footer></app-footer>
