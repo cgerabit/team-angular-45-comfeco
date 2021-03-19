@@ -52,13 +52,22 @@
       color: $primary;
       text-align: center;
       transition: all 300ms ease;
+      font-size: 14px;
+      @media screen and (min-width: 60em) {
+        font-size: 16px;
+      }
+      &.inicio {
+        display: none;
+        @media screen and (min-width: 65em) {
+          display: flex;
+        }
+      }
     }
   }
 
   @media screen and (min-width: 55em) {
     display: flex;
     li {
-      width: 105px;
       &:hover {
         border-bottom-color: $primary;
       }
