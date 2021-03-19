@@ -23,4 +23,9 @@ export class ComunitiesComponent implements OnInit {
     }).catch()
   }
 
+  openUrl(url:string)
+  {
+    window.open(url);
+  }
+
 }
