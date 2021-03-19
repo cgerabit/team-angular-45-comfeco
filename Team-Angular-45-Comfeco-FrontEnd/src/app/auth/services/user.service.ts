@@ -15,7 +15,20 @@ export class UserService {
 
   constructor(private authService:AuthService,
     private homepageService:HomepageService,
-    private http:HttpClient) { }
+    private http:HttpClient) {
+
+      authService.OnLogout.subscribe(resp=>{
+        if(!resp){
+          this._userProfile=null;
+          this._userSocialNetworks =null;
+          this._userSpecialty=null;
+          this._userEvents=null;
+          this._userActivity=null;
+        }
+
+      })
+
+    }
     baseUrl:string = environment.baseUrl;
 
 
