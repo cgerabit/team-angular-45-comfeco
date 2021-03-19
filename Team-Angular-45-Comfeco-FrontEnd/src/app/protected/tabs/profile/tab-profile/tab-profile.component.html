@@ -174,21 +174,21 @@
                 Cambiar mi Contraseña
             </button>
 
-                <button type="button" class="list-group-item list-group-item-action btn-list-item" (click)="authService.initExternalProviderLink('Google')">
+                <button type="button" class="list-group-item list-group-item-action btn-list-item" (click)="initExternalProviderLink('Google')">
 
-              <span>
+
+
+                <span>
                   <img style="width:24px" src="assets/images/google.svg">
-              </span>
-
-             Vincular Google
-          </button>
-                <button type="button" class="list-group-item list-group-item-action btn-list-item" (click)="authService.initExternalProviderLink('Google')">
+              </span> {{ !userProviders.haveGoogle?'Vincular':'Desvincular'}} Google
+                </button>
+                <button type="button" class="list-group-item list-group-item-action btn-list-item" (click)="initExternalProviderLink('Facebook')">
 
             <span>
               <img style="width:24px" src="assets/images/iconmonstr-facebook.svg">
             </span>
 
-            Vincular Facebook
+            {{ !userProviders.haveFacebook?'Vincular':'Desvincular'}} Facebook
         </button></div>
         </div>
         <div class="form-divider">
@@ -310,7 +310,8 @@
                 <label for="biography">Biografia</label>
                 <textarea type="text" formControlName="biography" placeholder="Ingrese su biografia"></textarea>
                 <small *ngIf="!form.get('biography').valid && this.form.get('biography').touched" class="text-danger">
-                Ingrese su biografia
+                <span *ngIf="!form.get('biography').hasError('required')">Ingrese su biografia</span>
+                <span *ngIf="!form.get('biography').hasError('maxlength')">La logitud maxima es de 140 caracteres</span>
             </small>
             </div>
         </div>

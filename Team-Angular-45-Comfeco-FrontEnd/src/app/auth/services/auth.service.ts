@@ -364,7 +364,7 @@ export class AuthService {
             })
           },
           () => {
-            this.logout();
+
             resolve(false);
           }
         );
@@ -426,5 +426,12 @@ export class AuthService {
   userProviders():Observable<UserProviders>{
 
     return this.http.get<UserProviders>(`${this.baseUrl}/account/getUserLogins/${this.userInfo.userId}`)
+  }
+
+  removeExternalProviderLink(providerName:string){
+    let url = `${this.baseUrl}/account/externalLogin/${providerName}`;
+
+
+    return this.http.delete(url);
   }
 }
