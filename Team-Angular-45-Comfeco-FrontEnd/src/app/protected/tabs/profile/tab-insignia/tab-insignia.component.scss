@@ -10,14 +10,15 @@
   .insignias-title {
     grid-column: 1/2;
     text-align: center;
-    font-size: 1.8rem;
-    color: $primary;
 
     .event_title {
       font-weight: 700;
       font-size: 32px;
       color: $primary;
       margin-top: 25px;
+      @media screen and (max-width: 650px) {
+        font-size: 20px;
+      }
     }
     .divider {
     width: 60%;
@@ -37,9 +38,15 @@
     grid-template-columns: repeat(4, minmax(250px, 400px));
     grid-auto-flow: row;
     grid-column-gap: 50px;
-    grid-row-gap: 75px;
+    gap: 50px;
     grid-row: 2/3;
     max-width: 90vw;
+    padding-top: 50px;
+    @media screen and (max-width: 650px) {
+      grid-template-columns: minmax(280px, 400px);
+      gap: 20px;
+      padding-top: 10px;
+  }
   }
   .insignias-title {
     grid-column: 1/2;
