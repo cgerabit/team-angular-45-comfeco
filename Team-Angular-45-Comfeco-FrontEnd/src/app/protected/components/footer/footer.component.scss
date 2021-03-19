@@ -1,0 +1,66 @@
+@import "../../../../utils/theme.scss";
+
+footer {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  padding: 1em;
+  border-top: 1px solid $accent;
+  .copyright {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    img {
+      width: 50px;
+      height: 50px;
+    }
+    p {
+      font-size: 14px;
+      font-weight: 700;
+      margin: 0;
+      margin-top: 10px;
+      @media screen and (min-width: 36em) {
+        margin-top: 0;
+        margin-left: 10px;
+        font-size: 16px;
+      }
+      @media screen and (min-width: 42em) {
+        font-size: 18px;
+      }
+    }
+    @media screen and (min-width: 36em) {
+      flex-direction: row;
+    }
+  }
+  .social {
+    margin-top: 10px;
+    width: 100%;
+    max-width: 240px;
+    &-text {
+      text-align: center;
+      font-weight: 300;
+      font-size: 12px;
+      margin: 0;
+      @media screen and (min-width: 36em) {
+        font-size: 14px;
+      }
+    }
+    &-container {
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+    }
+
+    @media screen and (min-width: 42em) {
+      margin-top: 0;
+    }
+  }
+
+  @media screen and (min-width: 42em) {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}

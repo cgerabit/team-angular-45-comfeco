@@ -23,10 +23,11 @@ import { TabEventComponent } from './tabs/profile/tab-event/tab-event.component'
 };*/
 import { ReactiveFormsModule,FormsModule } from '@angular/forms';
 import { ChangeComponent } from './components/change/change.component';
+import { FooterComponent } from './components/footer/footer.component';
 
 
 @NgModule({
-  declarations: [DashboardComponent, ProfileComponent, NavbarComponent, TabProfileComponent, TabInsigniaComponent, TabGroupComponent, TabEventComponent, ChangeComponent],
+  declarations: [DashboardComponent, ProfileComponent, NavbarComponent, TabProfileComponent, TabInsigniaComponent, TabGroupComponent, TabEventComponent, ChangeComponent, FooterComponent],
   imports: [
     CommonModule,
     ProtectedRoutingModule,

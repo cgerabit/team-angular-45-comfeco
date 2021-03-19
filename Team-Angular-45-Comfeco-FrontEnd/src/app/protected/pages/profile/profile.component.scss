@@ -1,6 +1,8 @@
 @import "../../../../utils/theme.scss";
 
-
+.app-layout {
+  min-height: 75vh;
+}
 .nav-pills{
   margin: 65px auto 0;
   display: flex;
