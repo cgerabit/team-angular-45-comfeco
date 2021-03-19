@@ -1,3 +1,21 @@
 <div class="workshop-container">
+    <h1>Talleres:</h1>
+    <div class="divider"></div>
 
+    <div class="workshop-container-inner">
+        <div *ngFor="let  item of workshops" class="workshop-item">
+            <h2>{{item.title}}</h2>
+            By <strong> {{item.userName}}</strong>
+            <small>{{item.workShopDate |date :'MMM d, y, h:mm a'}}</small>
+            <img *ngIf="!IsGreaterThanCurrentDate(item.workShopDate);else  dot" style="width:48px" src="assets/images/check.svg ">
+            <ng-template #dot>
+                <img style="width:48px" src="assets/images/more.svg">
+            </ng-template>
+            <div class=" t-container ">
+                <small>{{item.technology.name}}</small>
+                <img [src]="item.technology?.technologyIcon ">
+            </div>
+
+        </div>
+    </div>
 </div>

@@ -1,8 +1,109 @@
+@import "../../../../utils/theme.scss";
 .workshop-container {
     max-width: 1980px;
     min-height: calc(100vh - 167px);
-    margin: 65px auto 0;
-    justify-content: center;
-    align-items: flex-start;
+    margin: 78px auto 0;
+    justify-content: flex-start;
+    align-items: center;
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    h1 {
+        color: $primary;
+        text-align: center;
+        padding: 10px;
+        margin-bottom: 55px;
+        margin-top: 10px;
+    }
+    .workshop-container-inner {
+        margin-top: 60px;
+        display: grid;
+        max-width: 90%;
+        justify-content: center;
+        grid-template-columns: repeat(4, minmax(270px, 450px));
+        h2 {
+            font-size: 1.5rem;
+        }
+        @media screen and (max-width: 1280px) {
+            grid-template-columns: repeat(3, minmax(270px, 450px));
+            h2 {
+                font-size: 1.2rem;
+            }
+        }
+        @media screen and (max-width: 950px) {
+            grid-template-columns: repeat(2, minmax(270px, 450px));
+        }
+        @media screen and (max-width: 600px) {
+            grid-template-columns: minmax(270px, 470px)
+        }
+        column-gap: 65px;
+        row-gap: 100px;
+        grid-auto-flow: row;
+        strong {
+            color: $secondary
+        }
+        .workshop-item {
+            min-height: 350px;
+            background: #2E2E2E;
+            color: $white;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-direction: column;
+            padding: 30px;
+            text-align: center;
+            img {
+                width: 36px;
+            }
+            .t-container {
+                display: flex;
+                align-items: center;
+                justify-content: space-around;
+                width: 100%;
+            }
+            .btn-custom {
+                background-color: $secondary;
+                outline: none;
+                border: none;
+                color: black;
+                padding: 5px 10px;
+                border-radius: 10px;
+                font-size: 14px;
+                font-weight: 500;
+                letter-spacing: 1px;
+                width: 100%;
+                height: 40px;
+                transition: all 200ms ease-in-out;
+                a {
+                    display: block;
+                    color: $black;
+                    height: 100%;
+                    text-align: center;
+                    text-decoration: none;
+                    font-size: 1rem;
+                    &:hover {
+                        background-color: $accent;
+                        color: rgba($color: $white, $alpha: 0.95);
+                    }
+                }
+                &:hover {
+                    background-color: $accent;
+                    color: rgba($color: $white, $alpha: 0.95);
+                }
+            }
+        }
+    }
+}
+
+.divider {
+    width: 60%;
+    height: 5px;
+    background: linear-gradient( 90deg, #521e87 0.01%, #5c1d88 7.55%, #751a8a 14.82%, #8a178c 20.92%, #8e1c87 30.27%, #c36e42 46.54%, #e4a017 92.6%, #f1b406 99.98%);
+    border-radius: 5px;
+    margin: 5px auto 10px auto;
+    @media screen and (min-width: 40em) {
+        width: 40%;
+        margin: 5px auto 50px auto;
+    }
 }

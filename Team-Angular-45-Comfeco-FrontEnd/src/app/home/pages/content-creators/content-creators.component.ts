@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { HomepageService } from '../../../protected/services/homepage.service';
+import { LoadingOverlayService } from '../../../shared/services/loading-overlay.service';
+import { ContentCreator } from '../../../protected/interfaces/interfaces';
 
 @Component({
   selector: 'app-content-creators',
@@ -7,9 +10,20 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ContentCreatorsComponent implements OnInit {
 
-  constructor() { }
+  constructor(private homeService:HomepageService,
+    private loadingOverlay:LoadingOverlayService) { }
 
+    contentCreators:ContentCreator[] = [];
   ngOnInit(): void {
+
+    this.loadingOverlay.setTimerWith(this.homeService.getContentCreators({
+      Page:1,
+      RecordsPerPage:150
+    }))
+    .then(r=>{
+      this.contentCreators = r;
+    })
+    .catch();
   }
 
 }

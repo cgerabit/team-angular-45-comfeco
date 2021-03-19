@@ -1,3 +1,16 @@
 <div class="content-creators-container">
-    hello
-</div>
+    <h1>Creadores de contenido</h1>
+    <div class="divider"></div>
+
+    <div class="content-creators-container-inner">
+
+        <div *ngFor="let item of contentCreators" class="content-creators-item">
+            <h2>{{item.realName}}</h2>
+            <div class="img-container">
+
+                <img [src]="item.profilePicture">
+            </div>
+            <small>{{item.applicationUserTechnology[0]?.name}}</small>
+        </div>
+
+    </div>
