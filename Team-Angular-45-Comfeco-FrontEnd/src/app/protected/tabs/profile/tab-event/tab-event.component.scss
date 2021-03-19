@@ -12,6 +12,10 @@
           font-size: 32px;
           color: $primary;
           margin-top: 25px;
+
+          @media screen and (max-width: 650px) {
+            font-size: 20px;
+          }
     }
     .divider {
       width: 60%;
@@ -31,6 +35,7 @@
     justify-content: center;
     flex-direction: column;
     align-items: center;
+    padding: 20px;
     .events-container-inner {
         display: grid;
         grid-template-columns: repeat(4, minmax(280px, 400px));
@@ -43,6 +48,7 @@
         @media screen and (max-width: 650px) {
             grid-template-columns: minmax(280px, 400px);
             gap: 20px;
+            padding-top: 20px;
         }
         grid-auto-flow: row;
         gap: 50px;

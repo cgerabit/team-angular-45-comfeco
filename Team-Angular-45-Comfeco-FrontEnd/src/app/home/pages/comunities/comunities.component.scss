@@ -12,71 +12,68 @@
     h1 {
         color: $primary;
         text-align: center;
-        padding: 10px;
-        margin-bottom: 55px;
-        margin-top: 10px;
+        padding: 5px;
+        @media screen and (max-width: 650px) {
+          font-size: 30px;
+        }
     }
     .comunities-container-inner {
-        margin-top: 60px;
+        margin-top: 20px;
         display: grid;
         max-width: 90%;
         justify-content: center;
         grid-template-columns: repeat(4, minmax(270px, 450px));
         @media screen and (max-width: 1280px) {
             grid-template-columns: repeat(3, minmax(270px, 450px));
-            h2 {
-                font-size: 1.5rem;
-            }
         }
         @media screen and (max-width: 950px) {
             grid-template-columns: repeat(2, minmax(270px, 450px));
         }
         @media screen and (max-width: 600px) {
-            grid-template-columns: minmax(270px, 470px)
+            grid-template-columns: minmax(270px, 470px);
+            gap:20px;
         }
-        column-gap: 65px;
-        row-gap: 100px;
+        gap:40px;
         grid-auto-flow: row;
         .comunities-item {
-            min-height: 250px;
+            max-height: 200px;
             background: #2E2E2E;
             color: $white;
             border-radius: 20px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            flex-direction: column;
+            justify-content: center;
+            flex-direction: row;
             padding: 30px;
             text-align: center;
-            .btn-custom {
-                background-color: $secondary;
-                outline: none;
-                border: none;
-                color: black;
-                padding: 5px 10px;
-                border-radius: 10px;
-                font-size: 14px;
-                font-weight: 500;
-                letter-spacing: 1px;
-                width: 100%;
+            button {
+              background: $secondary;
+              transition: 0.3s;
+              border-radius: 50%;
+              margin: 10px auto;
+              height: 60px;
+              width: 60px;
+              outline: none;
+              border: none;
+              svg {
+                fill: $white;
                 height: 40px;
-                transition: all 200ms ease-in-out;
-                a {
-                    display: block;
-                    color: $black;
-                    height: 100%;
-                    text-align: center;
-                    text-decoration: none;
-                    font-size: 1rem;
-                    &:hover {
-                        background-color: $accent;
-                        color: rgba($color: $white, $alpha: 0.95);
-                    }
-                }
-                &:hover {
-                    background-color: $accent;
-                    color: rgba($color: $white, $alpha: 0.95);
-                }
+                width: 40px;
+              }
+              &:hover {
+                background-color: $primary;
+              }
+            }
+            .comunitie-name{
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              width: 70%;
+              margin-right: 15px;
+              padding: 50px;
+              h2{
+                font-size: 20px;
+              }
             }
         }
     }
