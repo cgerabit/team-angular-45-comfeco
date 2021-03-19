@@ -5,6 +5,7 @@ import { UserGroup } from '../../../../auth/interfaces/interfaces';
 import Swal from 'sweetalert2';
 import { UserService } from '../../../../auth/services/user.service';
 import { LoadingOverlayService } from '../../../services/loading-overlay.service';
+
 @Component({
   selector: 'app-tab-group',
   templateUrl: './tab-group.component.html',
@@ -21,12 +22,13 @@ export class TabGroupComponent implements OnInit {
   }
   groupTimeout:NodeJS.Timeout;
   userGroup:UserGroup;
-
   technologies:Technologies[] = [];
 
+  avatar(name: string){
+    return `https://avatars.dicebear.com/api/bottts/${name}.svg`
+  }
+
   set nameFilter(value:string){
-
-
 
     this.groupFilter.Name = value;
 

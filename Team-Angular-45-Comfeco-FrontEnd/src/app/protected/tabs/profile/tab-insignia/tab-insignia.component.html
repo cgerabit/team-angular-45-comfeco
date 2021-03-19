@@ -1,35 +1,30 @@
 <diV class="container-insignias-outer">
+  <div class="container-insignias">
+    <h1 class="insignias-title">Insignias a conseguir:</h1>
 
-    <div class="container-insignias">
-
-        <h1 class="insignias-title">
-            Mis insignias:
-        </h1>
-
-        <div class="container-insignias-inner">
-            <div class="insignia-box" *ngFor="let badge of userBadges">
-                <div class="insignia-box-header">
-                    <img [src]="badge.badgeIcon" class="insignia-box-img">
-                    <h3 class="insignia-box-title">
-                        {{badge.badgeName}}
-                    </h3>
-                </div>
-                <div class="insignia-box-body">
-                    <h4>Descripcion</h4>
-                    <p>
-                        {{badge.description}}
-                    </p>
-                </div>
-                <footer class="insignia-box-footer">
-                    <h4>¿Como ganarla?</h4>
-                    <p>
-                        {{badge.instructions}}
-                    </p>
-                </footer>
-
-            </div>
-
+    <div class="container-insignias-inner">
+      <div class="insignia-box shadow" *ngFor="let badge of badges">
+        <div class="insignia-box-header">
+          <div class="insignia-box-img">
+            <img [src]="badge.badgeIcon" alt="{{ badge.name }}" />
+          </div>
+          <h3 class="insignia-box-title">
+            {{ badge.name }}
+          </h3>
         </div>
+        <div class="insignia-box-body">
+          <h4>Descripcion</h4>
+          <p>
+            {{ badge.description }}
+          </p>
+        </div>
+        <footer class="insignia-box-footer">
+          <h4>¿Como ganarla?</h4>
+          <p>
+            {{ badge.instructions }}
+          </p>
+        </footer>
+      </div>
     </div>
-
+  </div>
 </diV>

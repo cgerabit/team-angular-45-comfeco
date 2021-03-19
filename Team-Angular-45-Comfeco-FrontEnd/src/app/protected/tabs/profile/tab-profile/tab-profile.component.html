@@ -1,24 +1,34 @@
 <div class="app-layout animate__animated animate__fadeIn" *ngIf="!updateState">
 
-    <div class="eventos shadow card">
-        <div class="eventos-header">
+    <div class="eventos shadow">
+
+        <div class="card">
+          <div class="card-header">
             <h4>Eventos de tu interes:</h4>
-            <a (click)="moveToEvents()">Ver mas</a>
-        </div>
-        <div class="card-body eventos-container">
+            <button  (click)="moveToEvents()" class="btn-custom">Ver mas</button >
+          </div>
+          <div class="card-body">
             <div *ngFor="let event of userEvents" class="eventos-item">
-                <h5>{{event.eventName}}</h5>
-                <div class="eventos-item-buttons">
-                    <button (click)="leaveFromEvent(event)" *ngIf="event.isActive;else leave" class="btn-custom red-btn">Abandonar</button>
-                    <ng-template #leave>
-                        <small>Has abandonado</small>
-                    </ng-template>
-                    <button (click)="moveToEvents()" class="btn-custom">Mas informacion</button>
-                </div>
+              <h5>{{event.eventName}}</h5>
+              <div class="eventos-item-buttons">
+                  <button (click)="leaveFromEvent(event)" *ngIf="event.isActive;else leave" class="btn-custom red-btn">Abandonar</button>
+                  <ng-template #leave>
+                      <small>Has abandonado</small>
+                  </ng-template>
+                  <button (click)="moveToEvents()" class="btn-custom">Mas informacion</button>
+              </div>
             </div>
+            <div *ngIf="userEvents.length === 0" class="data-nothing">
+              <p>
+                  Aún no te has inscrito a ningun evento. !Qué esperas para hacerlo¡
+                  <span aria-hidden="true">&nbsp;😺</span>
+              </p>
+            </div>
+          </div>
+          <div class="card-footer">
+          </div>
+      </div>
 
-
-        </div>
     </div>
 
 
@@ -26,10 +36,16 @@
         <div class="component-custom">
             <div class="component-insignia">
                 <h2 class="titulo">Insignias</h2>
-                <div class="insignias">
+                <div *ngIf="badges" class="insignias">
                     <div class="insignia shadow" *ngFor="let badge of badges">
                         <img [src]="badge.badgeIcon" alt="image" class="img-insignia img-fluid" />
                     </div>
+                </div>
+                <div *ngIf="badges.length === 0" class="insignias data-nothing">
+                  <p>
+                    Aún no tienes ninguna insignia. !Qué esperas para Obtenerlas¡
+                    <span aria-hidden="true">&nbsp;😺</span>
+                  </p>
                 </div>
             </div>
             <h2 class="title">Actividad reciente:</h2>
@@ -46,6 +62,11 @@
                     </div>
                 </div>
             </div>
+            <div *ngIf="userActivities.length === 0" class="card mb-2 shadow-sm">
+              <div class="card-body">
+                  <p><span aria-hidden="true">📌</span> No hay registro de actividades.</p>
+              </div>
+          </div>
         </div>
 
     </div>
@@ -61,11 +82,10 @@
                     <img src="{{ profile &&
                       profile.profilePicture?
                       profile.profilePicture :
-                      usuario.avatar }}" class="rounded-circle bg-dark" height="80" width="80" style="object-fit: cover;" alt="" loading="lazy" />
+                      usuario.avatar }}" style="object-fit: cover;" alt="" loading="lazy" />
                     <h2>{{ usuario.userName }}</h2>
                     <h3 *ngIf="userSpecialty">{{userSpecialty.name}}</h3>
                     <p *ngIf="profile && profile.biography">{{profile.biography}}</p>
-
                 </div>
             </div>
             <div class="card-footer">
@@ -96,208 +116,191 @@
 
 <!--Editar datos-->
 <div *ngIf="updateState" class="update-layout animate__animated animate__fadeIn">
-    <button (click)="update()" type="button" class="back">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-          <path d="M16.67 0l2.83 2.829-9.339 9.175 9.339 9.167-2.83 2.829-12.17-11.996z" />
-      </svg>
-  </button>
-    <form [formGroup]="form" class="form" (ngSubmit)="submit()">
-        <h1>Editar perfil</h1>
-        <div class="form-header">
-            <div class="form-avatar">
-                <div class="avatar-preview">
-                    <img src="{{ profile &&
-                    profile.profilePicture?
-                    profile.profilePicture :
-                    usuario.avatar }}" alt="{{usuario.userName}}" style="object-fit: cover;">
-                    <div class="avatar-edit">
-                        <input type="file" id="imageUpload" accept="image/*" (change)="showPreview($event)" />
-                        <label for="imageUpload">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                              <path
-                                  d="M18.363 8.464l1.433 1.431-12.67 12.669-7.125 1.436 1.439-7.127 12.665-12.668 1.431 1.431-12.255 12.224-.726 3.584 3.584-.723 12.224-12.257zm-.056-8.464l-2.815 2.817 5.691 5.692 2.817-2.821-5.693-5.688zm-12.318 18.718l11.313-11.316-.705-.707-11.313 11.314.705.709z" />
-                          </svg>
-                      </label>
-                    </div>
-                </div>
-                <div class="form-userdata">
-                    <p>{{usuario.userName}}</p>
-                    <p>{{ usuario.email }}</p>
-                </div>
-            </div>
-            <div class="form-list list-group">
-                <button type="button" class="list-group-item list-group-item-action btn-list-item" (click)="open('Username', false, usuario.userName)">
-                  <span>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                          <path
-                              d="M19 7.001c0 3.865-3.134 7-7 7s-7-3.135-7-7c0-3.867 3.134-7.001 7-7.001s7 3.134 7 7.001zm-1.598 7.18c-1.506 1.137-3.374 1.82-5.402 1.82-2.03 0-3.899-.685-5.407-1.822-4.072 1.793-6.593 7.376-6.593 9.821h24c0-2.423-2.6-8.006-6.598-9.819z" />
-                      </svg>
-                  </span>
-                  Cambiar mi Username
-              </button>
-                <button type="button" class="list-group-item list-group-item-action btn-list-item" (click)="open('Email', false, usuario.email)">
-                  <span>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                          <path
-                              d="M12 12.713l-11.985-9.713h23.971l-11.986 9.713zm-5.425-1.822l-6.575-5.329v12.501l6.575-7.172zm10.85 0l6.575 7.172v-12.501l-6.575 5.329zm-1.557 1.261l-3.868 3.135-3.868-3.135-8.11 8.848h23.956l-8.11-8.848z" />
-                      </svg>
-                  </span>
-                  Cambiar mi Email
-              </button>
-                <button type="button" class="list-group-item list-group-item-action btn-list-item" (click)="open('Contraseña', true, '')">
-                  <span>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                          <path
-                              d="M12.451 17.337l-2.451 2.663h-2v2h-2v2h-6v-1.293l7.06-7.06c-.214-.26-.413-.533-.599-.815l-6.461 6.461v-2.293l6.865-6.949c1.08 2.424 3.095 4.336 5.586 5.286zm11.549-9.337c0 4.418-3.582 8-8 8s-8-3.582-8-8 3.582-8 8-8 8 3.582 8 8zm-3-3c0-1.104-.896-2-2-2s-2 .896-2 2 .896 2 2 2 2-.896 2-2z" />
-                      </svg>
-                  </span>
-                  Cambiar mi Contraseña
-              </button>
-                <button type="button" class="list-group-item list-group-item-action btn-list-item" (click)="authService.initExternalProviderLink('Google')">
+
+  <button (click)="update()" type="button" class="back">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+        <path d="M16.67 0l2.83 2.829-9.339 9.175 9.339 9.167-2.83 2.829-12.17-11.996z" />
+    </svg>
+</button>
+  <form [formGroup]="form" class="form" (ngSubmit)="submit()">
+      <h1>Editar perfil</h1>
+      <div class="form-header">
+          <div class="form-avatar">
+              <div class="avatar-preview">
+                  <img src="{{ imageURL }}" alt="{{usuario.userName}}" style="object-fit: cover;">
+                  <div class="avatar-edit">
+                      <input type="file" id="imageUpload" accept="image/*" (change)="showPreview($event)" />
+                      <label for="imageUpload">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                            <path
+                                d="M18.363 8.464l1.433 1.431-12.67 12.669-7.125 1.436 1.439-7.127 12.665-12.668 1.431 1.431-12.255 12.224-.726 3.584 3.584-.723 12.224-12.257zm-.056-8.464l-2.815 2.817 5.691 5.692 2.817-2.821-5.693-5.688zm-12.318 18.718l11.313-11.316-.705-.707-11.313 11.314.705.709z" />
+                        </svg>
+                    </label>
+                  </div>
+              </div>
+              <div class="form-userdata">
+                  <p>{{usuario.userName}}</p>
+                  <p>{{ usuario.email }}</p>
+              </div>
+          </div>
+          <div class="form-list list-group">
+              <button type="button" class="list-group-item list-group-item-action btn-list-item" (click)="open('Username', false, usuario.userName)">
+                <span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                        <path
+                            d="M19 7.001c0 3.865-3.134 7-7 7s-7-3.135-7-7c0-3.867 3.134-7.001 7-7.001s7 3.134 7 7.001zm-1.598 7.18c-1.506 1.137-3.374 1.82-5.402 1.82-2.03 0-3.899-.685-5.407-1.822-4.072 1.793-6.593 7.376-6.593 9.821h24c0-2.423-2.6-8.006-6.598-9.819z" />
+                    </svg>
+                </span>
+                Cambiar mi Username
+            </button>
+              <button type="button" class="list-group-item list-group-item-action btn-list-item" (click)="open('Email', false, usuario.email)">
+                <span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                        <path
+                            d="M12 12.713l-11.985-9.713h23.971l-11.986 9.713zm-5.425-1.822l-6.575-5.329v12.501l6.575-7.172zm10.85 0l6.575 7.172v-12.501l-6.575 5.329zm-1.557 1.261l-3.868 3.135-3.868-3.135-8.11 8.848h23.956l-8.11-8.848z" />
+                    </svg>
+                </span>
+                Cambiar mi Email
+            </button>
+              <button type="button" class="list-group-item list-group-item-action btn-list-item" (click)="open('Contraseña', true, '')">
+
                 <span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                         <path
                             d="M12.451 17.337l-2.451 2.663h-2v2h-2v2h-6v-1.293l7.06-7.06c-.214-.26-.413-.533-.599-.815l-6.461 6.461v-2.293l6.865-6.949c1.08 2.424 3.095 4.336 5.586 5.286zm11.549-9.337c0 4.418-3.582 8-8 8s-8-3.582-8-8 3.582-8 8-8 8 3.582 8 8zm-3-3c0-1.104-.896-2-2-2s-2 .896-2 2 .896 2 2 2 2-.896 2-2z" />
                     </svg>
                 </span>
-               Enlazar Google
+
+                Cambiar mi Contraseña
             </button>
-                <button type="button" class="list-group-item list-group-item-action btn-list-item" (click)="authService.initExternalProviderLink('Google')">
-              <span>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                      <path
-                          d="M12.451 17.337l-2.451 2.663h-2v2h-2v2h-6v-1.293l7.06-7.06c-.214-.26-.413-.533-.599-.815l-6.461 6.461v-2.293l6.865-6.949c1.08 2.424 3.095 4.336 5.586 5.286zm11.549-9.337c0 4.418-3.582 8-8 8s-8-3.582-8-8 3.582-8 8-8 8 3.582 8 8zm-3-3c0-1.104-.896-2-2-2s-2 .896-2 2 .896 2 2 2 2-.896 2-2z" />
-                  </svg>
-              </span>
-              Enlazar Facebook
-          </button>
-            </div>
-        </div>
-        <div class="form-divider">
-            <span>Mi información personal</span>
-        </div>
-        <div class="form-group">
-            <div class="form-group_input">
-                <label for="genderId">Genero</label>
-                <select formControlName="genderId">
-                  <option [value]="gender.id" *ngFor="let gender of genders">
-                      {{gender.name}}
-                  </option>
-              </select>
-                <small *ngIf="!form.get('genderId').valid && this.form.get('genderId').touched" class="text-danger">
-                  Seleccione un genero
-              </small>
-            </div>
-            <div class="form-group_input">
-                <label for="bornDate">Fecha nacimiento</label>
-                <div class="date-input">
-                    <input formControlName="bornDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker #d="ngbDatepicker">
-                    <button (click)="d.toggle()" type="button" class="calendar">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                          <path
-                              d="M14 13h-4v-4h4v4zm6-4h-4v4h4v-4zm-12 6h-4v4h4v-4zm6 0h-4v4h4v-4zm-6-6h-4v4h4v-4zm16-8v13.386c0 2.391-6.648 9.614-9.811 9.614h-14.189v-23h24zm-2 6h-20v15h11.362c4.156 0 2.638-6 2.638-6s6 1.65 6-2.457v-6.543z" />
-                      </svg>
-                  </button>
-                </div>
-                <small *ngIf="!form.get('bornDate').valid && this.form.get('bornDate').touched" class="text-danger">
-                  Seleccione un fecha
-              </small>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="form-group_input">
-                <label for="specialtyId">Especialidad</label>
-                <select formControlName="specialtyId">
-                  <option [value]="area.id" *ngFor="let area of areas">
-                      {{area.name}}
-                  </option>
-              </select>
-                <small *ngIf="!form.get('specialtyId').valid && this.form.get('specialtyId').touched" class="text-danger">
-                  Seleccione una especialidad
-              </small>
-            </div>
-            <div class="form-group_input">
-                <label for="countryId">Pais</label>
-                <select formControlName="countryId">
-                  <option [value]="country.id" *ngFor="let country of countries">
-                      {{country.name}}
-                  </option>
-              </select>
-                <small *ngIf="!form.get('countryId').valid && this.form.get('countryId').touched" class="text-danger">
-                  Seleccione un pais
-              </small>
-            </div>
-        </div>
-
-        <div class="form-group" *ngIf="socialNetworks && socialNetworks.length>0">
-            <div class="form-group_input">
-                <div class="input-social">
-                    <span [class]="getFacebookData()?.name.toLowerCase()">
-                      <img src="../../../../../assets/images/iconmonstr-facebook.svg"
-                          [alt]="getFacebookData()?.name.toLowerCase()">
-                  </span>
-                    <label for="facebook">
-                      https://www.facebook.com/
-                  </label>
-                    <input type="text" formControlName="facebook" placeholder="Ingresa tu facebook" />
-                </div>
-            </div>
-            <div class="form-group_input">
-                <div class="input-social">
-                    <span [class]="getGithubData()?.name.toLowerCase()">
-                      <img src="../../../../../assets/images/iconmonstr-github.svg"
-                          [alt]="getGithubData()?.name.toLowerCase()">
-                  </span>
-                    <label for="Github">
-                      https://github.com/
-                  </label>
-                    <input type="text" formControlName="github" placeholder="Ingrese su github" />
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group" *ngIf="socialNetworks && socialNetworks.length>0">
-            <div class="form-group_input">
-                <div class="input-social">
-                    <span class="linkedin">
-                      <img src="../../../../../assets/images/iconmonstr-linkedin.svg"
-                          [alt]="getLinkedinData()?.name.toLowerCase()">
-                  </span>
-                    <label for="linkedin">
-                      https://www.linkedin.com/
-                  </label>
-                    <input type="text" formControlName="linkedin" placeholder="Ingrese su linkedin" />
-                </div>
+          </div>
+      </div>
+      <div class="form-divider">
+          <span>Mi información personal</span>
+      </div>
+      <div class="form-group">
+          <div class="form-group_input">
+              <label for="genderId">Genero</label>
+              <select formControlName="genderId">
+                <option [value]="gender.id" *ngFor="let gender of genders">
+                    {{gender.name}}
+                </option>
+            </select>
+              <small *ngIf="!form.get('genderId').valid && this.form.get('genderId').touched" class="text-danger">
+                Seleccione un genero
+            </small>
+          </div>
+          <div class="form-group_input">
+              <label for="bornDate">Fecha nacimiento</label>
+              <div class="date-input">
+                  <input formControlName="bornDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker #d="ngbDatepicker" [startDate]="{month: 1, year: 1990}">
+                  <button (click)="d.toggle()" type="button" class="calendar">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                        <path
+                            d="M14 13h-4v-4h4v4zm6-4h-4v4h4v-4zm-12 6h-4v4h4v-4zm6 0h-4v4h4v-4zm-6-6h-4v4h4v-4zm16-8v13.386c0 2.391-6.648 9.614-9.811 9.614h-14.189v-23h24zm-2 6h-20v15h11.362c4.156 0 2.638-6 2.638-6s6 1.65 6-2.457v-6.543z" />
+                    </svg>
+                </button>
+              </div>
+              <small *ngIf="!form.get('bornDate').valid && this.form.get('bornDate').touched" class="text-danger">
+                Seleccione un fecha
+            </small>
+          </div>
+      </div>
 
 
-            </div>
-            <div class="form-group_input">
-                <div class="input-social">
-                    <span class="twitter">
-                      <img src="../../../../../assets/images/iconmonstr-twitter.svg"
-                          [alt]="getTwitterData()?.name.toLowerCase()">
-                  </span>
-                    <label for="twitter">
-                      https://twitter.com/
-                  </label>
-                    <input type="text" formControlName="twitter" placeholder="Ingrese su twitter" />
-                </div>
-            </div>
-        </div>
+      <div class="form-group">
+          <div class="form-group_input">
+              <label for="specialtyId">Especialidad</label>
+              <select formControlName="specialtyId">
+                <option [value]="area.id" *ngFor="let area of areas">
+                    {{area.name}}
+                </option>
+            </select>
+              <small *ngIf="!form.get('specialtyId').valid && this.form.get('specialtyId').touched" class="text-danger">
+                Seleccione una especialidad
+            </small>
+          </div>
+          <div class="form-group_input">
+              <label for="countryId">Pais</label>
+              <select formControlName="countryId">
+                <option [value]="country.id" *ngFor="let country of countries">
+                    {{country.name}}
+                </option>
+            </select>
+              <small *ngIf="!form.get('countryId').valid && this.form.get('countryId').touched" class="text-danger">
+                Seleccione un pais
+            </small>
+          </div>
+      </div>
 
-        <div class="form-group">
-            <div class="form-group_input">
-                <label for="biography">Biografia</label>
-                <textarea type="text" formControlName="biography" placeholder="Ingrese su biografia"></textarea>
-                <small *ngIf="!form.get('biography').valid && this.form.get('biography').touched" class="text-danger">
-                  Ingrese su biografia
-              </small>
-            </div>
-        </div>
+      <div class="form-group" *ngIf="socialNetworks && socialNetworks.length>0">
+          <div class="form-group_input">
+              <div class="input-social">
+                  <span [class]="getFacebookData()?.name.toLowerCase()">
+                    <img src="../../../../../assets/images/iconmonstr-facebook.svg"
+                        [alt]="getFacebookData()?.name.toLowerCase()">
+                </span>
+                  <label for="facebook">
+                    https://www.facebook.com/
+                </label>
+                  <input type="text" formControlName="facebook" placeholder="Ingresa tu facebook" />
+              </div>
+          </div>
+          <div class="form-group_input">
+              <div class="input-social">
+                  <span [class]="getGithubData()?.name.toLowerCase()">
+                    <img src="../../../../../assets/images/iconmonstr-github.svg"
+                        [alt]="getGithubData()?.name.toLowerCase()">
+                </span>
+                  <label for="Github">
+                    https://github.com/
+                </label>
+                  <input type="text" formControlName="github" placeholder="Ingrese su github" />
+              </div>
+          </div>
+      </div>
 
-        <div class="form-group">
-            <button type="submit" class="button-submit">Guardar cambios</button>
-        </div>
-    </form>
+      <div class="form-group" *ngIf="socialNetworks && socialNetworks.length>0">
+          <div class="form-group_input">
+              <div class="input-social">
+                  <span class="linkedin">
+                    <img src="../../../../../assets/images/iconmonstr-linkedin.svg"
+                        [alt]="getLinkedinData()?.name.toLowerCase()">
+                </span>
+                  <label for="linkedin">
+                    https://www.linkedin.com/
+                </label>
+                  <input type="text" formControlName="linkedin" placeholder="Ingrese su linkedin" />
+              </div>
+
+
+          </div>
+          <div class="form-group_input">
+              <div class="input-social">
+                  <span class="twitter">
+                    <img src="../../../../../assets/images/iconmonstr-twitter.svg"
+                        [alt]="getTwitterData()?.name.toLowerCase()">
+                </span>
+                  <label for="twitter">
+                    https://twitter.com/
+                </label>
+                  <input type="text" formControlName="twitter" placeholder="Ingrese su twitter" />
+              </div>
+          </div>
+      </div>
+
+      <div class="form-group">
+          <div class="form-group_input">
+              <label for="biography">Biografia</label>
+              <textarea type="text" formControlName="biography" placeholder="Ingrese su biografia"></textarea>
+              <small *ngIf="!form.get('biography').valid && this.form.get('biography').touched" class="text-danger">
+                Ingrese su biografia
+            </small>
+          </div>
+      </div>
+
+      <div class="form-group">
+          <button type="submit" class="button-submit">Guardar cambios</button>
+      </div>
+  </form>
 </div>
