@@ -69,7 +69,6 @@ export class DashboardComponent implements OnInit {
     keyboard: true,
     mousewheel: true,
     scrollbar: false,
-    loop: true,
     autoplay: {
       disableOnInteraction: false,
     },
@@ -106,7 +105,6 @@ export class DashboardComponent implements OnInit {
       clickable:true,
       dynamicBullets: true,
     },*/
-    loop:true,
     autoplay:false,
     centeredSlides:false,
     centeredSlidesBounds:true,
