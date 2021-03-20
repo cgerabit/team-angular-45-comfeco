@@ -4,8 +4,8 @@
     grid-template-areas: "component" "talleres" "comunidades";
     grid-template-columns: 1fr;
     max-width: 1980px;
-    min-height: calc(100vh - 165px);
-    margin: 65px auto 0;
+    min-height: calc(100vh - 200px);
+    margin: 95px auto 20px;
     justify-content: center;
     align-items: flex-start;
     gap: 50px;
@@ -226,7 +226,7 @@ hr {
     height: 5px;
     background: linear-gradient( 90deg, #521e87 0.01%, #5c1d88 7.55%, #751a8a 14.82%, #8a178c 20.92%, #8e1c87 30.27%, #c36e42 46.54%, #e4a017 92.6%, #f1b406 99.98%);
     border-radius: 5px;
-    margin: 5px auto;
+    margin: 10px auto;
 }
 
 .button-custom {
@@ -416,4 +416,12 @@ hr {
             }
         }
     }
+}
+
+.carousel-lideres {
+    padding: 10px 0 10px 0;
+}
+
+.title {
+    padding: 10px 0 10px 0;
 }
