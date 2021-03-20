@@ -79,7 +79,7 @@
               <a [routerLink]="['/auth/login']" class="nav-link">Login</a>
             </li>
             <li>
-                <a [routerLink]="['/auth/register']" class="nav-link">Register</a>
+                <a [routerLink]="['/auth/registro']" class="nav-link">Register</a>
             </li>
         </ul>
         </ng-template>
@@ -104,7 +104,7 @@
                 </a>
                 </li>
                 <li *ngIf="!authService.isLoggedIn">
-                    <a [routerLink]="['/auth/register']" class="nav-link">
+                    <a [routerLink]="['/auth/registro']" class="nav-link">
                   Register
                 </a>
                 </li>
