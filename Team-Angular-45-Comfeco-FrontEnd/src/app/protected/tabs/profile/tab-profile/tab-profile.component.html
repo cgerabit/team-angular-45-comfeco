@@ -37,8 +37,8 @@
         <div class="component-insignia">
             <h2 class="titulo">Insignias</h2>
             <div *ngIf="badges" class="insignias">
-                <div class="insignia shadow" *ngFor="let badge of badges">
-                    <img [src]="badge.badgeIcon" alt="image" class="img-insignia img-fluid" />
+                <div class="insignia shadow" placement="bottom" [ngbTooltip]="badge.badgeName" *ngFor="let badge of badges">
+                    <img [src]="badge.badgeIcon" alt="image"  class="img-insignia img-fluid" />
                 </div>
             </div>
             <div *ngIf="badges.length === 0" class="insignias data-nothing">
