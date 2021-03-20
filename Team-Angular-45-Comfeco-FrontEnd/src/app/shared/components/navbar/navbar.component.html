@@ -86,17 +86,17 @@
         </div>
         <div id="mySidenav" class="sidenav shadow" [class.open]="sideNavIsOpen">
             <ul class="sidebar-items">
-                <li>
-                    <a class="nav-link" routerLink="/home" href="#">Home</a>
+                <li routerLinkActive="active">
+                    <a class="nav-link" routerLink="/home/dashboard" href="#">Home</a>
                 </li>
-                <li>
-                    <a class="nav-link" href="/home/comunities">Comunidades</a>
+                <li routerLinkActive="active">
+                    <a class="nav-link" routerLink="/home/comunities">Comunidades</a>
                 </li>
-                <li>
-                    <a class="nav-link" href="/home/workshops">Talleres</a>
+                <li routerLinkActive="active">
+                    <a class="nav-link" routerLink="/home/workshops">Talleres</a>
                 </li>
-                <li>
-                    <a class="nav-link" href="/home/contentcreators">Creadores de contenido</a>
+                <li routerLinkActive="active">
+                    <a class="nav-link" routerLink="/home/contentcreators">Creadores de contenido</a>
                 </li>
                 <li *ngIf="!authService.isLoggedIn">
                     <a [routerLink]="['/auth/login']" class="nav-link ">

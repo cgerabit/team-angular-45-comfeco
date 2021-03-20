@@ -113,14 +113,24 @@
         font-size: 36px;
         margin-left: 50px;
     }
+    .active {
+        border-bottom: 2.5px solid $secondary;
+        a {
+            color: $accent;
+            text-decoration: underline;
+            font-weight: 700;
+        }
+    }
     @media screen and (max-height: 450px) {
         padding-top: 15px;
         a {
             font-size: 18px;
         }
     }
-    &.open {
-        width: 240px;
+    @media screen and (max-width:880px) {
+        &.open {
+            width: 240px;
+        }
     }
 }
 
