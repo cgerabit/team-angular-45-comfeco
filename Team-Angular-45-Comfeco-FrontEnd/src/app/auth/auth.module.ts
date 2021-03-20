@@ -12,6 +12,7 @@ import { ExternalSigninCallbackComponent } from './pages/external-signin-callbac
 import { PersistentSigninCallbackComponent } from './pages/persistent-signin-callback/persistent-signin-callback.component';
 import { AuthLayoutComponent } from '../layouts/auth-layout/auth-layout.component';
 import { RouterModule } from '@angular/router';
+import { PoliticsComponent } from './pages/politics/politics.component';
 
 
 
@@ -24,7 +25,8 @@ import { RouterModule } from '@angular/router';
     TermsComponent,
     ExternalSigninCallbackComponent,
     PersistentSigninCallbackComponent,
-    AuthLayoutComponent
+    AuthLayoutComponent,
+    PoliticsComponent
   ],
   imports: [
     CommonModule,
