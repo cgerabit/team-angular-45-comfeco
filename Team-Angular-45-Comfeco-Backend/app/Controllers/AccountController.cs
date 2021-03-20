@@ -732,7 +732,7 @@ namespace BackendComfeco.Controllers
                     new Microsoft.AspNetCore.Http.CookieOptions()
                     {
                         HttpOnly = true,
-                        MaxAge = TimeSpan.FromMinutes(5),
+                        MaxAge = TimeSpan.FromMinutes(4),
                         Secure = true,
                         SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax
                     });
@@ -741,7 +741,7 @@ namespace BackendComfeco.Controllers
               new Microsoft.AspNetCore.Http.CookieOptions()
               {
                   HttpOnly = true,
-                  MaxAge = TimeSpan.FromMinutes(5),
+                  MaxAge = TimeSpan.FromMinutes(4),
                   Secure = true,
                   SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax
               });
@@ -785,6 +785,7 @@ namespace BackendComfeco.Controllers
 
             bool containsIdCookie = HttpContext.Request.Cookies.ContainsKey(ApplicationConstants.IdCookieName);
             bool containsKeyHashCookie = HttpContext.Request.Cookies.ContainsKey(ApplicationConstants.KeyHashCookieName);
+            bool containsVerifierId = HttpContext.Request.Cookies.ContainsKey(ApplicationConstants.IdCookieVerifier);
 
             if (info == null || (!containsKeyHashCookie && !containsIdCookie))
             {
@@ -792,8 +793,13 @@ namespace BackendComfeco.Controllers
                 return Redirect($"{ApplicationConstants.LoginFrontendDefaultEndpoint}?msg=La session ha expirado por favor intentalo de nuevo");
             }
 
+
             var loginExist = await applicationDbContext.UserLogins.AnyAsync(l => l.ProviderKey == info.ProviderKey);
             
+            if(loginExist && containsIdCookie && containsVerifierId)
+            {
+                return Redirect($"{ApplicationConstants.ProfileFrontendDefaultEndpoint}?msg=Error! El Proveedor de identidad ya esta siendo utilizado por otro usuario");
+            }
             
 
             string keyHash =containsKeyHashCookie? HttpContext.Request.Cookies[ApplicationConstants.KeyHashCookieName]:string.Empty;
@@ -846,25 +852,33 @@ namespace BackendComfeco.Controllers
             {
                 if (loginExist)
                 {
-                    return Redirect($"{ApplicationConstants.LoginFrontendDefaultEndpoint}?msg=Red social ya utilizada");
+                    return Redirect($"{ApplicationConstants.LoginFrontendDefaultEndpoint}?msg=Proveedor de identidad ya utilizado");
                 }
 
-                var containsUserId = HttpContext.Request.Cookies.ContainsKey(ApplicationConstants.IdCookieName);
-                var containsVerifierId = HttpContext.Request.Cookies.ContainsKey(ApplicationConstants.IdCookieVerifier);
-                if (containsUserId && containsVerifierId)
+               
+                if (containsIdCookie && containsVerifierId)
                 {
                
                     string userId = HttpContext.Request.Cookies[ApplicationConstants.IdCookieName];
                     string token = HttpContext.Request.Cookies[ApplicationConstants.IdCookieVerifier];
 
-                  
+                    HttpContext.Response.Cookies.Append(ApplicationConstants.IdCookieName, "", new CookieOptions
+                    {
+                        Expires = DateTime.Now.AddDays(-1)
+                    });
+
+                    HttpContext.Response.Cookies.Append(ApplicationConstants.IdCookieVerifier, "", new CookieOptions
+                    {
+                        Expires = DateTime.Now.AddDays(-1)
+                    });
 
 
                     bool alreadyHaveProvider = await applicationDbContext.UserLogins.AnyAsync(y => y.ProviderDisplayName == info.ProviderDisplayName && y.UserId == userId);
 
-                    if (!alreadyHaveProvider)
+                    if (alreadyHaveProvider)
                     {
-                       
+                        return Redirect($"{ApplicationConstants.ProfileFrontendDefaultEndpoint}?msg=Ya tienes ese proveedor enlazado con tu cuenta!");
+                    }
 
                         var currentUser = await applicationDbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
 
@@ -887,7 +901,7 @@ namespace BackendComfeco.Controllers
                                 return Redirect($"{ApplicationConstants.ProfileFrontendDefaultEndpoint}?msg=Ha ocurrido un error enlazando el metodo de autenticacion intentalo mas tarde");
                             }
                         }
-                    }
+                    
 
                 }
                     //Register

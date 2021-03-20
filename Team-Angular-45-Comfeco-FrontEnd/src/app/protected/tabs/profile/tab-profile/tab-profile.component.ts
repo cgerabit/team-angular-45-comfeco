@@ -71,6 +71,12 @@ export class TabProfileComponent implements OnInit {
   eventosEmitter:EventEmitter<object> = new EventEmitter();
 
   get usuario(){
+    if(!this.authService.userInfo){
+      return {
+        userName:'',
+        email:''
+      }
+    }
     const { userName, email } = this.authService.userInfo;
     return {
       userName: userName,
