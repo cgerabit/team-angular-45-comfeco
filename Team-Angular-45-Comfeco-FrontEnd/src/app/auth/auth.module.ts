@@ -10,6 +10,8 @@ import { RecoverComponent } from './pages/recover/recover.component';
 import { TermsComponent } from './pages/terms/terms.component';
 import { ExternalSigninCallbackComponent } from './pages/external-signin-callback/external-signin-callback.component';
 import { PersistentSigninCallbackComponent } from './pages/persistent-signin-callback/persistent-signin-callback.component';
+import { AuthLayoutComponent } from '../layouts/auth-layout/auth-layout.component';
+import { RouterModule } from '@angular/router';
 
 
 
@@ -21,12 +23,14 @@ import { PersistentSigninCallbackComponent } from './pages/persistent-signin-cal
     RecoverComponent,
     TermsComponent,
     ExternalSigninCallbackComponent,
-    PersistentSigninCallbackComponent
+    PersistentSigninCallbackComponent,
+    AuthLayoutComponent
   ],
   imports: [
     CommonModule,
     AuthRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    RouterModule
   ]
 })
 export class AuthModule { }

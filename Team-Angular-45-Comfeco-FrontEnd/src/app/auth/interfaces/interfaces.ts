@@ -50,6 +50,7 @@ export interface UserGroup{
   members:GroupMember[];
   groupName:string;
   groupImage:string;
+  groupId:number;
 }
 
 

@@ -177,6 +177,7 @@ namespace BackendComfeco.Mapper
 
             CreateMap<Group, UserGroupDTO>()
                 .ForMember(y => y.GroupName, options => options.MapFrom(g => g.Name))
+                .ForMember(y=> y.GroupId, options => options.MapFrom(g=> g.Id))
                 .ForMember(y => y.Members, options => options.MapFrom(g => g.Users.Select(u => new GroupMember
                 {
                     Name = u.UserName,

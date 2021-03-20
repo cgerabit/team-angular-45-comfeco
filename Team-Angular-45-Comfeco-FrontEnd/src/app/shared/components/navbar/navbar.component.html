@@ -15,16 +15,16 @@
                 <img class="img-brand" src="../../../../assets/images/logo/logo1.png" alt="Comfeco" loading="lazy" />
             </a>
             <ul class="navbar-items">
-                <li>
-                    <a class="nav-link inicio" routerLink="/home">Inicio</a>
+                <li routerLinkActive="active">
+                    <a class="nav-link inicio" routerLink="/home/dashboard">Inicio</a>
                 </li>
-                <li>
+                <li routerLinkActive="active">
                     <a class="nav-link" routerLink="/home/comunities">Comunidades</a>
                 </li>
-                <li>
+                <li routerLinkActive="active">
                     <a class="nav-link" routerLink="/home/workshops">Talleres</a>
                 </li>
-                <li>
+                <li routerLinkActive="active">
                     <a class="nav-link" routerLink="/home/contentcreators">Creadores de contenido</a>
                 </li>
             </ul>
@@ -64,7 +64,7 @@
           >
         </button>
                 <div ngbDropdownMenu class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    <a ngbDropdownItem class="dropdown-item" routerLink="/protected/profile">Mi Perfil</a
+                    <a ngbDropdownItem class="dropdown-item" routerLinkActive="activated" routerLink="/protected/profile">Mi Perfil</a
           >
 
           <button ngbDropdownItem class="dropdown-item" (click)="logout()">

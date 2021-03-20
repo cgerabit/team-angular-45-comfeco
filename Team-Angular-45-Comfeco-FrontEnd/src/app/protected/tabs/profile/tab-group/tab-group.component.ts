@@ -177,4 +177,15 @@ export class TabGroupComponent implements OnInit {
     })
   }
 
+  isMyGroupId(groupId:number):boolean{
+
+    if(!this.userGroup){
+      return false;
+    }
+
+     return groupId == this.userGroup.groupId;
+
+
+  }
+
 }
