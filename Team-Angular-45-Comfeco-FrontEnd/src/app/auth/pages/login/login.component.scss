@@ -10,7 +10,7 @@
     box-sizing: border-box;
     overflow: hidden;
     margin: 0 auto;
-    padding: 75px 40px 35px;
+    padding: 75px 35px 35px;
     @media screen and (min-width: 36em) {
         padding: 75px 60px 35px;
     }
@@ -209,5 +209,21 @@
             color: $accent;
             text-decoration: underline;
         }
+    }
+}
+
+.login-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    img {
+        width: 24px;
+        border-radius: 20px;
+    }
+}
+
+.form-container {
+    @media screen and (min-width: 620px) {
+        min-width: 620px;
     }
 }
