@@ -1,33 +1,70 @@
 @import "../../../utils/theme";
-
 .auth-layout {
-  background: url("../../../assets/images/bg-comfeco.svg") no-repeat center center
-    fixed;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
+    background: url("../../../assets/images/bg-comfeco.svg") no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    @media screen and (max-height: 850px) {
+        min-height: 850px;
+    }
+    padding:20px;
 }
+
 .btn-bottom {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  width: 40px;
-  height: 40px;
-  border-radius: 100%;
-  outline: none;
-  border: none;
-  color: white;
-  background-color: $dark-gray;
-  font-weight: 700;
-  transition: all 0.3s ease;
-  &:hover {
-    background-color: $gray;
-    bottom: 25px;
-    transform: scale(1.2);
-  }
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+    outline: none;
+    border: none;
+    color: white;
+    background-color: $dark-gray;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    &:hover {
+        background-color: $gray;
+        bottom: 25px;
+        transform: scale(1.2);
+    }
+}
+
+.back {
+    background-color: $accent;
+    border: none;
+    border-radius: 50%;
+    padding: 30px;
+    position: absolute;
+    top: 10px;
+    left: 15px;
+    transition: all 300ms ease;
+    z-index: 100;
+    svg {
+        fill: $white;
+    }
+    &:hover {
+        background-color: rgba($color: $secondary, $alpha: 0.4);
+    }
+    @media screen and (min-width: 40em) {
+        top: 20px;
+        left: 30px;
+    }
+    @media screen and (max-width:1400px) {
+        padding: 26px;
+    }
+    @media screen and (max-width:1140px) {
+        padding: 22px;
+    }
+    @media screen and (max-width:800px) {
+        padding: 18px;
+    }
+    @media screen and (max-width:500px) {
+        padding: 14px;
+    }
 }

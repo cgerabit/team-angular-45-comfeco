@@ -109,9 +109,9 @@ namespace BackendComfeco
               .HasData(new PersistentLoginValidRedirectUrl { Id = 2, Url = "http://localhost:4200/auth/persistent-signin-callback" });
 
             builder.Entity<PersistentLoginValidRedirectUrl>()
-               .HasData(new PersistentLoginValidRedirectUrl { Id = 3, Url = "https://team45.comfeco.cristiangerani.com/auth/external-signin-callback" });
+               .HasData(new PersistentLoginValidRedirectUrl { Id = 3, Url = "https://team45.comfeco.cristiangerani.com/auth/persistent-signin-callback" });
             builder.Entity<PersistentLoginValidRedirectUrl>()
-              .HasData(new PersistentLoginValidRedirectUrl { Id = 4, Url = "http://team45.comfeco.cristiangerani.com/auth/external-signin-callback" });
+              .HasData(new PersistentLoginValidRedirectUrl { Id = 4, Url = "http://team45.comfeco.cristiangerani.com/auth/persistent-signin-callback" });
 
             //----------------------------------------------------------
 

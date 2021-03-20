@@ -57,5 +57,5 @@ constructor(private authService:AuthService,
       this.loadingOverlayService.loadingOverlayVisible = false;
     }
   }
-  title = 'authApp';
+  title = 'Team 45 Angular';
 }

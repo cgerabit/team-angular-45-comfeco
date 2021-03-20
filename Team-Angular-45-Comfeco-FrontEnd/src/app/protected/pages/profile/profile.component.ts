@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { NgbNav } from '@ng-bootstrap/ng-bootstrap';
+import { NgbNav, NgbNavItem } from '@ng-bootstrap/ng-bootstrap';
 import { ActivatedRoute } from '@angular/router';
 import Swal from 'sweetalert2';
 
@@ -29,7 +29,12 @@ export class ProfileComponent implements OnInit {
   }
 
   navigateToEvents(){
-    this.nav.select("ngb-nav-3")
+    if(this.nav){
+      var tabs = this.nav.items.toArray();
+      var eventsTab = tabs[tabs.length-1] as NgbNavItem;
+      if(!eventsTab){return;}
+      this.nav.select(eventsTab.domId)
+    }
   }
 
 
