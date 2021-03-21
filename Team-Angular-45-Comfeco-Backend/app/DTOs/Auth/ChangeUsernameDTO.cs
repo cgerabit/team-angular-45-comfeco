@@ -7,6 +7,7 @@ namespace BackendComfeco.DTOs.Auth
         [Required]
         public string UserId { get; set; }
         [Required]
+        [MinLength(4)]
         public string newUsername { get; set; }
 
         [Required]

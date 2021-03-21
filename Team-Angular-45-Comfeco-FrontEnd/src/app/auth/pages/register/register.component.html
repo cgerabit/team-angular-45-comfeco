@@ -12,6 +12,9 @@
                     <small *ngIf="nombreNoValido" class="text-danger">
           Ingrese un usuario valido
         </small>
+                    <small *ngIf="nombreMuyCorto" class="text-danger">
+          El nombre de usuario debe contener por lo menos 4 caracteres
+        </small>
                 </div>
                 <div class="form-group">
                     <label for="email">Correo</label>

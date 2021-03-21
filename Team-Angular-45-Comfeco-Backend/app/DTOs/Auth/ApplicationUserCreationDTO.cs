@@ -9,9 +9,11 @@ namespace BackendComfeco.DTOs.Auth
         public string Email { get; set; }
 
         [Required]
+
         public string Password { get; set; }
 
         [Required]
+        [MinLength(4)]
         public string UserName { get; set; }
     }
 }

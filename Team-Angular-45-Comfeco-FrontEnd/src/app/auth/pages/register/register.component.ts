@@ -14,7 +14,7 @@ export class RegisterComponent implements OnInit {
   isLoading: boolean = false;
   miFormulario: FormGroup = this.fb.group(
     {
-      name: ['', [Validators.required]],
+      name: ['', [Validators.required,Validators.minLength(4)]],
       email: ['', [Validators.required, Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]],
       password: ['', [Validators.required, Validators.pattern(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-.,]).{5,}$/)]],
       password2: ['', [Validators.required, Validators.minLength(6)]],
@@ -30,6 +30,9 @@ export class RegisterComponent implements OnInit {
 
   ngOnInit(): void {}
 
+  get nombreMuyCorto(){
+    return this.miFormulario.get('name').invalid && this.miFormulario.get('name').hasError("minlength")
+  }
   //validaciones
   get nombreNoValido(){
     return this.miFormulario.get('name').invalid && this.miFormulario.get('name').touched
